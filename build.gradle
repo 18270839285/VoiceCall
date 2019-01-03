@@ -19,9 +19,21 @@ allprojects {
     repositories {
         google()
         jcenter()
+//        maven { url 'https://jitpack.io' }
+//        mavenCentral()
     }
 }
 
 task clean(type: Delete) {
     delete rootProject.buildDir
+}
+
+ext {
+    packageName = "huidu.com.voicecall"
+    buildTools = '27.0.1'
+    compileSdk = 27
+    minSdk = 19
+    versionCode = 1
+    versionName = '1.0.0'
+    supportLib = '27.0.1'
 }

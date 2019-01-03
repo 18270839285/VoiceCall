@@ -1,0 +1,101 @@
+package huidu.com.voicecall.main;
+
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.view.KeyEvent;
+import android.widget.FrameLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import huidu.com.voicecall.R;
+import huidu.com.voicecall.base.BaseActivity;
+import huidu.com.voicecall.utils.AtyContainer;
+
+public class MainActivity extends BaseActivity implements ChangeFragmentListener {
+    @BindView(R.id.activity_container)
+    FrameLayout mActivityContainer;
+    @BindView(R.id.rb_mine)
+    RadioButton rb_mine;
+    @BindView(R.id.main_activity_rg)
+    RadioGroup mainActivityRg;
+    @BindView(R.id.rb_message)
+    RadioButton rb_message;
+    @BindView(R.id.rb_main)
+    RadioButton rb_main;
+
+    private List<Fragment> mList;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        ButterKnife.bind(this);
+    }
+
+    @Override
+    protected int getLayoutId() {
+        return R.layout.activity_main;
+    }
+
+    @Override
+    protected void initView() {
+        mList = new ArrayList<>();
+        mList.add(new MainFragment());//主页
+        mList.add(new MessageFragment());//消息
+        mList.add(new MineFragment());//我的
+
+        FragmentUtil.switchFragment(getSupportFragmentManager(), mList, 0, R.id.activity_container);
+
+        mainActivityRg.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                switch (checkedId){
+                    case R.id.rb_main:
+                        FragmentUtil.switchFragment(getSupportFragmentManager(), mList, 0, R.id.activity_container);
+                        mainActivityRg.getChildAt(0).setSelected(true);
+                        break;
+                    case R.id.rb_message:
+                        FragmentUtil.switchFragment(getSupportFragmentManager(), mList, 1, R.id.activity_container);
+                        mainActivityRg.getChildAt(1).setSelected(true);
+                        break;
+                    case R.id.rb_mine:
+                        FragmentUtil.switchFragment(getSupportFragmentManager(), mList, 2, R.id.activity_container);
+                        mainActivityRg.getChildAt(2).setSelected(true);
+                        break;
+                }
+            }
+        });
+    }
+
+    @Override
+    protected void initData() {
+
+    }
+
+    @Override
+    public void changeFragment(int position) {
+
+    }
+
+    private long mFirstTime = 0;
+    //改写物理按键——返回的逻辑
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            long secondTime = System.currentTimeMillis();
+            if (secondTime - mFirstTime > 2000) {   //如果两次按键时间间隔大于2秒，则不退出
+                Toast.makeText(this, "再按一次退出程序", Toast.LENGTH_SHORT).show();
+                mFirstTime = secondTime;//更新firstTime
+                return true;
+            } else { //两次按键小于2秒时，退出应用
+                AtyContainer.getInstance().finishAllActivity();
+                System.exit(0);
+            }
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+}
