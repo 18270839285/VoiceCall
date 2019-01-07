@@ -1,7 +1,17 @@
 package huidu.com.voicecall.main;
 
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import butterknife.Unbinder;
 import huidu.com.voicecall.R;
 import huidu.com.voicecall.base.BaseFragment;
 
@@ -11,6 +21,21 @@ import huidu.com.voicecall.base.BaseFragment;
  * Author: lin
  */
 public class MineFragment extends BaseFragment {
+
+    @BindView(R.id.iv_head)
+    ImageView iv_head;
+    @BindView(R.id.userName)
+    TextView userName;
+    @BindView(R.id.userId)
+    TextView userId;
+    @BindView(R.id.tv_follow_num)
+    TextView tv_follow_num;
+    @BindView(R.id.tv_fans_num)
+    TextView tv_fans_num;
+    @BindView(R.id.tv_order_num)
+    TextView tv_order_num;
+
+    Unbinder unbinder;
     @Override
     protected int getLayoutId() {
         return R.layout.fragment_mine;
@@ -24,5 +49,52 @@ public class MineFragment extends BaseFragment {
     @Override
     protected void initData() {
 
+    }
+
+    @OnClick({R.id.iv_setting, R.id.rl_personal, R.id.ll_recharge, R.id.ll_income,R.id.ll_anchor,
+            R.id.ll_idCard, R.id.ll_about_us,R.id.ll_customer})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.iv_setting:
+                //设置
+                break;
+            case R.id.rl_personal:
+                //个人资料
+                break;
+            case R.id.ll_recharge:
+                //充值
+                break;
+            case R.id.ll_income:
+                //收入
+                break;
+            case R.id.ll_anchor:
+                //主播认证
+                break;
+            case R.id.ll_idCard:
+                //身份认证
+                break;
+            case R.id.ll_about_us:
+                //关于我们
+                break;
+            case R.id.ll_customer:
+                //联系客服
+                break;
+        }
+
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
+        View rootView = super.onCreateView(inflater, container, savedInstanceState);
+        unbinder = ButterKnife.bind(this, rootView);
+        return rootView;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
     }
 }

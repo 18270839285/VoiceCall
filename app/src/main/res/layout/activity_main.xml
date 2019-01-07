@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
+    android:background="@color/white"
     android:orientation="vertical"
     android:windowSoftInputMode="stateHidden">
 
@@ -12,6 +13,10 @@
         android:layout_height="0dp"
         android:layout_weight="1" />
 
+    <View
+        android:background="@color/line"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp0.5"/>
     <RadioGroup
         android:id="@+id/main_activity_rg"
         android:layout_width="match_parent"
@@ -25,10 +30,11 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:button="@null"
+            android:drawableTop="@drawable/selector_tab_main"
             android:gravity="center"
-            android:padding="10dp"
+            android:paddingTop="@dimen/dp5"
             android:text="首页"
-            android:textSize="16sp" />
+            android:textSize="@dimen/sp10" />
 
         <RadioButton
             android:id="@+id/rb_message"
@@ -36,10 +42,11 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:button="@null"
+            android:drawableTop="@drawable/selector_tab_message"
             android:gravity="center"
-            android:padding="10dp"
+            android:paddingTop="@dimen/dp5"
             android:text="消息"
-            android:textSize="16sp" />
+            android:textSize="@dimen/sp10" />
 
         <RadioButton
             android:id="@+id/rb_mine"
@@ -47,11 +54,11 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:button="@null"
+            android:drawableTop="@drawable/selector_tab_mine"
             android:gravity="center"
-            android:padding="10dp"
+            android:paddingTop="@dimen/dp5"
             android:text="我的"
-            android:textSize="16sp" />
+            android:textSize="@dimen/sp10" />
     </RadioGroup>
-
 
 </LinearLayout>

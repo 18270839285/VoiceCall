@@ -30,6 +30,7 @@ public class MainActivity extends BaseActivity implements ChangeFragmentListener
     RadioButton rb_main;
 
     private List<Fragment> mList;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,23 +49,19 @@ public class MainActivity extends BaseActivity implements ChangeFragmentListener
         mList.add(new MessageFragment());//消息
         mList.add(new MineFragment());//我的
 
-        FragmentUtil.switchFragment(getSupportFragmentManager(), mList, 0, R.id.activity_container);
-
+        setTabView(0);
         mainActivityRg.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
-                switch (checkedId){
+                switch (checkedId) {
                     case R.id.rb_main:
-                        FragmentUtil.switchFragment(getSupportFragmentManager(), mList, 0, R.id.activity_container);
-                        mainActivityRg.getChildAt(0).setSelected(true);
+                        setTabView(0);
                         break;
                     case R.id.rb_message:
-                        FragmentUtil.switchFragment(getSupportFragmentManager(), mList, 1, R.id.activity_container);
-                        mainActivityRg.getChildAt(1).setSelected(true);
+                        setTabView(1);
                         break;
                     case R.id.rb_mine:
-                        FragmentUtil.switchFragment(getSupportFragmentManager(), mList, 2, R.id.activity_container);
-                        mainActivityRg.getChildAt(2).setSelected(true);
+                        setTabView(2);
                         break;
                 }
             }
@@ -81,7 +78,38 @@ public class MainActivity extends BaseActivity implements ChangeFragmentListener
 
     }
 
+    private void setTabView(int position) {
+        FragmentUtil.switchFragment(getSupportFragmentManager(), mList, position, R.id.activity_container);
+        switch (position) {
+            case 0:
+                rb_main.setChecked(true);
+                rb_message.setChecked(false);
+                rb_mine.setChecked(false);
+                rb_main.setTextColor(getResources().getColor(R.color.textSelectColor));
+                rb_message.setTextColor(getResources().getColor(R.color.textColor2));
+                rb_mine.setTextColor(getResources().getColor(R.color.textColor2));
+                break;
+            case 1:
+                rb_main.setChecked(false);
+                rb_message.setChecked(true);
+                rb_mine.setChecked(false);
+                rb_main.setTextColor(getResources().getColor(R.color.textColor2));
+                rb_message.setTextColor(getResources().getColor(R.color.textSelectColor));
+                rb_mine.setTextColor(getResources().getColor(R.color.textColor2));
+                break;
+            case 2:
+                rb_main.setChecked(false);
+                rb_message.setChecked(false);
+                rb_mine.setChecked(true);
+                rb_main.setTextColor(getResources().getColor(R.color.textColor2));
+                rb_mine.setTextColor(getResources().getColor(R.color.textSelectColor));
+                rb_message.setTextColor(getResources().getColor(R.color.textColor2));
+                break;
+        }
+    }
+
     private long mFirstTime = 0;
+
     //改写物理按键——返回的逻辑
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
