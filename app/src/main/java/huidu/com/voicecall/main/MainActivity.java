@@ -16,6 +16,7 @@ import butterknife.ButterKnife;
 import huidu.com.voicecall.R;
 import huidu.com.voicecall.base.BaseActivity;
 import huidu.com.voicecall.utils.AtyContainer;
+import huidu.com.voicecall.utils.Loading;
 
 public class MainActivity extends BaseActivity implements ChangeFragmentListener {
     @BindView(R.id.activity_container)
@@ -44,6 +45,7 @@ public class MainActivity extends BaseActivity implements ChangeFragmentListener
 
     @Override
     protected void initView() {
+
         mList = new ArrayList<>();
         mList.add(new MainFragment());//主页
         mList.add(new MessageFragment());//消息

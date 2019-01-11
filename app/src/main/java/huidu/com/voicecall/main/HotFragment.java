@@ -1,13 +1,22 @@
 package huidu.com.voicecall.main;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.BaseViewHolder;
 import com.youth.banner.Banner;
 import com.youth.banner.BannerConfig;
 import com.youth.banner.Transformer;
@@ -20,26 +29,40 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
+import de.hdodenhof.circleimageview.CircleImageView;
 import huidu.com.voicecall.R;
 import huidu.com.voicecall.base.BaseFragment;
+import huidu.com.voicecall.bean.Home;
+import huidu.com.voicecall.bean.UserAttention;
+import huidu.com.voicecall.http.API;
+import huidu.com.voicecall.http.BaseModel;
+import huidu.com.voicecall.http.OkHttpUtils;
+import huidu.com.voicecall.http.RequestFinish;
+import huidu.com.voicecall.mine.AnchorsSkillsActivity;
+import huidu.com.voicecall.mine.MyAttentionActivity;
 import huidu.com.voicecall.utils.GlideImageLoader;
 import huidu.com.voicecall.utils.Loading;
+import huidu.com.voicecall.utils.ToastUtil;
 
 /**
  * Description:
  * Data：2019/1/3-16:12
  * Author: lin
  */
-public class HotFragment extends BaseFragment {
-    @BindView(R.id.textView1)
-    TextView textView1;
-    @BindView(R.id.textView2)
-    TextView textView2;
+public class HotFragment extends BaseFragment implements RequestFinish{
+
     @BindView(R.id.tv_title)
     TextView tv_title;
     @BindView(R.id.banner)
     Banner banner;
+    @BindView(R.id.recycleView)
+    RecyclerView recycleView;
+    @BindView(R.id.refreshLayout)
+    SwipeRefreshLayout refreshLayout;
+
     Unbinder unbinder;
+    BaseQuickAdapter mAdapter;
+    List<Home.Anchor> mList = new ArrayList<>();
 
     @Override
     protected int getLayoutId() {
@@ -51,29 +74,85 @@ public class HotFragment extends BaseFragment {
     @Override
     protected void initView(View view) {
         mLoading = new Loading(getActivity());
-        String string = getArguments().getString("type");
+        loadStart();
+        String string = getArguments().getString("type_name");
+        String type_id = getArguments().getString("type_id")+"";
         tv_title.setText(string);
+
+        OkHttpUtils.getInstance().home(API.TOKEN_TEST,type_id,"",this);
+
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+
+            }
+        });
+
+    }
+
+    @Override
+    public void onSuccess(BaseModel result, String params) {
+        loadCancel();
+        Home home = (Home)result.getData();
+        List<Home.Banner> banners = home.getBanner();
+
         List<String> images = new ArrayList<>();
-        images.add("http://t2.hddhhn.com/uploads/tu/201901/30/4.jpg");
-        images.add("http://t2.hddhhn.com/uploads/tu/201901/30/1.jpg");
+        for (Home.Banner img : banners){
+            images.add(img.getImage_url());
+        }
         initBanner(images);
+        mList = home.getAnchor();
+        mAdapter.setNewData(mList);
+
+    }
+
+    @Override
+    public void onError(String result) {
+        loadCancel();
+        ToastUtil.toastShow(result);
     }
 
     /**
      * fragment静态传值
      */
-    public static HotFragment newInstance(String str) {
+    public static HotFragment newInstance(String type_id,String type_name) {
         HotFragment fragment = new HotFragment();
         Bundle bundle = new Bundle();
-        bundle.putString("type", str);
+        bundle.putString("type_id", type_id);
+        bundle.putString("type_name", type_name);
         fragment.setArguments(bundle);
         return fragment;
     }
 
     @Override
     protected void initData() {
-        // 添加Loading
-
+        recycleView.setLayoutManager(new GridLayoutManager(getActivity(),2));
+        recycleView.setHasFixedSize(true);
+        mAdapter = new BaseQuickAdapter<Home.Anchor,BaseViewHolder>(R.layout.item_author,mList) {
+            @Override
+            protected void convert(BaseViewHolder helper, Home.Anchor item) {
+                ImageView iv_sex = helper.getView(R.id.iv_sex);
+                ImageView iv_head = helper.getView(R.id.iv_head);
+                helper.setText(R.id.tv_name,item.getNickname());
+                helper.setText(R.id.tv_age,item.getAge());
+                if (item.getSex().equals("1")){
+                    iv_sex.setImageResource(R.mipmap.boy);
+                }else if (item.getSex().equals("2")){
+                    iv_sex.setImageResource(R.mipmap.girl);
+                }
+                Glide.with(getActivity()).load(item.getHead_image()).into(iv_head);
+            }
+        };
+        mAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+                Intent intent = new Intent(getActivity(), AnchorsSkillsActivity.class);
+                intent.putExtra("anchor_id",mList.get(position).getAnchor_id());
+                intent.putExtra("anchor_type_id",mList.get(position).getAnchor_type_id());
+                startActivity(intent);
+            }
+        });
+        recycleView.setAdapter(mAdapter);
     }
 
     private void loadStart() {

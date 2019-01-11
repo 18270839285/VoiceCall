@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="90dp"
+    android:layout_marginBottom="@dimen/dp10"
+    android:background="@color/white">
+    <TextView
+        android:id="@+id/tv_time1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp15"
+        android:layout_marginTop="@dimen/dp25"
+        android:text="2019-01-05"
+        android:textColor="@color/textColor666"
+        android:textSize="@dimen/sp14" />
+
+    <TextView
+        android:id="@+id/tv_time2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_time1"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="@dimen/dp15"
+        android:layout_marginTop="@dimen/dp2"
+        android:text="10:20:36"
+        android:textColor="@color/textColor2"
+        android:textSize="@dimen/sp13" />
+
+    <TextView
+        android:id="@+id/tv_money"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="@dimen/dp15"
+        android:text="!234"
+        android:textColor="@color/textColor"
+        android:textSize="@dimen/sp14" />
+
+
+    <TextView
+        android:id="@+id/tv_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="@dimen/dp15"
+        android:text="!234"
+        android:textColor="@color/textSelectColor"
+        android:textSize="@dimen/sp15" />
+
+</RelativeLayout>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="100dp"
+    android:layout_height="@dimen/dp55"
+    android:layout_margin="@dimen/dp10">
+
+    <CheckBox
+        android:id="@+id/check"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/selector_recharge_type"
+        android:button="@null" />
+
+    <TextView
+        android:id="@+id/tv_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/dp5"
+        android:text="3000"
+        android:textColor="@color/textColor"
+        android:textSize="@dimen/sp20" />
+
+    <TextView
+        android:id="@+id/tv_type"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_time"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/dp2"
+        android:text="分钟"
+        android:textColor="@color/textColor2"
+        android:textSize="@dimen/sp12" />
+
+</RelativeLayout>

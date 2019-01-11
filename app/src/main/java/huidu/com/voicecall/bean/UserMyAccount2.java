@@ -1,0 +1,61 @@
+package huidu.com.voicecall.bean;
+
+import java.io.Serializable;
+import java.util.List;
+
+/**
+ * Description:
+ * Data：2019/1/9-14:21
+ * Author: lin
+ */
+public class UserMyAccount2 implements Serializable {
+
+    Info info;
+
+    public Info getInfo() {
+        return info;
+    }
+
+    public void setInfo(Info info) {
+        this.info = info;
+    }
+
+    public class Info implements Serializable{
+        String id;
+        String nickname;
+        String earnings_coin;
+        String pro;
+
+        public String getId() {
+            return id;
+        }
+
+        public void setId(String id) {
+            this.id = id;
+        }
+
+        public String getNickname() {
+            return nickname;
+        }
+
+        public void setNickname(String nickname) {
+            this.nickname = nickname;
+        }
+
+        public String getEarnings_coin() {
+            return earnings_coin;
+        }
+
+        public void setEarnings_coin(String earnings_coin) {
+            this.earnings_coin = earnings_coin;
+        }
+
+        public String getPro() {
+            return pro;
+        }
+
+        public void setPro(String pro) {
+            this.pro = pro;
+        }
+    }
+}

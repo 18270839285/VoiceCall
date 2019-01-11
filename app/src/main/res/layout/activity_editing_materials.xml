@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical"
+    tools:context=".mine.EditingMaterialsActivity">
+
+    <include layout="@layout/title_common" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp0.5"
+        android:background="@color/line" />
+
+    <LinearLayout
+        android:id="@+id/ll_head"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp15"
+            android:layout_weight="1"
+            android:text="头像"
+            android:textColor="@color/textColor"
+            android:textSize="@dimen/sp15" />
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/iv_head"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginBottom="@dimen/dp10"
+            android:layout_marginRight="@dimen/dp15"
+            android:layout_marginTop="@dimen/dp10"
+            android:src="@mipmap/ic_launcher" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp0.5"
+        android:background="@color/line" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp50"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp15"
+            android:text="昵称"
+            android:textColor="@color/textColor"
+
+            android:textSize="@dimen/sp15" />
+
+        <EditText
+            android:id="@+id/et_nickname"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginRight="@dimen/dp15"
+            android:layout_weight="1"
+            android:background="@null"
+            android:gravity="right|center_vertical"
+            android:hint="请输入昵称，不超过10个字符"
+            android:maxLength="10"
+            android:textColor="@color/textColor"
+            android:textColorHint="@color/textColorHint"
+            android:textSize="@dimen/sp13" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp0.5"
+        android:background="@color/line" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp50"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp15"
+            android:text="用户ID"
+            android:textColor="@color/textColor"
+            android:textSize="@dimen/sp15" />
+
+        <TextView
+            android:id="@+id/tv_userId"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginRight="@dimen/dp15"
+            android:layout_weight="1"
+            android:gravity="right|center_vertical"
+            android:textColor="@color/textColor"
+            android:textSize="@dimen/sp13" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp0.5"
+        android:background="@color/line" />
+
+    <LinearLayout
+        android:id="@+id/ll_sex"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp50"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp15"
+            android:text="性别"
+            android:textColor="@color/textColor"
+
+            android:textSize="@dimen/sp15" />
+
+        <TextView
+            android:id="@+id/tv_sex"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginRight="@dimen/dp15"
+            android:layout_weight="1"
+            android:drawablePadding="@dimen/dp10"
+            android:drawableRight="@mipmap/sy_gd"
+            android:gravity="right|center_vertical"
+            android:hint="选择后不可修改，不请谨慎操作"
+            android:textColor="@color/textColor"
+            android:textSize="@dimen/sp13" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp0.5"
+        android:background="@color/line" />
+
+    <LinearLayout
+        android:id="@+id/ll_birthday"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp50"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp15"
+            android:text="生日"
+            android:textColor="@color/textColor"
+
+            android:textSize="@dimen/sp15" />
+
+        <TextView
+            android:id="@+id/tv_birthday"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginRight="@dimen/dp15"
+            android:layout_weight="1"
+            android:drawablePadding="@dimen/dp10"
+            android:drawableRight="@mipmap/sy_gd"
+            android:gravity="right|center_vertical"
+            android:hint="请填写出生日期"
+            android:textColor="@color/textColor"
+            android:textSize="@dimen/sp13" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp0.5"
+        android:background="@color/line" />
+
+    <LinearLayout
+        android:id="@+id/ll_constellation"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp50"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp15"
+            android:text="星座"
+            android:textColor="@color/textColor"
+
+            android:textSize="@dimen/sp15" />
+
+        <TextView
+            android:id="@+id/tv_constellation"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginRight="@dimen/dp15"
+            android:layout_weight="1"
+            android:drawablePadding="@dimen/dp10"
+            android:drawableRight="@mipmap/sy_gd"
+            android:gravity="right|center_vertical"
+            android:hint="请选择你的星座"
+            android:textColor="@color/textColor"
+            android:textSize="@dimen/sp13" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp0.5"
+        android:background="@color/line" />
+
+    <LinearLayout
+        android:id="@+id/ll_area"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp50"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp15"
+            android:text="地址"
+            android:textColor="@color/textColor"
+
+            android:textSize="@dimen/sp15" />
+
+        <TextView
+            android:id="@+id/tv_area"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginRight="@dimen/dp15"
+            android:layout_weight="1"
+            android:drawablePadding="@dimen/dp10"
+            android:drawableRight="@mipmap/sy_gd"
+            android:gravity="right|center_vertical"
+            android:hint="请选择所在地区"
+            android:textColor="@color/textColor"
+            android:textSize="@dimen/sp13" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp0.5"
+        android:background="@color/line" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp50"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp15"
+            android:text="个人签名"
+            android:textColor="@color/textColor"
+
+            android:textSize="@dimen/sp15" />
+
+        <EditText
+            android:id="@+id/et_sign"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginRight="@dimen/dp15"
+            android:layout_weight="1"
+            android:background="@null"
+            android:gravity="right|center_vertical"
+            android:hint="请填写自己的一句话签名"
+            android:textColor="@color/textColor"
+            android:textColorHint="@color/textColorHint"
+            android:textSize="@dimen/sp13" />
+    </LinearLayout>
+</LinearLayout>

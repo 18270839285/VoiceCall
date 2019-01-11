@@ -13,7 +13,7 @@ android {
 
         ndk {
             //设置支持的SO库架构
-            abiFilters "armeabi-v7a", "x86","arm64-v8a","x86_64"
+            abiFilters "armeabi-v7a", "x86", "arm64-v8a", "x86_64"
         }
     }
     buildTypes {
@@ -28,6 +28,8 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.android.support:multidex:1.0.1'
     implementation 'com.github.bumptech.glide:glide:3.7.0'
+    //高斯模糊
+    implementation 'jp.wasabeef:glide-transformations:2.0.1'
     implementation 'com.google.code.gson:gson:2.8.0'
     api "com.android.support:appcompat-v7:$supportLib"
     api "com.android.support:support-v4:$supportLib"
@@ -44,6 +46,7 @@ dependencies {
     implementation 'com.gyf.barlibrary:barlibrary:2.2.9'
     implementation 'com.android.support:design:27.1.1'
     implementation 'com.youth.banner:banner:1.4.10'
+    implementation 'de.hdodenhof:circleimageview:3.0.0'
 
     // 网易云信 添加依赖。注意，版本号必须一致。
     // 基础功能 (必需)

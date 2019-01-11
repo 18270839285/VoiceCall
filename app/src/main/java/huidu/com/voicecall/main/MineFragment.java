@@ -1,5 +1,6 @@
 package huidu.com.voicecall.main;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -13,6 +14,13 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 import huidu.com.voicecall.R;
+import huidu.com.voicecall.login.LoginActivity;
+import huidu.com.voicecall.mine.MyAccountActivity;
+import huidu.com.voicecall.mine.MyAttentionActivity;
+import huidu.com.voicecall.mine.MyFansActivity;
+import huidu.com.voicecall.mine.MyWealthActivity;
+import huidu.com.voicecall.mine.PersonalActivity;
+import huidu.com.voicecall.test.TestActivity;
 import huidu.com.voicecall.base.BaseFragment;
 
 /**
@@ -52,20 +60,35 @@ public class MineFragment extends BaseFragment {
     }
 
     @OnClick({R.id.iv_setting, R.id.rl_personal, R.id.ll_recharge, R.id.ll_income,R.id.ll_anchor,
-            R.id.ll_idCard, R.id.ll_about_us,R.id.ll_customer})
+            R.id.ll_idCard, R.id.ll_about_us,R.id.ll_customer,R.id.ll_follow,R.id.ll_fans,R.id.ll_order})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.iv_setting:
                 //设置
+                jump(LoginActivity.class);
                 break;
             case R.id.rl_personal:
                 //个人资料
+                jump(PersonalActivity.class);
+                break;
+            case R.id.ll_fans:
+                //粉丝列表 MyFansActivity
+                jump(MyFansActivity.class);
+                break;
+            case R.id.ll_follow:
+                //关注列表
+                jump(MyAttentionActivity.class);
+                break;
+            case R.id.ll_order:
+                //订单
                 break;
             case R.id.ll_recharge:
                 //充值
+                jump(MyAccountActivity.class);
                 break;
             case R.id.ll_income:
                 //收入
+                jump(MyWealthActivity.class);
                 break;
             case R.id.ll_anchor:
                 //主播认证
@@ -78,6 +101,7 @@ public class MineFragment extends BaseFragment {
                 break;
             case R.id.ll_customer:
                 //联系客服
+                startActivity(new Intent(getActivity(), TestActivity.class));
                 break;
         }
 

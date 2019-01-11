@@ -6,7 +6,7 @@
     android:background="@color/white"
     android:orientation="vertical"
     android:windowSoftInputMode="stateHidden">
-
+    <!--android:fitsSystemWindows="true"-->
     <FrameLayout
         android:id="@+id/activity_container"
         android:layout_width="match_parent"

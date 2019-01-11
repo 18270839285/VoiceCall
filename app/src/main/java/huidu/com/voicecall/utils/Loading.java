@@ -5,6 +5,7 @@ import android.content.Context;
 import android.view.Gravity;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ImageView;
 
 import huidu.com.voicecall.R;
 
@@ -35,4 +36,5 @@ public  class Loading extends Dialog {
 //        // 关闭Loading
 //        dismiss();
 //    }
+
 }

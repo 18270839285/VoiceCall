@@ -24,21 +24,31 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import huidu.com.voicecall.R;
 import huidu.com.voicecall.base.BaseFragment;
+import huidu.com.voicecall.bean.Home;
+import huidu.com.voicecall.http.API;
+import huidu.com.voicecall.http.BaseModel;
+import huidu.com.voicecall.http.OkHttpUtils;
+import huidu.com.voicecall.http.RequestFinish;
+import huidu.com.voicecall.utils.Loading;
+import huidu.com.voicecall.utils.ToastUtil;
 
 /**
- * Description:
+ * Description:首页
  * Data：2019/1/3-11:28
  * Author: lin
  */
-public class MainFragment extends BaseFragment {
+public class MainFragment extends BaseFragment implements RequestFinish {
+
     @BindView(R.id.tabLayout)
     TabLayout tabLayout;
     @BindView(R.id.viewPager)
     ViewPager viewPager;
 
     Unbinder unbinder;
-    List<String> tabList = new ArrayList<>();
+    List<Home.Type> tabList = new ArrayList<>();
     List<Fragment> fragmentList = new ArrayList<>();
+
+    Loading loading ;
 
     @Override
     protected int getLayoutId() {
@@ -47,24 +57,40 @@ public class MainFragment extends BaseFragment {
 
     @Override
     protected void initView(View view) {
-        initTab();
+        loading = new Loading(getActivity());
+        loading.show();
+        OkHttpUtils.getInstance().home(API.TOKEN_TEST,"","",this);
+
     }
 
     @Override
     protected void initData() {
 
     }
+    @Override
+    public void onSuccess(BaseModel result, String params) {
+        loading.dismiss();
+        Home home = (Home)result.getData();
+        tabList = home.getType();
+        initTab();
+    }
+
+    @Override
+    public void onError(String result) {
+        loading.dismiss();
+        ToastUtil.toastShow(result);
+    }
 
     private void initTab(){
-        tabList.add("热门推荐");
-        tabList.add("语音陪聊");
-        tabList.add("线上歌手");
-        tabList.add("哄睡觉");
-        tabList.add("逗你笑");
-        tabList.add("瞎几把搞");
-        tabList.add("不想乱搞");
+//        tabList.add("热门推荐");
+//        tabList.add("语音陪聊");
+//        tabList.add("线上歌手");
+//        tabList.add("哄睡觉");
+//        tabList.add("逗你笑");
+//        tabList.add("瞎几把搞");
+//        tabList.add("不想乱搞");
         for (int i = 0; i < tabList.size(); i++) {
-            HotFragment fragment = HotFragment.newInstance(tabList.get(i));
+            HotFragment fragment = HotFragment.newInstance(tabList.get(i).getId(),tabList.get(i).getType_name());
             fragmentList.add(fragment);
 
         }
@@ -73,7 +99,7 @@ public class MainFragment extends BaseFragment {
             RelativeLayout relativeLayout = (RelativeLayout)LayoutInflater.from(getActivity()).inflate(R.layout.view_titlebar,null);
             TextView textView = relativeLayout.findViewById(R.id.tv_title);
             ImageView imageView = relativeLayout.findViewById(R.id.iv_icon);
-            textView.setText(tabList.get(i));
+            textView.setText(tabList.get(i).getType_name());
             if (i==0){
                 textView.setTextSize(18);
                 imageView.setVisibility(View.VISIBLE);
@@ -95,7 +121,7 @@ public class MainFragment extends BaseFragment {
 
             @Override
             public CharSequence getPageTitle(int position) {
-                return tabList.get(position);
+                return tabList.get(position).getType_name();
             }
 
         };

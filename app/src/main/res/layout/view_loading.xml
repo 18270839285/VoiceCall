@@ -1,16 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fitsSystemWindows="true">
+    android:layout_height="match_parent">
+    <ProgressBar
+        android:id="@+id/loading"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:indeterminateBehavior="repeat"
+        android:indeterminateDrawable="@drawable/refresh_load" />
 
-    <TextView
-        android:id="@+id/title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="#88888888"
-        android:gravity="center"
-        android:textColor="#FFFF0000"
-        android:padding="10dp"
-        android:text="Loading" />
+    <!--<ImageView-->
+        <!---->
+        <!--android:src="@mipmap/refresh_load"-->
+        <!--android:id="@+id/title"-->
+        <!--android:layout_width="@dimen/dp50"-->
+        <!--android:layout_height="@dimen/dp50"-->
+        <!--android:gravity="center"-->
+        <!--android:textColor="@color/textColor666" />-->
 </LinearLayout>
