@@ -1,6 +1,7 @@
 package huidu.com.voicecall.mine;
 
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -38,6 +39,8 @@ public class VirtualCoinRecordActivity extends BaseActivity implements RequestFi
     TextView tv_title;
     @BindView(R.id.recycleView)
     RecyclerView recycleView;
+    @BindView(R.id.refreshLayout)
+    SwipeRefreshLayout refreshLayout;
 
     BaseQuickAdapter mAdapter;
     List<CoinLog.ListBean> mList = new ArrayList<>();
@@ -50,6 +53,12 @@ public class VirtualCoinRecordActivity extends BaseActivity implements RequestFi
     @Override
     protected void initView() {
         tv_title.setText("虚拟币1记录");
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                OkHttpUtils.getInstance().order_coin1_log(API.TOKEN_TEST, VirtualCoinRecordActivity.this);
+            }
+        });
     }
 
     @Override
@@ -75,6 +84,7 @@ public class VirtualCoinRecordActivity extends BaseActivity implements RequestFi
 
     @Override
     public void onSuccess(BaseModel result, String params) {
+        refreshLayout.setRefreshing(false);
         switch (params) {
             case API.ORDER_COIN1_LOG:
                 CoinLog coinLog = (CoinLog) result.getData();
@@ -86,6 +96,7 @@ public class VirtualCoinRecordActivity extends BaseActivity implements RequestFi
 
     @Override
     public void onError(String result) {
+        refreshLayout.setRefreshing(false);
         ToastUtil.toastShow(result);
     }
 

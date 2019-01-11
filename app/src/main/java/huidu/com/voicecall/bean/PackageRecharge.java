@@ -9,24 +9,99 @@ import java.util.List;
  * Author: lin
  */
 public class PackageRecharge implements Serializable {
-    List<ListBean> list;
+    List<PackageListBean> package_list;
+    List<String> pay_list;
+    UserList user_list;
 
-    public List<ListBean> getList() {
-        return list;
+    public List<PackageListBean> getPackage_list() {
+        return package_list;
     }
 
-    public void setList(List<ListBean> list) {
-        this.list = list;
+    public void setPackage_list(List<PackageListBean> package_list) {
+        this.package_list = package_list;
     }
 
-    public class ListBean implements Serializable{
+    public List<String> getPay_list() {
+        return pay_list;
+    }
 
+    public void setPay_list(List<String> pay_list) {
+        this.pay_list = pay_list;
+    }
+
+    public UserList getUser_list() {
+        return user_list;
+    }
+
+    public void setUser_list(UserList user_list) {
+        this.user_list = user_list;
+    }
+
+    public class UserList implements Serializable{
+        String id;
+        String head_image;
+        String nickname;
+        String telephone;
+        String consume_coin;
+
+        public String getId() {
+            return id;
+        }
+
+        public void setId(String id) {
+            this.id = id;
+        }
+
+        public String getHead_image() {
+            return head_image;
+        }
+
+        public void setHead_image(String head_image) {
+            this.head_image = head_image;
+        }
+
+        public String getNickname() {
+            return nickname;
+        }
+
+        public void setNickname(String nickname) {
+            this.nickname = nickname;
+        }
+
+        public String getTelephone() {
+            return telephone;
+        }
+
+        public void setTelephone(String telephone) {
+            this.telephone = telephone;
+        }
+
+        public String getConsume_coin() {
+            return consume_coin;
+        }
+
+        public void setConsume_coin(String consume_coin) {
+            this.consume_coin = consume_coin;
+        }
+    }
+
+    public class PackageListBean implements Serializable{
+
+        String package_id;
         String package_name;
         String coin;
         String price;
         String is_sale;
         String sale_price;
         boolean isCheck = false;
+
+        public String getPackage_id() {
+            return package_id;
+        }
+
+        public void setPackage_id(String package_id) {
+            this.package_id = package_id;
+        }
 
         public boolean isCheck() {
             return isCheck;

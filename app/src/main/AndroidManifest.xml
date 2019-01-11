@@ -142,7 +142,9 @@
         <activity android:name=".login.Register2Activity" />
         <activity android:name=".login.ResetPwdActivity" />
         <activity android:name=".mine.MyAccountActivity" />
-        <activity android:name=".mine.VirtualCoinRecordActivity"></activity>
+        <activity android:name=".mine.VirtualCoinRecordActivity" />
+        <activity android:name=".main.OrderDetailActivity" />
+        <activity android:name=".mine.CashActivity"></activity>
     </application>
 
 </manifest>

@@ -24,7 +24,8 @@ public class UserMyAccount2 implements Serializable {
         String id;
         String nickname;
         String earnings_coin;
-        String pro;
+        String exchange_pro;
+        String formalities_pro;
 
         public String getId() {
             return id;
@@ -50,12 +51,20 @@ public class UserMyAccount2 implements Serializable {
             this.earnings_coin = earnings_coin;
         }
 
-        public String getPro() {
-            return pro;
+        public String getExchange_pro() {
+            return exchange_pro;
         }
 
-        public void setPro(String pro) {
-            this.pro = pro;
+        public void setExchange_pro(String exchange_pro) {
+            this.exchange_pro = exchange_pro;
+        }
+
+        public String getFormalities_pro() {
+            return formalities_pro;
+        }
+
+        public void setFormalities_pro(String formalities_pro) {
+            this.formalities_pro = formalities_pro;
         }
     }
 }

@@ -61,15 +61,14 @@
     <TextView
         android:id="@+id/tv_attention"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="28dp"
         android:text="取消关注"
+        android:gravity="center"
         android:textSize="@dimen/sp12"
         android:background="@drawable/shape_bg_eb15"
         android:textColor="@color/textColor2"
-        android:paddingBottom="@dimen/dp5"
         android:paddingRight="@dimen/dp12"
         android:paddingLeft="@dimen/dp12"
-        android:paddingTop="@dimen/dp5"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:layout_marginRight="@dimen/dp15" />

@@ -86,13 +86,13 @@ public class DateUtil {
 
     public static String getTime(String time) {
         SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss");
-        long t = Long.parseLong(time);
+        long t = Long.parseLong(time)*1000;
         String sd = formatter.format(new Date(t));
         return sd;
     }
     public static String getTime1(String time) {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-        long t = Long.parseLong(time);
+        long t = Long.parseLong(time)*1000;
         String sd = formatter.format(new Date(t));
         return sd;
     }

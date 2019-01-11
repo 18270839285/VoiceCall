@@ -1,6 +1,7 @@
 package huidu.com.voicecall.mine;
 
 import android.support.annotation.NonNull;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -39,6 +40,8 @@ public class MyFansActivity extends BaseActivity implements RequestFinish {
     TextView tv_title;
     @BindView(R.id.recycleView)
     RecyclerView recycleView;
+    @BindView(R.id.refreshLayout)
+    SwipeRefreshLayout refreshLayout;
     BaseQuickAdapter mAdapter;
 
     List<UserFans> mList = new ArrayList<>();
@@ -50,6 +53,12 @@ public class MyFansActivity extends BaseActivity implements RequestFinish {
     @Override
     protected void initView() {
         tv_title.setText("我的粉丝");
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                OkHttpUtils.getInstance().user_fans_list(API.TOKEN_TEST,MyFansActivity.this);
+            }
+        });
     }
 
     @Override
@@ -59,10 +68,10 @@ public class MyFansActivity extends BaseActivity implements RequestFinish {
         recycleView.setHasFixedSize(true);
         mAdapter = new BaseQuickAdapter<UserFans,BaseViewHolder>(R.layout.item_fans,mList) {
             @Override
-            protected void convert(BaseViewHolder helper, UserFans item) {
+            protected void convert(BaseViewHolder helper, final UserFans item) {
                 CircleImageView iv_head = helper.getView(R.id.iv_head);
                 ImageView iv_sex = helper.getView(R.id.iv_sex);
-                ImageView iv_attention = helper.getView(R.id.iv_attention);
+                TextView tv_attention = helper.getView(R.id.tv_attention);
                 helper.setText(R.id.tv_userId,item.getUser_id());
                 helper.setText(R.id.tv_age,item.getAge());
                 if (item.getSex().equals("1")){
@@ -70,11 +79,24 @@ public class MyFansActivity extends BaseActivity implements RequestFinish {
                 }else if (item.getSex().equals("2")){
                     iv_sex.setImageResource(R.mipmap.girl);
                 }
+                if (item.getIs_attention().equals("1")){
+                    tv_attention.setText("已关注");
+                    tv_attention.setTextColor(getResources().getColor(R.color.textColor2));
+                    tv_attention.setBackgroundResource(R.drawable.shape_bg_eb15);
+                }else if (item.getIs_attention().equals("0")){
+                    tv_attention.setText("关注");
+                    tv_attention.setTextColor(getResources().getColor(R.color.white));
+                    tv_attention.setBackgroundResource(R.mipmap.tc_button_pre);
+                }
                 Glide.with(MyFansActivity.this).load(item.getHead_image()).into(iv_head);
-                iv_attention.setOnClickListener(new View.OnClickListener() {
+                tv_attention.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Log.e(TAG, "onClick: "+"已关注" );
+                        if (item.getIs_attention().equals("1")){
+                            OkHttpUtils.getInstance().user_attention_cannel(API.TOKEN_TEST,item.getUser_id()+"",MyFansActivity.this);
+                        }else {
+                            OkHttpUtils.getInstance().user_attention(API.TOKEN_TEST,item.getUser_id()+"",MyFansActivity.this);
+                        }
                     }
                 });
             }
@@ -86,14 +108,22 @@ public class MyFansActivity extends BaseActivity implements RequestFinish {
     public void onSuccess(BaseModel result, String params) {
         switch (params){
             case API.USER_FANS_LIST:
+                refreshLayout.setRefreshing(false);
                 mList = (List<UserFans>)result.getData();
                 mAdapter.setNewData(mList);
+                break;
+            case API.USER_ATTENTION:
+                OkHttpUtils.getInstance().user_fans_list(API.TOKEN_TEST,this);
+                break;
+            case API.USER_ATTENTION_CANNEL:
+                OkHttpUtils.getInstance().user_fans_list(API.TOKEN_TEST,this);
                 break;
         }
     }
 
     @Override
     public void onError(String result) {
+        refreshLayout.setRefreshing(false);
         ToastUtil.toastShow(result);
     }
     @OnClick({R.id.iv_back})

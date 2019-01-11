@@ -1,5 +1,6 @@
 package huidu.com.voicecall.mine;
 
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -38,6 +39,9 @@ public class MyAttentionActivity extends BaseActivity implements RequestFinish{
     TextView tv_title;
     @BindView(R.id.recycleView)
     RecyclerView recycleView;
+    @BindView(R.id.refreshLayout)
+    SwipeRefreshLayout refreshLayout;
+
     BaseQuickAdapter mAdapter;
     List<UserAttention> mList = new ArrayList<>();
     @Override
@@ -48,6 +52,13 @@ public class MyAttentionActivity extends BaseActivity implements RequestFinish{
     @Override
     protected void initView() {
         tv_title.setText("我的关注");
+
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                OkHttpUtils.getInstance().user_attention_list(API.TOKEN_TEST,MyAttentionActivity.this);
+            }
+        });
     }
 
     @Override
@@ -57,7 +68,7 @@ public class MyAttentionActivity extends BaseActivity implements RequestFinish{
         recycleView.setHasFixedSize(true);
         mAdapter = new BaseQuickAdapter<UserAttention,BaseViewHolder>(R.layout.item_attention,mList) {
             @Override
-            protected void convert(BaseViewHolder helper, UserAttention item) {
+            protected void convert(BaseViewHolder helper,final UserAttention item) {
                 CircleImageView iv_head = helper.getView(R.id.iv_head);
                 ImageView iv_sex = helper.getView(R.id.iv_sex);
                 TextView tv_attention = helper.getView(R.id.tv_attention);
@@ -72,7 +83,7 @@ public class MyAttentionActivity extends BaseActivity implements RequestFinish{
                 tv_attention.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Log.e(TAG, "onClick: "+"取消关注" );
+                        OkHttpUtils.getInstance().user_attention_cannel(API.TOKEN_TEST,item.getUser_id()+"",MyAttentionActivity.this);
                     }
                 });
             }
@@ -84,14 +95,19 @@ public class MyAttentionActivity extends BaseActivity implements RequestFinish{
     public void onSuccess(BaseModel result, String params) {
         switch (params){
             case API.USER_ATTENTION_LIST:
+                refreshLayout.setRefreshing(false);
                 mList = (List<UserAttention>)result.getData();
                 mAdapter.setNewData(mList);
+                break;
+            case API.USER_ATTENTION_CANNEL:
+                OkHttpUtils.getInstance().user_attention_list(API.TOKEN_TEST,this);
                 break;
         }
     }
 
     @Override
     public void onError(String result) {
+        refreshLayout.setRefreshing(false);
         ToastUtil.toastShow(result);
     }
 

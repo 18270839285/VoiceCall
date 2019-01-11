@@ -14,19 +14,34 @@
         android:textColor="@color/textColor"
         android:textSize="@dimen/sp16" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <RelativeLayout
         android:layout_marginLeft="@dimen/dp20"
         android:layout_marginTop="@dimen/dp15"
-        android:text="选择时长"
-        android:textColor="@color/textColor"
-        android:textSize="@dimen/sp16" />
+        android:layout_marginRight="@dimen/dp25"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="选择时长"
+            android:textColor="@color/textColor"
+            android:textSize="@dimen/sp15" />
+        <TextView
+            android:id="@+id/tv_pay_one"
+            android:layout_alignParentRight="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="/分钟"
+            android:textColor="@color/textColor2"
+            android:textSize="@dimen/sp14" />
+    </RelativeLayout>
+
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycleView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp8"
         android:layout_marginLeft="@dimen/dp10"></android.support.v7.widget.RecyclerView>
 
     <LinearLayout
@@ -34,7 +49,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/dp20"
         android:layout_marginRight="@dimen/dp20"
-        android:layout_marginTop="@dimen/dp10"
+        android:layout_marginTop="@dimen/dp15"
         android:gravity="center_vertical"
         android:orientation="horizontal">
 

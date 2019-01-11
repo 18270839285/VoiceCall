@@ -22,7 +22,7 @@
             android:id="@+id/iv_back"
             android:layout_width="39dp"
             android:layout_height="45dp"
-            android:layout_marginTop="@dimen/dp45"
+            android:layout_marginTop="@dimen/dp35"
             android:padding="@dimen/dp15"
             android:src="@mipmap/bjzl_fh" />
 

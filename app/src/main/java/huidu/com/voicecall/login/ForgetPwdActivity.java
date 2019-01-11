@@ -63,7 +63,8 @@ public class ForgetPwdActivity extends BaseActivity implements RequestFinish {
                 break;
             case API.SIGN_VERIFY_CODE:
                 //验证验证码
-                Intent intent = new Intent(this,Register2Activity.class);
+                finish();
+                Intent intent = new Intent(this,ResetPwdActivity.class);
                 intent.putExtra("telephone",et_account.getText().toString());
                 intent.putExtra("verify_code",et_password.getText().toString());
                 startActivity(intent);
@@ -73,6 +74,7 @@ public class ForgetPwdActivity extends BaseActivity implements RequestFinish {
 
     @Override
     public void onError(String result) {
+        loading.dismiss();
         ToastUtil.toastShow(result);
     }
     private void checkNext(){

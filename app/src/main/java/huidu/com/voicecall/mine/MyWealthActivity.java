@@ -1,5 +1,6 @@
 package huidu.com.voicecall.mine;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -29,6 +30,9 @@ public class MyWealthActivity extends BaseActivity implements RequestFinish{
     TextView tv_balance;
     @BindView(R.id.tv_right)
     TextView tv_right;
+
+    UserMyAccount2 myAccount2;
+
     @Override
     protected int getLayoutId() {
         return R.layout.activity_my_wealth;
@@ -57,8 +61,14 @@ public class MyWealthActivity extends BaseActivity implements RequestFinish{
             case R.id.tv_right:
                 //提现记录
                 jumpTo(CashWithdrawalActivity.class);
+                break;
             case R.id.tv_cash:
                 //提现
+                Intent intent = new Intent(this,CashActivity.class);
+                intent.putExtra("max_money",tv_balance.getText().toString());
+                intent.putExtra("exchange_pro",myAccount2.getInfo().getExchange_pro());
+                intent.putExtra("formalities_pro",myAccount2.getInfo().getFormalities_pro());
+                startActivity(intent);
                 break;
         }
     }
@@ -66,14 +76,11 @@ public class MyWealthActivity extends BaseActivity implements RequestFinish{
     @Override
     public void onSuccess(BaseModel result, String params) {
        switch (params){
-           case API.ORDER_WITHDRAWAL:
-
-               break;
            case API.USER_MYACCOUNT2:
-               UserMyAccount2 myAccount2 = (UserMyAccount2)result.getData();
+               myAccount2 = (UserMyAccount2)result.getData();
                UserMyAccount2.Info info = myAccount2.getInfo();
                int coin = Integer.parseInt(info.getEarnings_coin());
-               int pro = Integer.parseInt(info.getPro());
+               int pro = Integer.parseInt(info.getExchange_pro());
                String money = coin/pro +"";//info.getPro()
                tv_balance.setText(money);
                break;

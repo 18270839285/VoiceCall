@@ -16,6 +16,7 @@ public interface API {
      * 测试地址
      */
     String BASE_URL = "http://voice.51qdd.net/api/";
+//    String TOKEN_TEST = "L2uk5tVN4CUQQb0P6n650BRTVLc4q0tV7K050Bdd0u0N7TKP";
     String TOKEN_TEST = "UfCQ19B0Y9XQX1Q0m8nDxbCyx1w0XnY000BY1cy013eCC3tq";
 
 
@@ -45,10 +46,13 @@ public interface API {
     String ORDER_RECHARGE = "order/recharge";//虚拟币1 套餐充值
     String ORDER_COIN1_LOG = "order/coin1/log";//虚拟币1 消费记录
     String ANCHOR_PRICE = "anchor/price";//主播价格
+    String ORDER_VOICE = "order/voice";//语音下单
 
 
     String HOME = "home";//首页
     String ANCHOR_INFO = "anchor/info";//主播资料
+    String USER_ATTENTION = "user/attention";//关注
+    String USER_ATTENTION_CANNEL = "user/attention/cannel";//取关
     /**
      * Returns 参数返回列表
      */
