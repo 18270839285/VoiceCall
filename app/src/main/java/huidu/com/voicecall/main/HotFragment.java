@@ -12,9 +12,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
+import com.bumptech.glide.request.RequestOptions;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.youth.banner.Banner;
@@ -64,19 +67,20 @@ public class HotFragment extends BaseFragment implements RequestFinish{
     BaseQuickAdapter mAdapter;
     List<Home.Anchor> mList = new ArrayList<>();
 
+    String type_id;
     @Override
     protected int getLayoutId() {
         return R.layout.fragment_hot;
     }
 
-    Loading mLoading;
+//    Loading mLoading;
 
     @Override
     protected void initView(View view) {
-        mLoading = new Loading(getActivity());
-        loadStart();
+//        mLoading = new Loading(getActivity());
+//        loadStart();
         String string = getArguments().getString("type_name");
-        String type_id = getArguments().getString("type_id")+"";
+        type_id = getArguments().getString("type_id")+"";
         tv_title.setText(string);
 
         OkHttpUtils.getInstance().home(API.TOKEN_TEST,type_id,"",this);
@@ -84,7 +88,28 @@ public class HotFragment extends BaseFragment implements RequestFinish{
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                OkHttpUtils.getInstance().home(API.TOKEN_TEST, type_id, "", new RequestFinish() {
+                    @Override
+                    public void onSuccess(BaseModel result, String params) {
+                        refreshLayout.setRefreshing(false);
+                        Home home = (Home)result.getData();
+                        List<Home.Banner> banners = home.getBanner();
 
+                        List<String> images = new ArrayList<>();
+                        for (Home.Banner img : banners){
+                            images.add(img.getImage_url());
+                        }
+                        initBanner(images);
+                        mList = home.getAnchor();
+                        mAdapter.setNewData(mList);
+                    }
+
+                    @Override
+                    public void onError(String result) {
+                        refreshLayout.setRefreshing(false);
+                        ToastUtil.toastShow(result);
+                    }
+                });
             }
         });
 
@@ -92,7 +117,8 @@ public class HotFragment extends BaseFragment implements RequestFinish{
 
     @Override
     public void onSuccess(BaseModel result, String params) {
-        loadCancel();
+//        loadCancel();
+        refreshLayout.setRefreshing(false);
         Home home = (Home)result.getData();
         List<Home.Banner> banners = home.getBanner();
 
@@ -108,7 +134,8 @@ public class HotFragment extends BaseFragment implements RequestFinish{
 
     @Override
     public void onError(String result) {
-        loadCancel();
+//        loadCancel();
+        refreshLayout.setRefreshing(false);
         ToastUtil.toastShow(result);
     }
 
@@ -133,14 +160,24 @@ public class HotFragment extends BaseFragment implements RequestFinish{
             protected void convert(BaseViewHolder helper, Home.Anchor item) {
                 ImageView iv_sex = helper.getView(R.id.iv_sex);
                 ImageView iv_head = helper.getView(R.id.iv_head);
+                LinearLayout ll_sex_age = helper.getView(R.id.ll_sex_age);
                 helper.setText(R.id.tv_name,item.getNickname());
                 helper.setText(R.id.tv_age,item.getAge());
                 if (item.getSex().equals("1")){
+                    ll_sex_age.setBackgroundResource(R.drawable.shape_corner5_boy);
                     iv_sex.setImageResource(R.mipmap.boy);
                 }else if (item.getSex().equals("2")){
+                    ll_sex_age.setBackgroundResource(R.drawable.shape_corner5_red);
                     iv_sex.setImageResource(R.mipmap.girl);
                 }
-                Glide.with(getActivity()).load(item.getHead_image()).into(iv_head);
+                //设置图片圆角角度
+                RoundedCorners roundedCorners= new RoundedCorners(10);
+                //通过RequestOptions扩展功能,override:采样率,因为ImageView就这么大,可以压缩图片,降低内存消耗
+                RequestOptions options= RequestOptions.bitmapTransform(roundedCorners).override(300, 300);
+
+                Glide.with(getActivity()).load(item.getHead_image()).apply(options).into(iv_head);
+
+//                Glide.with(getActivity()).load(item.getHead_image()).into(iv_head);
             }
         };
         mAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
@@ -155,15 +192,15 @@ public class HotFragment extends BaseFragment implements RequestFinish{
         recycleView.setAdapter(mAdapter);
     }
 
-    private void loadStart() {
-        if (mLoading != null)
-            mLoading.show();
-    }
-
-    private void loadCancel() {
-        if (mLoading != null && mLoading.isShowing())
-            mLoading.dismiss();
-    }
+//    private void loadStart() {
+//        if (mLoading != null)
+//            mLoading.show();
+//    }
+//
+//    private void loadCancel() {
+//        if (mLoading != null && mLoading.isShowing())
+//            mLoading.dismiss();
+//    }
 
     private void initBanner(List<String> images) {
         banner.setBannerStyle(BannerConfig.CIRCLE_INDICATOR);

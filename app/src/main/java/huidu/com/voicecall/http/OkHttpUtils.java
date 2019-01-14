@@ -7,6 +7,8 @@ import huidu.com.voicecall.bean.AnchorInfo;
 import huidu.com.voicecall.bean.AnchorPrice;
 import huidu.com.voicecall.bean.CoinLog;
 import huidu.com.voicecall.bean.Home;
+import huidu.com.voicecall.bean.OrderInfo;
+import huidu.com.voicecall.bean.OrderList;
 import huidu.com.voicecall.bean.PackageRecharge;
 import huidu.com.voicecall.bean.SignBean;
 import huidu.com.voicecall.bean.SpareBean;
@@ -42,6 +44,18 @@ public class OkHttpUtils {
         return httpUtils;
     }
 
+    /**
+     * 图片上传
+     */
+    public void common_image_upload(String image, RequestFinish protocol) {
+        RequestConfig config = new RequestConfig();
+        config.setCls(SpareBean.class);
+        config.setRequestCode(API.COMMON_IMAGE_UPLOAD);
+        Map<String, String> data = new HashMap<String, String>();
+        data.put("image", image);
+        data.put("ext", "jpg");
+        okManager.postRequest(config, API.BASE_URL + API.COMMON_IMAGE_UPLOAD, data, protocol);
+    }
     /**
      * 登录
      */
@@ -148,12 +162,19 @@ public class OkHttpUtils {
     /**
      * 个人资料 — 修改
      */
-    public void user_info_edit(String token, String user_id, RequestFinish protocol) {
+    public void user_info_edit(String token, String head_image,String nickname,String sex,
+                               String birthday,String zodiac,String introduce,RequestFinish protocol) {
         RequestConfig config = new RequestConfig();
         config.setCls(Object.class);
         config.setRequestCode(API.USER_INFO_EDIT);
         Map<String, String> data = new HashMap<String, String>();
         data.put("token", token);
+        data.put("head_image", head_image);
+        data.put("nickname", nickname);
+        data.put("sex", sex);
+        data.put("birthday", birthday);
+        data.put("zodiac", zodiac);
+        data.put("introduce", introduce);
         okManager.postRequest(config, API.BASE_URL + API.USER_INFO_EDIT, data, protocol);
     }
 
@@ -351,5 +372,106 @@ public class OkHttpUtils {
         data.put("token", token);
         data.put("anchor_id", anchor_id);
         okManager.postRequest(config, API.BASE_URL + API.USER_ATTENTION_CANNEL, data, protocol);
+    }
+
+
+    /**
+     * 订单列表
+     */
+    public void order_list(String token,String is_receive, RequestFinish protocol) {
+        RequestConfig config = new RequestConfig();
+        config.setCls(OrderList.class);
+        config.setRequestCode(API.ORDER_LIST);
+        Map<String, String> data = new HashMap<String, String>();
+        data.put("token", token);
+        data.put("is_receive", is_receive);
+        okManager.postRequest(config, API.BASE_URL + API.ORDER_LIST, data, protocol);
+    }
+    /**
+     * 订单详情
+     */
+    public void order_info(String token,String order_no, RequestFinish protocol) {
+        RequestConfig config = new RequestConfig();
+        config.setCls(OrderInfo.class);
+        config.setRequestCode(API.ORDER_INFO);
+        Map<String, String> data = new HashMap<String, String>();
+        data.put("token", token);
+        data.put("order_no", order_no);
+        okManager.postRequest(config, API.BASE_URL + API.ORDER_INFO, data, protocol);
+    }
+    /**
+     * 取消订单
+     */
+    public void order_cannel(String token,String order_no, RequestFinish protocol) {
+        RequestConfig config = new RequestConfig();
+        config.setCls(Object.class);
+        config.setRequestCode(API.ORDER_CANNEL);
+        Map<String, String> data = new HashMap<String, String>();
+        data.put("token", token);
+        data.put("order_no", order_no);
+        okManager.postRequest(config, API.BASE_URL + API.ORDER_CANNEL, data, protocol);
+    }
+    /**
+     * 订单完成
+     */
+    public void order_finish(String token,String order_no, RequestFinish protocol) {
+        RequestConfig config = new RequestConfig();
+        config.setCls(Object.class);
+        config.setRequestCode(API.ORDER_FINISH);
+        Map<String, String> data = new HashMap<String, String>();
+        data.put("token", token);
+        data.put("order_no", order_no);
+        okManager.postRequest(config, API.BASE_URL + API.ORDER_FINISH, data, protocol);
+    }
+    /**
+     * 拒绝订单
+     */
+    public void order_refuse(String token,String order_no, RequestFinish protocol) {
+        RequestConfig config = new RequestConfig();
+        config.setCls(Object.class);
+        config.setRequestCode(API.ORDER_REFUSE);
+        Map<String, String> data = new HashMap<String, String>();
+        data.put("token", token);
+        data.put("order_no", order_no);
+        okManager.postRequest(config, API.BASE_URL + API.ORDER_REFUSE, data, protocol);
+    }
+    /**
+     * 主播接单
+     */
+    public void order_receivei(String token,String order_no, RequestFinish protocol) {
+        RequestConfig config = new RequestConfig();
+        config.setCls(Object.class);
+        config.setRequestCode(API.ORDER_RECEIVEI);
+        Map<String, String> data = new HashMap<String, String>();
+        data.put("token", token);
+        data.put("order_no", order_no);
+        okManager.postRequest(config, API.BASE_URL + API.ORDER_RECEIVEI, data, protocol);
+    }
+    /**
+     * 通话开始
+     */
+    public void order_begin(String token,String order_no,String begin_man, RequestFinish protocol) {
+        RequestConfig config = new RequestConfig();
+        config.setCls(Object.class);
+        config.setRequestCode(API.ORDER_BEGIN);
+        Map<String, String> data = new HashMap<String, String>();
+        data.put("token", token);
+        data.put("order_no", order_no);
+        data.put("begin_man", begin_man);
+        okManager.postRequest(config, API.BASE_URL + API.ORDER_BEGIN, data, protocol);
+    }
+    /**
+     * 通话开始
+     */
+    public void order_over(String token,String order_no,String record_id,String over_man, RequestFinish protocol) {
+        RequestConfig config = new RequestConfig();
+        config.setCls(Object.class);
+        config.setRequestCode(API.ORDER_OVER);
+        Map<String, String> data = new HashMap<String, String>();
+        data.put("token", token);
+        data.put("order_no", order_no);
+        data.put("record_id", record_id);
+        data.put("over_man", over_man);
+        okManager.postRequest(config, API.BASE_URL + API.ORDER_OVER, data, protocol);
     }
 }

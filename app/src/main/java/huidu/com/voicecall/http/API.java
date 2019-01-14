@@ -20,6 +20,7 @@ public interface API {
     String TOKEN_TEST = "UfCQ19B0Y9XQX1Q0m8nDxbCyx1w0XnY000BY1cy013eCC3tq";
 
 
+    String COMMON_IMAGE_UPLOAD = "common/image/upload";//图片上传
     String USER_INFO = "user/info";//个人资料
     String USER_INFO_EDIT = "user/info/edit";//个人资料— 修改
     String USER_FANS_LIST = "user/fans/list";//粉丝列表
@@ -53,6 +54,18 @@ public interface API {
     String ANCHOR_INFO = "anchor/info";//主播资料
     String USER_ATTENTION = "user/attention";//关注
     String USER_ATTENTION_CANNEL = "user/attention/cannel";//取关
+
+    /**
+     * 订单
+     */
+    String ORDER_LIST = "order/list";//订单列表
+    String ORDER_INFO = "order/info";//订单详情
+    String ORDER_CANNEL = "order/cannel";//取消订单
+    String ORDER_FINISH = "order/finish";//订单完成
+    String ORDER_REFUSE = "order/refuse";//拒绝订单
+    String ORDER_RECEIVEI = "order/receivei";//接单
+    String ORDER_BEGIN = "order/begin";//通话开始
+    String ORDER_OVER = "order/over";//通话结束
     /**
      * Returns 参数返回列表
      */

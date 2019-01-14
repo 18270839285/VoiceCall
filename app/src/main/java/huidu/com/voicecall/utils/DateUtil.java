@@ -96,4 +96,10 @@ public class DateUtil {
         String sd = formatter.format(new Date(t));
         return sd;
     }
+    public static String getTime2(String time) {
+        SimpleDateFormat formatter = new SimpleDateFormat("MM-dd HH:mm");
+        long t = Long.parseLong(time)*1000;
+        String sd = formatter.format(new Date(t));
+        return sd;
+    }
 }

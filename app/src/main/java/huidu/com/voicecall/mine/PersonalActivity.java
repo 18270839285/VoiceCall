@@ -6,10 +6,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 
 import org.w3c.dom.Text;
 
@@ -24,6 +26,7 @@ import huidu.com.voicecall.http.API;
 import huidu.com.voicecall.http.BaseModel;
 import huidu.com.voicecall.http.OkHttpUtils;
 import huidu.com.voicecall.http.RequestFinish;
+import huidu.com.voicecall.utils.GlideBlurformation;
 import huidu.com.voicecall.utils.ToastUtil;
 import jp.wasabeef.glide.transformations.BlurTransformation;
 
@@ -54,6 +57,8 @@ public class PersonalActivity extends BaseActivity implements RequestFinish{
     TextView tv_age;
     @BindView(R.id.iv_sex)
     ImageView iv_sex;
+    @BindView(R.id.ll_sex_age)
+    LinearLayout ll_sex_age;
     @Override
     protected int getLayoutId() {
         return R.layout.activity_personal;
@@ -66,7 +71,7 @@ public class PersonalActivity extends BaseActivity implements RequestFinish{
 
     @Override
     protected void initData() {
-        OkHttpUtils.getInstance().user_info(API.TOKEN_TEST,"1",this);
+
     }
 
     @OnClick({R.id.iv_back,R.id.tv_edit})
@@ -95,16 +100,22 @@ public class PersonalActivity extends BaseActivity implements RequestFinish{
                 tv_attention.setText(userInfo.getAttention_count()+"关注 ");
                 tv_fans.setText(" "+userInfo.getFans_count()+"粉丝");
                 if(userInfo.getSex().equals("1")){
+                    ll_sex_age.setBackgroundResource(R.drawable.shape_corner5_boy);
                     iv_sex.setImageResource(R.mipmap.boy);
                 }else {
+                    ll_sex_age.setBackgroundResource(R.drawable.shape_corner5_red);
                     iv_sex.setImageResource(R.mipmap.girl);
                 }
                 Glide.with(this).load(userInfo.getHead_image()).into(iv_head);
                 Glide.with(this)
                         .load(userInfo.getHead_image())
-                        .crossFade()
-                        // 设置高斯模糊
-                        .bitmapTransform(new BlurTransformation(this, 5))
+//                        .crossFade()
+//                        // 设置高斯模糊
+//                        .bitmapTransform(new BlurTransformation(this, 5))
+                        .into(iv_head_big);
+                Glide.with(this)
+                        .load(userInfo.getHead_image())
+                        .apply(RequestOptions.bitmapTransform(new GlideBlurformation(this)))
                         .into(iv_head_big);
                 break;
         }
@@ -119,5 +130,11 @@ public class PersonalActivity extends BaseActivity implements RequestFinish{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ButterKnife.bind(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        OkHttpUtils.getInstance().user_info(API.TOKEN_TEST,"1",this);
     }
 }

@@ -5,16 +5,16 @@
     android:gravity="center_vertical">
 
     <View
-        android:layout_alignParentBottom="true"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp1"
+        android:layout_alignParentBottom="true"
         android:background="@color/line" />
 
     <de.hdodenhof.circleimageview.CircleImageView
-        android:layout_centerVertical="true"
         android:id="@+id/iv_head"
         android:layout_width="@dimen/dp70"
         android:layout_height="@dimen/dp70"
+        android:layout_centerVertical="true"
         android:layout_marginLeft="@dimen/dp15"
         android:src="@mipmap/ic_launcher" />
 
@@ -30,17 +30,18 @@
         android:textSize="@dimen/sp14" />
 
     <LinearLayout
+        android:id="@+id/ll_sex_age"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/tv_userId"
         android:layout_marginLeft="@dimen/dp15"
         android:layout_marginTop="@dimen/dp5"
-        android:paddingLeft="@dimen/dp5"
-        android:paddingRight="@dimen/dp5"
-        android:background="@drawable/shape_corner5_red"
         android:layout_toEndOf="@+id/iv_head"
+        android:background="@drawable/shape_corner5_red"
         android:gravity="center_vertical"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:paddingLeft="@dimen/dp5"
+        android:paddingRight="@dimen/dp5">
 
         <ImageView
             android:id="@+id/iv_sex"
@@ -62,15 +63,15 @@
         android:id="@+id/tv_attention"
         android:layout_width="wrap_content"
         android:layout_height="28dp"
-        android:text="取消关注"
-        android:gravity="center"
-        android:textSize="@dimen/sp12"
-        android:background="@drawable/shape_bg_eb15"
-        android:textColor="@color/textColor2"
-        android:paddingRight="@dimen/dp12"
-        android:paddingLeft="@dimen/dp12"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:layout_marginRight="@dimen/dp15" />
+        android:layout_marginRight="@dimen/dp15"
+        android:background="@drawable/shape_bg_eb15"
+        android:gravity="center"
+        android:paddingLeft="@dimen/dp12"
+        android:paddingRight="@dimen/dp12"
+        android:text="取消关注"
+        android:textColor="@color/textColor2"
+        android:textSize="@dimen/sp12" />
 
 </RelativeLayout>

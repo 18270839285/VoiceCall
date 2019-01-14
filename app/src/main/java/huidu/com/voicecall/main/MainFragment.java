@@ -137,9 +137,9 @@ public class MainFragment extends BaseFragment implements RequestFinish {
                 View view = tab.getCustomView();
                 if (null != view && view instanceof RelativeLayout) {
 
-                    ((TextView) ((RelativeLayout) view).getChildAt(0)).setTextSize(18);
-                    ((ImageView) ((RelativeLayout) view).getChildAt(1)).setVisibility(View.VISIBLE);
-                    ((TextView) ((RelativeLayout) view).getChildAt(0)).setTextColor(ContextCompat.getColor(getActivity(), R.color.textColor));
+                    ((TextView) ((RelativeLayout) view).getChildAt(1)).setTextSize(18);
+                    ((ImageView) ((RelativeLayout) view).getChildAt(0)).setVisibility(View.VISIBLE);
+                    ((TextView) ((RelativeLayout) view).getChildAt(1)).setTextColor(ContextCompat.getColor(getActivity(), R.color.textColor));
                 }
             }
 
@@ -147,9 +147,9 @@ public class MainFragment extends BaseFragment implements RequestFinish {
             public void onTabUnselected(TabLayout.Tab tab) {
                 View view = tab.getCustomView();
                 if (null != view && view instanceof RelativeLayout) {
-                    ((TextView) ((RelativeLayout) view).getChildAt(0)).setTextSize(14);
-                    ((ImageView) ((RelativeLayout) view).getChildAt(1)).setVisibility(View.GONE);
-                    ((TextView) ((RelativeLayout) view).getChildAt(0)).setTextColor(ContextCompat.getColor(getActivity(), R.color.textColor2));
+                    ((TextView) ((RelativeLayout) view).getChildAt(1)).setTextSize(14);
+                    ((ImageView) ((RelativeLayout) view).getChildAt(0)).setVisibility(View.GONE);
+                    ((TextView) ((RelativeLayout) view).getChildAt(1)).setTextColor(ContextCompat.getColor(getActivity(), R.color.textColor2));
                 }
             }
 

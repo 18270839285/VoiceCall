@@ -24,6 +24,15 @@ public class UserInfo implements Serializable {
     String sex;
     String is_idcard_auth;
     String is_anchor_auth;
+    String order_sum;
+
+    public String getOrder_sum() {
+        return order_sum;
+    }
+
+    public void setOrder_sum(String order_sum) {
+        this.order_sum = order_sum;
+    }
 
     public String getId() {
         return id;

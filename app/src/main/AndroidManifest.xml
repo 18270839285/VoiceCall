@@ -144,7 +144,8 @@
         <activity android:name=".mine.MyAccountActivity" />
         <activity android:name=".mine.VirtualCoinRecordActivity" />
         <activity android:name=".main.OrderDetailActivity" />
-        <activity android:name=".mine.CashActivity"></activity>
+        <activity android:name=".mine.CashActivity" />
+        <activity android:name=".mine.MyOrderActivity"></activity>
     </application>
 
 </manifest>

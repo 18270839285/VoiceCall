@@ -67,7 +67,7 @@
                     android:textColor="@color/textColor2"
                     android:textSize="@dimen/sp12" />
 
-                <ImageView
+                <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/iv_head"
                     android:layout_width="@dimen/dp80"
                     android:layout_height="@dimen/dp80"
@@ -113,7 +113,8 @@
                         android:layout_gravity="center"
                         android:text="267"
                         android:textColor="@color/black"
-                        android:textSize="@dimen/sp16" />
+                        android:textSize="@dimen/sp16"
+                        android:textStyle="bold" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -140,7 +141,8 @@
                         android:layout_gravity="center"
                         android:text="125"
                         android:textColor="@color/black"
-                        android:textSize="@dimen/sp16" />
+                        android:textSize="@dimen/sp16"
+                        android:textStyle="bold" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -167,7 +169,8 @@
                         android:layout_gravity="center"
                         android:text="236"
                         android:textColor="@color/black"
-                        android:textSize="@dimen/sp16" />
+                        android:textSize="@dimen/sp16"
+                        android:textStyle="bold" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -193,11 +196,11 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:drawableLeft="@mipmap/wd_cz"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/dp15"
                     android:layout_weight="1"
+                    android:drawableLeft="@mipmap/wd_cz"
                     android:drawablePadding="@dimen/dp15"
                     android:gravity="center_vertical"
                     android:text="充值"
@@ -220,11 +223,11 @@
 
                 <TextView
 
-                    android:drawableLeft="@mipmap/wd_sr"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/dp15"
                     android:layout_weight="1"
+                    android:drawableLeft="@mipmap/wd_sr"
                     android:drawablePadding="@dimen/dp15"
                     android:gravity="center_vertical"
                     android:text="收入"
@@ -246,11 +249,11 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:drawableLeft="@mipmap/wd_rz"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/dp15"
                     android:layout_weight="1"
+                    android:drawableLeft="@mipmap/wd_rz"
                     android:drawablePadding="@dimen/dp15"
                     android:gravity="center_vertical"
                     android:text="主播认证"
@@ -272,11 +275,11 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:drawableLeft="@mipmap/wd_sfrz"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/dp15"
                     android:layout_weight="1"
+                    android:drawableLeft="@mipmap/wd_sfrz"
                     android:drawablePadding="@dimen/dp15"
                     android:gravity="center_vertical"
                     android:text="身份认证"
@@ -298,11 +301,11 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:drawableLeft="@mipmap/wd_gywm"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/dp15"
                     android:layout_weight="1"
+                    android:drawableLeft="@mipmap/wd_gywm"
                     android:drawablePadding="@dimen/dp15"
                     android:gravity="center_vertical"
                     android:text="关于我们"
@@ -324,11 +327,11 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:drawableLeft="@mipmap/wd_lxkf"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/dp15"
                     android:layout_weight="1"
+                    android:drawableLeft="@mipmap/wd_lxkf"
                     android:drawablePadding="@dimen/dp15"
                     android:gravity="center_vertical"
                     android:text="联系客服"

@@ -37,8 +37,9 @@
             android:layout_height="60dp"
             android:layout_marginBottom="@dimen/dp10"
             android:layout_marginRight="@dimen/dp15"
-            android:layout_marginTop="@dimen/dp10"
-            android:src="@mipmap/ic_launcher" />
+            android:src="@mipmap/wd_tx_nor"
+            android:layout_marginTop="@dimen/dp10" />
+        <!--android:src="@mipmap/wd_tx_nor"-->
     </LinearLayout>
 
     <View
@@ -159,7 +160,6 @@
             android:layout_marginLeft="@dimen/dp15"
             android:text="生日"
             android:textColor="@color/textColor"
-
             android:textSize="@dimen/sp15" />
 
         <TextView
@@ -279,4 +279,9 @@
             android:textColorHint="@color/textColorHint"
             android:textSize="@dimen/sp13" />
     </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp0.5"
+        android:background="@color/line" />
 </LinearLayout>

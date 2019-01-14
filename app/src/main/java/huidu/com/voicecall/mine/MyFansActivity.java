@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -72,11 +73,14 @@ public class MyFansActivity extends BaseActivity implements RequestFinish {
                 CircleImageView iv_head = helper.getView(R.id.iv_head);
                 ImageView iv_sex = helper.getView(R.id.iv_sex);
                 TextView tv_attention = helper.getView(R.id.tv_attention);
+                LinearLayout ll_sex_age = helper.getView(R.id.ll_sex_age);
                 helper.setText(R.id.tv_userId,item.getUser_id());
                 helper.setText(R.id.tv_age,item.getAge());
                 if (item.getSex().equals("1")){
+                    ll_sex_age.setBackgroundResource(R.drawable.shape_corner5_boy);
                     iv_sex.setImageResource(R.mipmap.boy);
                 }else if (item.getSex().equals("2")){
+                    ll_sex_age.setBackgroundResource(R.drawable.shape_corner5_red);
                     iv_sex.setImageResource(R.mipmap.girl);
                 }
                 if (item.getIs_attention().equals("1")){

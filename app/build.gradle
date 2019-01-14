@@ -27,7 +27,7 @@ android {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.android.support:multidex:1.0.1'
-    implementation 'com.github.bumptech.glide:glide:3.7.0'
+    implementation 'com.github.bumptech.glide:glide:4.5.0'
     //高斯模糊
     implementation 'jp.wasabeef:glide-transformations:2.0.1'
     implementation 'com.google.code.gson:gson:2.8.0'
@@ -47,7 +47,9 @@ dependencies {
     implementation 'com.android.support:design:27.1.1'
     implementation 'com.youth.banner:banner:1.4.10'
     implementation 'de.hdodenhof:circleimageview:3.0.0'
-
+    compile('com.github.gzu-liyujiang.AndroidPicker:WheelPicker:latest.release') {//latest.release
+        exclude group: 'com.android.support'
+    }
     // 网易云信 添加依赖。注意，版本号必须一致。
     // 基础功能 (必需)
     compile 'com.netease.nimlib:basesdk:4.5.0'
@@ -55,4 +57,8 @@ dependencies {
     compile 'com.netease.nimlib:nrtc:4.5.0'
     // 音视频需要
     compile 'com.netease.nimlib:avchat:4.5.0'
+//    implementation 'com.alibaba:fastjson:1.2.54'
+    implementation 'com.alibaba:fastjson:1.1.55.android'
+    implementation 'com.github.nanchen2251:CompressHelper:1.0.5'
+
 }
