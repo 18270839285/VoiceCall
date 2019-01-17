@@ -25,6 +25,15 @@ public class UserInfo implements Serializable {
     String is_idcard_auth;
     String is_anchor_auth;
     String order_sum;
+    String custom_tel;
+
+    public String getCustom_tel() {
+        return custom_tel;
+    }
+
+    public void setCustom_tel(String custom_tel) {
+        this.custom_tel = custom_tel;
+    }
 
     public String getOrder_sum() {
         return order_sum;

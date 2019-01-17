@@ -2,16 +2,16 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/rl_title"
     android:layout_width="match_parent"
-    android:background="@color/white"
-    android:layout_height="48dp">
+    android:layout_height="48dp"
+    android:background="@color/white">
     <!--android:fitsSystemWindows="true"-->
     <ImageView
-        android:paddingLeft="@dimen/dp15"
-        android:paddingRight="@dimen/dp15"
         android:id="@+id/iv_back"
         android:layout_width="39dp"
         android:layout_height="@dimen/dp45"
         android:layout_centerVertical="true"
+        android:paddingLeft="@dimen/dp15"
+        android:paddingRight="@dimen/dp15"
         android:src="@mipmap/fh" />
     <!--android:paddingLeft="@dimen/dp13"-->
     <!--android:paddingRight="@dimen/dp13"-->
@@ -46,7 +46,9 @@
         android:layout_height="match_parent"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:src="@mipmap/ic_launcher"
+        android:paddingLeft="@dimen/dp15"
+        android:paddingRight="@dimen/dp15"
+        android:src="@mipmap/more"
         android:visibility="gone" />
 
 </RelativeLayout>

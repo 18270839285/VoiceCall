@@ -10,6 +10,7 @@ import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 
@@ -77,7 +78,7 @@ public class MyAccountActivity extends BaseActivity implements RequestFinish {
                 final CheckBox check = helper.getView(R.id.check);
                 final TextView tv_coin_num = helper.getView(R.id.tv_coin_num);
                 final TextView tv_money = helper.getView(R.id.tv_money);
-                tv_coin_num.setText(item.getCoin() + "虚拟币");
+                tv_coin_num.setText(item.getCoin() + "Y豆");
                 tv_money.setText("¥ " + item.getSale_price());
                 if (COIN_POSITION == helper.getAdapterPosition()) {
                     check.setChecked(true);
@@ -119,9 +120,9 @@ public class MyAccountActivity extends BaseActivity implements RequestFinish {
                 mList.addAll(mList);
                 mAdapter.setNewData(mList);
 
-                Glide.with(this).load(data.getUser_list().getHead_image()).into(iv_head);
+                Glide.with(this).load(data.getUser_list().getHead_image()).apply(new RequestOptions().error(R.mipmap.wd_tx_nor)).into(iv_head);
                 tv_userName.setText(data.getUser_list().getNickname());
-                tv_money.setText(data.getUser_list().getConsume_coin()+"虚拟币1");
+                tv_money.setText(data.getUser_list().getConsume_coin()+"Y豆");
                 break;
             case API.ORDER_RECHARGE:
                 ToastUtil.toastShow("充值成功");
@@ -145,7 +146,7 @@ public class MyAccountActivity extends BaseActivity implements RequestFinish {
                 //服务协议
                 break;
             case R.id.tv_right:
-                //虚拟币记录
+                //Y豆记录
                 jumpTo(VirtualCoinRecordActivity.class);
                 break;
             case R.id.tv_sure:

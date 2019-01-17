@@ -29,10 +29,11 @@ import huidu.com.voicecall.http.BaseModel;
 import huidu.com.voicecall.http.OkHttpUtils;
 import huidu.com.voicecall.http.RequestFinish;
 import huidu.com.voicecall.utils.DateUtil;
+import huidu.com.voicecall.utils.EmptyViewUtil;
 import huidu.com.voicecall.utils.ToastUtil;
 
 /**
- * 虚拟币记录
+ * Y豆记录
  */
 public class VirtualCoinRecordActivity extends BaseActivity implements RequestFinish {
     @BindView(R.id.tv_title)
@@ -52,7 +53,7 @@ public class VirtualCoinRecordActivity extends BaseActivity implements RequestFi
 
     @Override
     protected void initView() {
-        tv_title.setText("虚拟币1记录");
+        tv_title.setText("Y豆记录");
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -71,14 +72,15 @@ public class VirtualCoinRecordActivity extends BaseActivity implements RequestFi
             protected void convert(BaseViewHolder helper, CoinLog.ListBean item) {
                 helper.setText(R.id.tv_status,item.getMemo());
                 if (item.getIs_add().equals("1")){
-                    helper.setText(R.id.tv_money,"+"+item.getCoin()+" 虚拟币1");
+                    helper.setText(R.id.tv_money,"+"+item.getCoin()+" Y豆");
                 }else {
-                    helper.setText(R.id.tv_money,"-"+item.getCoin()+" 虚拟币1");
+                    helper.setText(R.id.tv_money,"-"+item.getCoin()+" Y豆");
                 }
                 helper.setText(R.id.tv_time1, DateUtil.getTime1(item.getCreate_time()));
                 helper.setText(R.id.tv_time2, DateUtil.getTime(item.getCreate_time()));
             }
         };
+        mAdapter.setEmptyView(EmptyViewUtil.getEmptyView(this,1));
         recycleView.setAdapter(mAdapter);
     }
 

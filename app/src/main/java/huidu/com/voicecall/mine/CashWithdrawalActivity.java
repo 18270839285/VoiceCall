@@ -24,6 +24,7 @@ import huidu.com.voicecall.http.BaseModel;
 import huidu.com.voicecall.http.OkHttpUtils;
 import huidu.com.voicecall.http.RequestFinish;
 import huidu.com.voicecall.utils.DateUtil;
+import huidu.com.voicecall.utils.EmptyViewUtil;
 import huidu.com.voicecall.utils.ToastUtil;
 
 /**
@@ -85,6 +86,7 @@ public class CashWithdrawalActivity extends BaseActivity implements RequestFinis
 
             }
         };
+        mAdapter.setEmptyView(EmptyViewUtil.getEmptyView(this,1));
         recycleView.setAdapter(mAdapter);
     }
 

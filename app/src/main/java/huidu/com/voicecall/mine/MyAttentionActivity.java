@@ -12,6 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 
@@ -30,6 +31,7 @@ import huidu.com.voicecall.http.API;
 import huidu.com.voicecall.http.BaseModel;
 import huidu.com.voicecall.http.OkHttpUtils;
 import huidu.com.voicecall.http.RequestFinish;
+import huidu.com.voicecall.utils.EmptyViewUtil;
 import huidu.com.voicecall.utils.ToastUtil;
 
 /**
@@ -74,7 +76,7 @@ public class MyAttentionActivity extends BaseActivity implements RequestFinish{
                 ImageView iv_sex = helper.getView(R.id.iv_sex);
                 TextView tv_attention = helper.getView(R.id.tv_attention);
                 LinearLayout ll_sex_age = helper.getView(R.id.ll_sex_age);
-                helper.setText(R.id.tv_userId,item.getUser_id());
+                helper.setText(R.id.tv_userId,item.getNickname());
                 helper.setText(R.id.tv_age,item.getAge());
                 if (item.getSex().equals("1")){
                     ll_sex_age.setBackgroundResource(R.drawable.shape_corner5_boy);
@@ -83,15 +85,16 @@ public class MyAttentionActivity extends BaseActivity implements RequestFinish{
                     ll_sex_age.setBackgroundResource(R.drawable.shape_corner5_red);
                     iv_sex.setImageResource(R.mipmap.girl);
                 }
-                Glide.with(MyAttentionActivity.this).load(item.getHead_image()).into(iv_head);
+                Glide.with(MyAttentionActivity.this).load(item.getHead_image()).apply(new RequestOptions().error(R.mipmap.wd_tx_nor)).into(iv_head);
                 tv_attention.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        OkHttpUtils.getInstance().user_attention_cannel(API.TOKEN_TEST,item.getUser_id()+"",MyAttentionActivity.this);
+                        OkHttpUtils.getInstance().user_attention_cancel(API.TOKEN_TEST,item.getUser_id()+"",MyAttentionActivity.this);
                     }
                 });
             }
         };
+        mAdapter.setEmptyView(EmptyViewUtil.getEmptyView(this,4));
         recycleView.setAdapter(mAdapter);
     }
 
@@ -103,7 +106,7 @@ public class MyAttentionActivity extends BaseActivity implements RequestFinish{
                 mList = (List<UserAttention>)result.getData();
                 mAdapter.setNewData(mList);
                 break;
-            case API.USER_ATTENTION_CANNEL:
+            case API.USER_ATTENTION_CANCEL:
                 OkHttpUtils.getInstance().user_attention_list(API.TOKEN_TEST,this);
                 break;
         }

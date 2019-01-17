@@ -14,7 +14,7 @@
         android:background="@color/line" />
 
     <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/refresh"
+        android:id="@+id/refreshLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -74,7 +74,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/dp2"
-                        android:text="22"
+                        android:text=""
                         android:textColor="@color/white"
                         android:textSize="@dimen/sp10" />
                 </LinearLayout>
@@ -109,6 +109,8 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:visibility="gone"
+                    android:id="@+id/ll_times_over"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
@@ -129,13 +131,14 @@
 
                     <TextView
                         android:id="@+id/tv_time"
-                        android:layout_width="wrap_content"
+                        android:layout_width="@dimen/dp40"
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
                         android:layout_gravity="center_vertical"
                         android:layout_marginLeft="@dimen/dp5"
                         android:layout_marginRight="@dimen/dp15"
-                        android:text="进行中"
+                        android:gravity="center"
+                        android:text="1:23:60"
                         android:textColor="@color/whitecc"
                         android:textSize="@dimen/sp12" />
                 </LinearLayout>
@@ -303,6 +306,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/dp15"
                 android:text="主播接单后信息提示"
+                android:visibility="gone"
                 android:textColor="@color/textColor2"
                 android:textSize="@dimen/sp12" />
 
@@ -319,6 +323,7 @@
                 android:visibility="gone" />
 
             <LinearLayout
+                android:visibility="gone"
                 android:id="@+id/ll_sure"
                 android:layout_width="match_parent"
                 android:layout_height="45dp"

@@ -3,12 +3,11 @@
     package="huidu.com.voicecall">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.RECORD_AUDIO" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CALL_PHONE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <!-- 权限声明 -->
     <!-- 访问网络状态 -->
-    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <!-- 控制呼吸灯，振动器等，用于新消息提醒 -->
@@ -145,7 +144,11 @@
         <activity android:name=".mine.VirtualCoinRecordActivity" />
         <activity android:name=".main.OrderDetailActivity" />
         <activity android:name=".mine.CashActivity" />
-        <activity android:name=".mine.MyOrderActivity"></activity>
+        <activity android:name=".mine.MyOrderActivity" />
+        <activity android:name=".voice.ChattingRoomActivity" />
+        <activity android:name=".base.WebActivity" />
+        <activity android:name=".authentication.IDCardAuthenticationActivity" />
+        <activity android:name=".authentication.FaceRecognitionActivity"></activity>
     </application>
 
 </manifest>

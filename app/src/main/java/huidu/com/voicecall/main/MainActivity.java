@@ -3,9 +3,12 @@ package huidu.com.voicecall.main;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.KeyEvent;
+import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -17,6 +20,8 @@ import huidu.com.voicecall.R;
 import huidu.com.voicecall.base.BaseActivity;
 import huidu.com.voicecall.utils.AtyContainer;
 import huidu.com.voicecall.utils.Loading;
+import huidu.com.voicecall.utils.NetWorkUtil;
+import huidu.com.voicecall.utils.ToastUtil;
 
 public class MainActivity extends BaseActivity implements ChangeFragmentListener {
     @BindView(R.id.activity_container)
@@ -29,7 +34,6 @@ public class MainActivity extends BaseActivity implements ChangeFragmentListener
     RadioButton rb_message;
     @BindView(R.id.rb_main)
     RadioButton rb_main;
-
     private List<Fragment> mList;
 
     @Override
@@ -45,12 +49,10 @@ public class MainActivity extends BaseActivity implements ChangeFragmentListener
 
     @Override
     protected void initView() {
-
         mList = new ArrayList<>();
         mList.add(new MainFragment());//主页
         mList.add(new MessageFragment());//消息
         mList.add(new MineFragment());//我的
-
         setTabView(0);
         mainActivityRg.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -72,7 +74,6 @@ public class MainActivity extends BaseActivity implements ChangeFragmentListener
 
     @Override
     protected void initData() {
-
     }
 
     @Override

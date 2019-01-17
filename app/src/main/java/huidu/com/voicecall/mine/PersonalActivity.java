@@ -107,12 +107,12 @@ public class PersonalActivity extends BaseActivity implements RequestFinish{
                     iv_sex.setImageResource(R.mipmap.girl);
                 }
                 Glide.with(this).load(userInfo.getHead_image()).into(iv_head);
-                Glide.with(this)
-                        .load(userInfo.getHead_image())
+//                Glide.with(this)
+//                        .load(userInfo.getHead_image())
 //                        .crossFade()
 //                        // 设置高斯模糊
 //                        .bitmapTransform(new BlurTransformation(this, 5))
-                        .into(iv_head_big);
+//                        .into(iv_head_big);
                 Glide.with(this)
                         .load(userInfo.getHead_image())
                         .apply(RequestOptions.bitmapTransform(new GlideBlurformation(this)))
@@ -135,6 +135,6 @@ public class PersonalActivity extends BaseActivity implements RequestFinish{
     @Override
     protected void onResume() {
         super.onResume();
-        OkHttpUtils.getInstance().user_info(API.TOKEN_TEST,"1",this);
+        OkHttpUtils.getInstance().user_info(API.TOKEN_TEST,API.USERID,this);
     }
 }

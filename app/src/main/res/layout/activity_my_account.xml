@@ -44,7 +44,7 @@
                 android:gravity="center"
                 android:paddingLeft="@dimen/dp15"
                 android:paddingRight="@dimen/dp15"
-                android:text="虚拟币记录"
+                android:text="Y豆记录"
                 android:textColor="@color/whitecc"
                 android:textSize="@dimen/sp13" />
 
@@ -88,7 +88,7 @@
             android:layout_marginLeft="@dimen/dp15"
             android:layout_marginTop="@dimen/dp8"
             android:layout_toEndOf="@+id/iv_head"
-            android:text="1200虚拟币"
+            android:text="1200Y豆"
             android:textColor="@color/white"
             android:textSize="@dimen/sp12" />
     </RelativeLayout>

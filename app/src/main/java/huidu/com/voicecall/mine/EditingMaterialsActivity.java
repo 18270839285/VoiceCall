@@ -14,6 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.nanchen.compresshelper.CompressHelper;
 
 import java.io.BufferedOutputStream;
@@ -121,7 +122,7 @@ public class EditingMaterialsActivity extends BaseActivity implements RequestFin
 
     @Override
     protected void initData() {
-        OkHttpUtils.getInstance().user_info(API.TOKEN_TEST, "1", this);
+        OkHttpUtils.getInstance().user_info(API.TOKEN_TEST, API.USERID, this);
         tv_userId.setText("1");
     }
 
@@ -132,7 +133,7 @@ public class EditingMaterialsActivity extends BaseActivity implements RequestFin
                 UserInfo userInfo = (UserInfo) result.getData();
                 if (userInfo.getHead_image() != null && !userInfo.getHead_image().isEmpty()) {
                     head_image = userInfo.getHead_image();
-                    Glide.with(this).load(head_image).into(iv_head);
+                    Glide.with(this).load(head_image).apply(new RequestOptions().error(R.mipmap.wd_tx_nor)).into(iv_head);
                 }
                 if (userInfo.getIntroduce() != null && !userInfo.getIntroduce().isEmpty()) {
                     nickname = userInfo.getNickname();
@@ -171,7 +172,7 @@ public class EditingMaterialsActivity extends BaseActivity implements RequestFin
                 loading.dismiss();
                 SpareBean spareBean = (SpareBean) result.getData();
                 head_image = spareBean.getImage_url();
-                Glide.with(this).load(head_image).into(iv_head);
+                Glide.with(this).load(head_image).apply(new RequestOptions().error(R.mipmap.wd_tx_nor)).into(iv_head);
                 break;
         }
     }
@@ -399,7 +400,7 @@ public class EditingMaterialsActivity extends BaseActivity implements RequestFin
             }
         } else if (requestCode == PicturePickerFragment.PICK_SYSTEM_PHOTO && resultCode == Activity.RESULT_OK) {//PICK_TACK_PHOTO
             if (MiPictureHelper.hasSdcard()) {
-                tempFile = new File(Environment.getExternalStorageDirectory(), "head.jpg");
+                tempFile = new File(Environment.getExternalStorageDirectory(), API.temp_filename);
                 String path = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) + "voiceCall";//新文件地址
                 newFile = new File(Environment.getExternalStorageDirectory(), path);
                 tempFile.renameTo(newFile);

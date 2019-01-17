@@ -13,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 
@@ -30,6 +31,7 @@ import huidu.com.voicecall.http.API;
 import huidu.com.voicecall.http.BaseModel;
 import huidu.com.voicecall.http.OkHttpUtils;
 import huidu.com.voicecall.http.RequestFinish;
+import huidu.com.voicecall.utils.EmptyViewUtil;
 import huidu.com.voicecall.utils.ToastUtil;
 
 /**
@@ -74,7 +76,7 @@ public class MyFansActivity extends BaseActivity implements RequestFinish {
                 ImageView iv_sex = helper.getView(R.id.iv_sex);
                 TextView tv_attention = helper.getView(R.id.tv_attention);
                 LinearLayout ll_sex_age = helper.getView(R.id.ll_sex_age);
-                helper.setText(R.id.tv_userId,item.getUser_id());
+                helper.setText(R.id.tv_userId,item.getNickname());
                 helper.setText(R.id.tv_age,item.getAge());
                 if (item.getSex().equals("1")){
                     ll_sex_age.setBackgroundResource(R.drawable.shape_corner5_boy);
@@ -92,12 +94,12 @@ public class MyFansActivity extends BaseActivity implements RequestFinish {
                     tv_attention.setTextColor(getResources().getColor(R.color.white));
                     tv_attention.setBackgroundResource(R.mipmap.tc_button_pre);
                 }
-                Glide.with(MyFansActivity.this).load(item.getHead_image()).into(iv_head);
+                Glide.with(MyFansActivity.this).load(item.getHead_image()).apply(new RequestOptions().error(R.mipmap.wd_tx_nor)).into(iv_head);
                 tv_attention.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         if (item.getIs_attention().equals("1")){
-                            OkHttpUtils.getInstance().user_attention_cannel(API.TOKEN_TEST,item.getUser_id()+"",MyFansActivity.this);
+                            OkHttpUtils.getInstance().user_attention_cancel(API.TOKEN_TEST,item.getUser_id()+"",MyFansActivity.this);
                         }else {
                             OkHttpUtils.getInstance().user_attention(API.TOKEN_TEST,item.getUser_id()+"",MyFansActivity.this);
                         }
@@ -105,6 +107,7 @@ public class MyFansActivity extends BaseActivity implements RequestFinish {
                 });
             }
         };
+        mAdapter.setEmptyView(EmptyViewUtil.getEmptyView(this,3));
         recycleView.setAdapter(mAdapter);
     }
 
@@ -119,7 +122,7 @@ public class MyFansActivity extends BaseActivity implements RequestFinish {
             case API.USER_ATTENTION:
                 OkHttpUtils.getInstance().user_fans_list(API.TOKEN_TEST,this);
                 break;
-            case API.USER_ATTENTION_CANNEL:
+            case API.USER_ATTENTION_CANCEL:
                 OkHttpUtils.getInstance().user_fans_list(API.TOKEN_TEST,this);
                 break;
         }

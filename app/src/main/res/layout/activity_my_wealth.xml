@@ -18,6 +18,7 @@
         android:orientation="vertical">
 
         <TextView
+            android:id="@+id/tv_message"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
@@ -72,7 +73,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="只有虚拟币2才能提现,"
+            android:text="只有Y币才能提现,"
             android:textColor="@color/textColor2" />
 
         <TextView
@@ -84,7 +85,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="虚拟币2="
+            android:text="Y币="
             android:textColor="@color/textColor2" />
 
         <TextView

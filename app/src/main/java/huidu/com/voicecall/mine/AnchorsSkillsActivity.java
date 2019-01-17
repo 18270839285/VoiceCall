@@ -115,7 +115,13 @@ public class AnchorsSkillsActivity extends BaseActivity implements RequestFinish
                 //试听语音
                 break;
             case R.id.ll_attention:
-                //关注
+                if(anchorInfo.getIs_attention().equals("1")){
+                    //取消关注
+                    OkHttpUtils.getInstance().user_attention_cancel(API.TOKEN_TEST,anchor_id,this);
+                }else {
+                    //关注
+                    OkHttpUtils.getInstance().user_attention(API.TOKEN_TEST,anchor_id,this);
+                }
                 break;
             case R.id.ll_chat:
                 //约聊
@@ -126,14 +132,14 @@ public class AnchorsSkillsActivity extends BaseActivity implements RequestFinish
     }
 
     AnchorPrice anchorPrice;
-
+    AnchorInfo anchorInfo;
     @Override
     public void onSuccess(BaseModel result, String params) {
         refresh.setRefreshing(false);
         mLoading.dismiss();
         switch (params) {
             case API.ANCHOR_INFO:
-                AnchorInfo anchorInfo = (AnchorInfo) result.getData();
+                anchorInfo = (AnchorInfo) result.getData();
                 Glide.with(this).load(anchorInfo.getHead_image()).into(iv_head);
                 if (anchorInfo.getCover().size() > 0) {
                     Glide.with(this).load(anchorInfo.getCover().get(0)).into(iv_background);
@@ -142,7 +148,7 @@ public class AnchorsSkillsActivity extends BaseActivity implements RequestFinish
                 tv_author_message.setText(anchorInfo.getAnchor_type_text() + " | " + anchorInfo.getAge() + "岁 " + (anchorInfo.getSex().equals("1") ? "男" : "女"));
                 tv_price.setText(anchorInfo.getPrice());
                 String type = anchorInfo.getType();
-                tv_type.setText(type.equals("1") ? "虚拟币/分钟" : "虚拟币/次");
+                tv_type.setText(type.equals("1") ? "Y豆/分钟" : "Y豆/次");
 
                 if (anchorInfo.getIs_attention().equals("1")) {
                     tv_attention.setText("已关注");
@@ -159,11 +165,19 @@ public class AnchorsSkillsActivity extends BaseActivity implements RequestFinish
                 //提交订单跳转订单详情页
                 ToastUtil.toastShow("下单成功");
                 SpareBean spareBean = (SpareBean)result.getData();
-                startActivity(new Intent(this,OrderDetailActivity.class).putExtra("order_no",""+spareBean.getOrder_no()));
+                startActivity(new Intent(this,OrderDetailActivity.class)
+                        .putExtra("order_no",""+spareBean.getOrder_no())
+                        .putExtra("order_type","2"));
                 if (alertDialog!=null&&alertDialog.isShowing()){
                     alertDialog.dismiss();
                 }
-                jumpTo(OrderDetailActivity.class);
+//                jumpTo(OrderDetailActivity.class);
+                break;
+            case API.USER_ATTENTION:
+                initData();
+                break;
+            case API.USER_ATTENTION_CANCEL:
+                initData();
                 break;
         }
 
@@ -190,7 +204,7 @@ public class AnchorsSkillsActivity extends BaseActivity implements RequestFinish
     }
 
     private void showMessage() {
-        DialogUtil.showDialogConfirm(this, "虚拟币1不足", "你的余额不足，请充值后再和主播约聊哦~", "取消", new View.OnClickListener() {
+        DialogUtil.showDialogConfirm(this, "Y豆不足", "你的余额不足，请充值后再和主播约聊哦~", "取消", new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -233,9 +247,9 @@ public class AnchorsSkillsActivity extends BaseActivity implements RequestFinish
         final TextView tv_total_price = window.findViewById(R.id.tv_total_price);
         final TextView tv_pay_one = window.findViewById(R.id.tv_pay_one);
         if (apInfo.getType().equals("1")) {
-            tv_pay_one.setText(apInfo.getPrice() + "虚拟币1/分钟");
+            tv_pay_one.setText(apInfo.getPrice() + "Y豆/分钟");
         } else {
-            tv_pay_one.setText(apInfo.getPrice() + "虚拟币1/次");
+            tv_pay_one.setText(apInfo.getPrice() + "Y豆/次");
         }
 
         tv_pay.setOnClickListener(new View.OnClickListener() {

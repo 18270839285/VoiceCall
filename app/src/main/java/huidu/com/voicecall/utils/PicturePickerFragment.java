@@ -23,6 +23,7 @@ import android.view.WindowManager.LayoutParams;
 import java.io.File;
 
 import huidu.com.voicecall.R;
+import huidu.com.voicecall.http.API;
 
 public class PicturePickerFragment {
     public static final int PICK_SYSTEM_PHOTO = 124;
@@ -68,7 +69,7 @@ public class PicturePickerFragment {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         Uri fileUri = Uri
                 .fromFile(new File(Environment.getExternalStorageDirectory(),
-                        "head.jpg"));
+                        API.temp_filename));
         intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
         act.startActivityForResult(intent, PICK_SYSTEM_PHOTO);
     }

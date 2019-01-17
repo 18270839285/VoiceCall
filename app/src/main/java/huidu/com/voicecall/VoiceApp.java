@@ -11,7 +11,6 @@ import com.netease.nimlib.sdk.NIMClient;
 import com.netease.nimlib.sdk.SDKOptions;
 import com.netease.nimlib.sdk.auth.LoginInfo;
 
-import huidu.com.voicecall.main.App;
 import huidu.com.voicecall.utils.SPUtils;
 
 /**
@@ -45,7 +44,6 @@ public class VoiceApp extends MultiDexApplication {
             return null;
         }
     }
-
 
     private void initConfig() {
         // android 7.0系统解决拍照的问题

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/iv_cancel"
+        android:layout_width="@dimen/dp25"
+        android:layout_height="@dimen/dp25"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="@dimen/dp15"
+        android:src="@mipmap/wddd_yqx" />
+
+    <LinearLayout
+        android:layout_marginTop="@dimen/dp20"
+        android:layout_below="@+id/iv_cancel"
+        android:layout_width="match_parent"
+        android:layout_height="170dp"
+        android:layout_marginLeft="@dimen/dp15"
+        android:layout_marginRight="@dimen/dp15"
+        android:background="@drawable/shape_corner5_white"
+        android:orientation="vertical"
+        android:paddingTop="15dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp10"
+            android:gravity="center"
+            android:text="联系客服"
+            android:textColor="@color/textColor"
+            android:textSize="17sp" />
+
+        <TextView
+            android:id="@+id/tv_phone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp20"
+            android:gravity="center"
+            android:text="客服电话"
+            android:textColor="@color/textColor666"
+            android:textSize="13sp"
+            android:visibility="visible" />
+
+        <TextView
+            android:id="@+id/tv_call"
+            android:layout_width="@dimen/dp80"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="@dimen/dp20"
+            android:layout_marginTop="@dimen/dp35"
+            android:background="@mipmap/tc_button"
+            android:gravity="center"
+            android:text="立即拨号"
+            android:textColor="@color/textSelectColor"
+            android:textSize="14sp" />
+    </LinearLayout>
+</RelativeLayout>

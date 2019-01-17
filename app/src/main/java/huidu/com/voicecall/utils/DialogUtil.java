@@ -11,6 +11,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import huidu.com.voicecall.R;
@@ -22,6 +23,54 @@ import huidu.com.voicecall.R;
  */
 
 public class DialogUtil {
+    /**
+     * 确定----取消
+     */
+    public static Dialog showServiceDialog(Context context,String phone, final View.OnClickListener mListener) {
+        View dialogView = View.inflate(context, R.layout.dialog_service, null);
+        final Dialog dialog = new Dialog(context, R.style.dialog);
+        dialog.setContentView(dialogView);
+        TextView tv_call = (TextView) dialogView.findViewById(R.id.tv_call);
+        TextView tv_phone = (TextView) dialogView.findViewById(R.id.tv_phone);
+        ImageView iv_cancel = (ImageView) dialogView.findViewById(R.id.iv_cancel);
+        tv_phone.setText("客服电话: "+phone);
+        tv_call.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                if (mListener != null) {
+                    mListener.onClick(v);
+                }
+            }
+        });
+        iv_cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        dialog.setOnKeyListener(new DialogInterface.OnKeyListener() {
+                                    @Override
+                                    public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+                                        if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
+                                            dialog.dismiss();
+                                            return true;
+                                        } else {
+                                            return false;
+                                        }
+                                    }
+                                }
+        );
+        Window dialogWindow = dialog.getWindow();
+        WindowManager.LayoutParams lp = dialogWindow.getAttributes();
+//        lp.width = DensityUtils.dp2px(context, 300);
+        dialogWindow.setGravity(Gravity.CENTER);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            dialog.create();
+        }
+        dialog.setCanceledOnTouchOutside(true);
+        return dialog;
+    }
     /**
      * 确定----取消
      */
@@ -74,6 +123,65 @@ public class DialogUtil {
         WindowManager.LayoutParams lp = dialogWindow.getAttributes();
 //        lp.width = DensityUtils.dp2px(context, 300);
         dialogWindow.setGravity(Gravity.CENTER);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            dialog.create();
+        }
+        dialog.setCanceledOnTouchOutside(false);
+        return dialog;
+    }
+
+    /**
+     * 取消订单弹框
+     * @param context
+     * @param cancelListener
+     * @param closeListener
+     * @return
+     */
+    public static Dialog showOrderCancelDialog(Context context, final View.OnClickListener cancelListener,
+                                             final View.OnClickListener closeListener) {
+        View dialogView = View.inflate(context, R.layout.dialog_order_cancel, null);
+        final Dialog dialog = new Dialog(context, R.style.dialog);
+        dialog.setContentView(dialogView);
+        TextView tv_cancel = (TextView) dialogView.findViewById(R.id.tv_cancel);
+        ImageView iv_close = (ImageView) dialogView.findViewById(R.id.iv_close);
+        tv_cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                if (cancelListener != null) {
+                    cancelListener.onClick(v);
+                }
+            }
+        });
+        iv_close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                if (closeListener != null) {
+                    closeListener.onClick(v);
+                }
+            }
+        });
+        dialog.setOnKeyListener(new DialogInterface.OnKeyListener() {
+                                    @Override
+                                    public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+                                        if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
+                                            dialog.dismiss();
+                                            return true;
+                                        } else {
+                                            return false;
+                                        }
+                                    }
+                                }
+        );
+        Window dialogWindow = dialog.getWindow();
+
+        WindowManager.LayoutParams lp = dialogWindow.getAttributes();
+//        lp.width = DensityUtils.dp2px(context, 300);
+        dialogWindow.setGravity(Gravity.BOTTOM);
+        dialogWindow.setWindowAnimations(R.style.dialog_up_down_animation);
+        dialogWindow.clearFlags(WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
+        dialog.setCanceledOnTouchOutside(true);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             dialog.create();
         }

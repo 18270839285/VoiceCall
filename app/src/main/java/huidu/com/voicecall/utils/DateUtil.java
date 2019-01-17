@@ -102,4 +102,22 @@ public class DateUtil {
         String sd = formatter.format(new Date(t));
         return sd;
     }
+    public static String getTime3(String time) {
+        SimpleDateFormat formatter = new SimpleDateFormat("mm:ss");
+        long t = Long.parseLong(time)*1000;
+        String sd = formatter.format(new Date(t));
+        return sd;
+    }
+    public static String getTime4(String time) {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        long t = Long.parseLong(time)*1000;
+        String sd = formatter.format(new Date(t));
+        return sd;
+    }
+    public static String getTime5(String time) {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        long t = Long.parseLong(time)*1000;
+        String sd = formatter.format(new Date(t));
+        return sd;
+    }
 }

@@ -1,6 +1,7 @@
 package huidu.com.voicecall.main;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -10,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -17,6 +19,8 @@ import butterknife.OnClick;
 import butterknife.Unbinder;
 import de.hdodenhof.circleimageview.CircleImageView;
 import huidu.com.voicecall.R;
+import huidu.com.voicecall.authentication.IDCardAuthenticationActivity;
+import huidu.com.voicecall.base.WebActivity;
 import huidu.com.voicecall.bean.UserInfo;
 import huidu.com.voicecall.http.API;
 import huidu.com.voicecall.http.BaseModel;
@@ -31,6 +35,7 @@ import huidu.com.voicecall.mine.MyWealthActivity;
 import huidu.com.voicecall.mine.PersonalActivity;
 import huidu.com.voicecall.test.TestActivity;
 import huidu.com.voicecall.base.BaseFragment;
+import huidu.com.voicecall.utils.DialogUtil;
 import huidu.com.voicecall.utils.ToastUtil;
 
 /**
@@ -53,6 +58,8 @@ public class MineFragment extends BaseFragment implements RequestFinish{
     @BindView(R.id.tv_order_num)
     TextView tv_order_num;
 
+    String custom_tel;//客服电话
+
     Unbinder unbinder;
     @Override
     protected int getLayoutId() {
@@ -66,7 +73,7 @@ public class MineFragment extends BaseFragment implements RequestFinish{
 
     @Override
     protected void initData() {
-        OkHttpUtils.getInstance().user_info(API.TOKEN_TEST,"1",this);
+        OkHttpUtils.getInstance().user_info(API.TOKEN_TEST,API.USERID,this);
     }
 
     @OnClick({R.id.iv_setting, R.id.rl_personal, R.id.ll_recharge, R.id.ll_income,R.id.ll_anchor,
@@ -106,13 +113,24 @@ public class MineFragment extends BaseFragment implements RequestFinish{
                 break;
             case R.id.ll_idCard:
                 //身份认证
+                jump(IDCardAuthenticationActivity.class);
                 break;
             case R.id.ll_about_us:
                 //关于我们
+                jump(TestActivity.class);
                 break;
             case R.id.ll_customer:
                 //联系客服
-                startActivity(new Intent(getActivity(), TestActivity.class));
+//                startActivity(new Intent(getActivity(), TestActivity.class));
+                DialogUtil.showServiceDialog(getActivity(),custom_tel , new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(Intent.ACTION_DIAL);
+                        Uri data = Uri.parse("tel:" + custom_tel);
+                        intent.setData(data);
+                        startActivity(intent);
+                    }
+                }).show();
                 break;
         }
     }
@@ -135,7 +153,7 @@ public class MineFragment extends BaseFragment implements RequestFinish{
     @Override
     public void onResume() {
         super.onResume();
-        OkHttpUtils.getInstance().user_info(API.TOKEN_TEST,"1",this);
+        OkHttpUtils.getInstance().user_info(API.TOKEN_TEST,API.USERID,this);
     }
 
     @Override
@@ -143,10 +161,11 @@ public class MineFragment extends BaseFragment implements RequestFinish{
         UserInfo userInfo = (UserInfo)result.getData();
         userName.setText(userInfo.getNickname());
         userId.setText("ID:"+userInfo.getId());
-        Glide.with(getActivity()).load(userInfo.getHead_image()).into(iv_head);
+        Glide.with(getActivity()).load(userInfo.getHead_image()).apply(new RequestOptions().error(R.mipmap.wd_tx_nor)).into(iv_head);
         tv_follow_num.setText(userInfo.getAttention_count());
         tv_fans_num.setText(userInfo.getFans_count());
         tv_order_num.setText(userInfo.getOrder_sum());
+        custom_tel = userInfo.getCustom_tel();
     }
 
     @Override

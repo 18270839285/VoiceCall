@@ -18,7 +18,19 @@ public interface API {
     String BASE_URL = "http://voice.51qdd.net/api/";
 //    String TOKEN_TEST = "L2uk5tVN4CUQQb0P6n650BRTVLc4q0tV7K050Bdd0u0N7TKP";
     String TOKEN_TEST = "UfCQ19B0Y9XQX1Q0m8nDxbCyx1w0XnY000BY1cy013eCC3tq";
+    String USERID = "1";
+//    String TOKEN_TEST = "Sf3JalUwgJEYIl32FSgyYe3YwYS1FeLYjiwfjMuIffls8LYy";
+//    String USERID = "6";
+//    String TOKEN_TEST = "H5K2SBXac8Bm5JscrYA3j88kwyBy5mZ555W0fcZ5DzF5Cr26";
+//    String USERID = "14";
 
+    /**
+     * h5地址
+     */
+    String WithdrawalUrl = "http://support.51qdd.net/Withdrawal/#/";//提现规则
+    String WithdrawalUrl1 = "http://support.51qdd.net/Withdrawal/#/";//主播认证
+    String VOICECARD = "http://support.51qdd.net/demo.html";//身份认证
+//    String VOICECARD = "http://support.51qdd.net/attestation/#/voiceCard";//身份认证
 
     String COMMON_IMAGE_UPLOAD = "common/image/upload";//图片上传
     String USER_INFO = "user/info";//个人资料
@@ -44,8 +56,8 @@ public interface API {
      */
     String USER_ACCOUNT = "user/account";//我的账户
     String PACKAGE_RECHARGE = "package/recharge";//充值套餐列表
-    String ORDER_RECHARGE = "order/recharge";//虚拟币1 套餐充值
-    String ORDER_COIN1_LOG = "order/coin1/log";//虚拟币1 消费记录
+    String ORDER_RECHARGE = "order/recharge";//Y豆套餐充值
+    String ORDER_COIN1_LOG = "order/coin1/log";//Y豆 消费记录
     String ANCHOR_PRICE = "anchor/price";//主播价格
     String ORDER_VOICE = "order/voice";//语音下单
 
@@ -53,23 +65,38 @@ public interface API {
     String HOME = "home";//首页
     String ANCHOR_INFO = "anchor/info";//主播资料
     String USER_ATTENTION = "user/attention";//关注
-    String USER_ATTENTION_CANNEL = "user/attention/cannel";//取关
+    String USER_ATTENTION_CANCEL = "user/attention/cancel";//取关
 
     /**
      * 订单
      */
     String ORDER_LIST = "order/list";//订单列表
     String ORDER_INFO = "order/info";//订单详情
-    String ORDER_CANNEL = "order/cannel";//取消订单
+    String ORDER_CANCEL = "order/cancel";//取消订单
     String ORDER_FINISH = "order/finish";//订单完成
     String ORDER_REFUSE = "order/refuse";//拒绝订单
-    String ORDER_RECEIVEI = "order/receivei";//接单
+    String ORDER_RECEIVE = "order/receive";//接单
     String ORDER_BEGIN = "order/begin";//通话开始
     String ORDER_OVER = "order/over";//通话结束
+
+    /**
+     * 消息
+     */
+    String NOTICE_SYSTEM = "notice/system";//系统通知
+    String NOTICE_INDEX = "notice/index";//平台消息接口
+
+    /**
+     * 认证
+     */
+    String AUTH_IDENTITY = "auth/identity";//身份证认证
+    String AUTH_FACE = "auth/face";//身份证认证
+    String AUTH_ANCHOR = "auth/anchor";//主播认证
     /**
      * Returns 参数返回列表
      */
     String HTTP_OK = "0";
     int NORECORD = 550;// 没有找到记录
     int DATABASEADDERROR = 600;// 数据库添加错误
+
+    String temp_filename = "temp.jpg";
 }

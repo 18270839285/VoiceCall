@@ -12,6 +12,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import huidu.com.voicecall.R;
 import huidu.com.voicecall.base.BaseActivity;
+import huidu.com.voicecall.base.WebActivity;
 import huidu.com.voicecall.bean.UserMyAccount2;
 import huidu.com.voicecall.http.API;
 import huidu.com.voicecall.http.BaseModel;
@@ -52,7 +53,7 @@ public class MyWealthActivity extends BaseActivity implements RequestFinish{
 
     }
 
-    @OnClick({R.id.iv_back,R.id.tv_cash,R.id.tv_right})
+    @OnClick({R.id.iv_back,R.id.tv_cash,R.id.tv_right,R.id.tv_message})
     public void onViewClick(View view){
         switch (view.getId()){
             case R.id.iv_back:
@@ -61,6 +62,10 @@ public class MyWealthActivity extends BaseActivity implements RequestFinish{
             case R.id.tv_right:
                 //提现记录
                 jumpTo(CashWithdrawalActivity.class);
+                break;
+            case R.id.tv_message:
+                //提现提醒
+                startActivity(new Intent(this,WebActivity.class).putExtra("web_type",1));
                 break;
             case R.id.tv_cash:
                 //提现

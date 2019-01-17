@@ -7,11 +7,14 @@ import huidu.com.voicecall.bean.AnchorInfo;
 import huidu.com.voicecall.bean.AnchorPrice;
 import huidu.com.voicecall.bean.CoinLog;
 import huidu.com.voicecall.bean.Home;
+import huidu.com.voicecall.bean.IDCard;
 import huidu.com.voicecall.bean.OrderInfo;
 import huidu.com.voicecall.bean.OrderList;
 import huidu.com.voicecall.bean.PackageRecharge;
+import huidu.com.voicecall.bean.PlatformNotice;
 import huidu.com.voicecall.bean.SignBean;
 import huidu.com.voicecall.bean.SpareBean;
+import huidu.com.voicecall.bean.SystemNotice;
 import huidu.com.voicecall.bean.UserAccount;
 import huidu.com.voicecall.bean.UserAttention;
 import huidu.com.voicecall.bean.UserFans;
@@ -266,7 +269,7 @@ public class OkHttpUtils {
         okManager.postRequest(config, API.BASE_URL + API.PACKAGE_RECHARGE, data, protocol);
     }
     /**
-     * 虚拟币1 套餐充值
+     * Y豆 套餐充值
      */
     public void order_recharge(String token,String package_id,String pay_method,String is_sale, RequestFinish protocol) {
         RequestConfig config = new RequestConfig();
@@ -281,7 +284,7 @@ public class OkHttpUtils {
         okManager.postRequest(config, API.BASE_URL + API.ORDER_RECHARGE, data, protocol);
     }
     /**
-     * 虚拟币1 消费记录
+     * Y豆 消费记录
      */
     public void order_coin1_log(String token, RequestFinish protocol) {
         RequestConfig config = new RequestConfig();
@@ -364,27 +367,28 @@ public class OkHttpUtils {
     /**
      * 取关
      */
-    public void user_attention_cannel(String token,String anchor_id, RequestFinish protocol) {
+    public void user_attention_cancel(String token,String anchor_id, RequestFinish protocol) {
         RequestConfig config = new RequestConfig();
         config.setCls(Object.class);
-        config.setRequestCode(API.USER_ATTENTION_CANNEL);
+        config.setRequestCode(API.USER_ATTENTION_CANCEL);
         Map<String, String> data = new HashMap<String, String>();
         data.put("token", token);
         data.put("anchor_id", anchor_id);
-        okManager.postRequest(config, API.BASE_URL + API.USER_ATTENTION_CANNEL, data, protocol);
+        okManager.postRequest(config, API.BASE_URL + API.USER_ATTENTION_CANCEL, data, protocol);
     }
 
 
     /**
      * 订单列表
      */
-    public void order_list(String token,String is_receive, RequestFinish protocol) {
+    public void order_list(String token,String is_receive,int page, RequestFinish protocol) {
         RequestConfig config = new RequestConfig();
         config.setCls(OrderList.class);
         config.setRequestCode(API.ORDER_LIST);
         Map<String, String> data = new HashMap<String, String>();
         data.put("token", token);
         data.put("is_receive", is_receive);
+        data.put("page", page+"");
         okManager.postRequest(config, API.BASE_URL + API.ORDER_LIST, data, protocol);
     }
     /**
@@ -402,14 +406,14 @@ public class OkHttpUtils {
     /**
      * 取消订单
      */
-    public void order_cannel(String token,String order_no, RequestFinish protocol) {
+    public void order_cancel(String token,String order_no, RequestFinish protocol) {
         RequestConfig config = new RequestConfig();
         config.setCls(Object.class);
-        config.setRequestCode(API.ORDER_CANNEL);
+        config.setRequestCode(API.ORDER_CANCEL);
         Map<String, String> data = new HashMap<String, String>();
         data.put("token", token);
         data.put("order_no", order_no);
-        okManager.postRequest(config, API.BASE_URL + API.ORDER_CANNEL, data, protocol);
+        okManager.postRequest(config, API.BASE_URL + API.ORDER_CANCEL, data, protocol);
     }
     /**
      * 订单完成
@@ -438,14 +442,14 @@ public class OkHttpUtils {
     /**
      * 主播接单
      */
-    public void order_receivei(String token,String order_no, RequestFinish protocol) {
+    public void order_receive(String token,String order_no, RequestFinish protocol) {
         RequestConfig config = new RequestConfig();
         config.setCls(Object.class);
-        config.setRequestCode(API.ORDER_RECEIVEI);
+        config.setRequestCode(API.ORDER_RECEIVE);
         Map<String, String> data = new HashMap<String, String>();
         data.put("token", token);
         data.put("order_no", order_no);
-        okManager.postRequest(config, API.BASE_URL + API.ORDER_RECEIVEI, data, protocol);
+        okManager.postRequest(config, API.BASE_URL + API.ORDER_RECEIVE, data, protocol);
     }
     /**
      * 通话开始
@@ -461,17 +465,84 @@ public class OkHttpUtils {
         okManager.postRequest(config, API.BASE_URL + API.ORDER_BEGIN, data, protocol);
     }
     /**
-     * 通话开始
+     * 通话结束
      */
-    public void order_over(String token,String order_no,String record_id,String over_man, RequestFinish protocol) {
+    public void order_over(String token,String accid1,String accid2,String over_man, RequestFinish protocol) {
         RequestConfig config = new RequestConfig();
         config.setCls(Object.class);
         config.setRequestCode(API.ORDER_OVER);
         Map<String, String> data = new HashMap<String, String>();
         data.put("token", token);
-        data.put("order_no", order_no);
-        data.put("record_id", record_id);
+        data.put("accid1", accid1);
+        data.put("accid2", accid2);
         data.put("over_man", over_man);
         okManager.postRequest(config, API.BASE_URL + API.ORDER_OVER, data, protocol);
+    }
+    /**
+     * 平台消息接口
+     */
+    public void notice_index(String token,String page, RequestFinish protocol) {
+        RequestConfig config = new RequestConfig();
+        config.setCls(PlatformNotice.class);
+        config.setRequestCode(API.NOTICE_INDEX);
+        Map<String, String> data = new HashMap<String, String>();
+        data.put("token", token);
+        data.put("page", page);
+        okManager.postRequest(config, API.BASE_URL + API.NOTICE_INDEX, data, protocol);
+    }
+    /**
+     * 系统通知
+     */
+    public void notice_system(String token,String page, RequestFinish protocol) {
+        RequestConfig config = new RequestConfig();
+        config.setCls(SystemNotice.class);
+        config.setRequestCode(API.NOTICE_SYSTEM);
+        Map<String, String> data = new HashMap<String, String>();
+        data.put("token", token);
+        data.put("page", page);
+        okManager.postRequest(config, API.BASE_URL + API.NOTICE_SYSTEM, data, protocol);
+    }
+    /**
+     * 身份证认证
+     */
+    public void auth_identity(String token,String face_img,String back_img,String realname,String id_card, RequestFinish protocol) {
+        RequestConfig config = new RequestConfig();
+        config.setCls(IDCard.class);
+        config.setRequestCode(API.AUTH_IDENTITY);
+        Map<String, String> data = new HashMap<String, String>();
+        data.put("token", token);
+        data.put("face_img", face_img);
+        data.put("back_img", back_img);
+        data.put("realname", realname);
+        data.put("id_card", id_card);
+        okManager.postRequest(config, API.BASE_URL + API.AUTH_IDENTITY, data, protocol);
+    }
+    /**
+     * 人脸认证
+     */
+    public void auth_face(String token,String image, RequestFinish protocol) {
+        RequestConfig config = new RequestConfig();
+        config.setCls(Object.class);
+        config.setRequestCode(API.AUTH_FACE);
+        Map<String, String> data = new HashMap<String, String>();
+        data.put("token", token);
+        data.put("image", image);
+        okManager.postRequest(config, API.BASE_URL + API.AUTH_FACE, data, protocol);
+    }
+    /**
+     * 主播认证
+     */
+    public void auth_anchor(String token,String type,String price,String img,String voice,String description, RequestFinish protocol) {
+        RequestConfig config = new RequestConfig();
+        config.setCls(Object.class);
+        config.setRequestCode(API.AUTH_ANCHOR);
+        Map<String, String> data = new HashMap<String, String>();
+        data.put("token", token);
+        data.put("type", type);
+        data.put("price", price);
+        data.put("img", img);
+        data.put("voice", voice);
+        data.put("description", description);
+        okManager.postRequest(config, API.BASE_URL + API.AUTH_ANCHOR, data, protocol);
     }
 }

@@ -16,6 +16,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.youth.banner.Banner;
@@ -40,6 +41,7 @@ import huidu.com.voicecall.http.BaseModel;
 import huidu.com.voicecall.http.OkHttpUtils;
 import huidu.com.voicecall.http.RequestFinish;
 import huidu.com.voicecall.main.OrderDetailActivity;
+import huidu.com.voicecall.utils.EmptyViewUtil;
 import huidu.com.voicecall.utils.GlideImageLoader;
 import huidu.com.voicecall.utils.ToastUtil;
 
@@ -60,6 +62,7 @@ public class MyOrderFragment extends BaseFragment implements RequestFinish{
     List<OrderList.ListBean> mList = new ArrayList<>();
 
     String type_id = "";
+    int mPage = 1;
     @Override
     protected int getLayoutId() {
         return R.layout.fragment_my_order;
@@ -69,12 +72,13 @@ public class MyOrderFragment extends BaseFragment implements RequestFinish{
     protected void initView(View view) {
         type_id = getArguments().getString("is_receive")+"";
 
-        OkHttpUtils.getInstance().order_list(API.TOKEN_TEST,type_id,this);
+        OkHttpUtils.getInstance().order_list(API.TOKEN_TEST,type_id,mPage,this);
 
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                OkHttpUtils.getInstance().order_list(API.TOKEN_TEST, type_id, new RequestFinish() {
+                mPage = 1;
+                OkHttpUtils.getInstance().order_list(API.TOKEN_TEST, type_id,mPage, new RequestFinish() {
                     @Override
                     public void onSuccess(BaseModel result, String params) {
                         refreshLayout.setRefreshing(false);
@@ -97,6 +101,7 @@ public class MyOrderFragment extends BaseFragment implements RequestFinish{
     @Override
     public void onSuccess(BaseModel result, String params) {
         refreshLayout.setRefreshing(false);
+        mPage++;
         OrderList orderList = (OrderList)result.getData();
         mList = orderList.getList();
         mAdapter.setNewData(mList);
@@ -130,6 +135,8 @@ public class MyOrderFragment extends BaseFragment implements RequestFinish{
                 ImageView iv_sex = helper.getView(R.id.iv_sex);
                 CircleImageView iv_head = helper.getView(R.id.iv_head);
                 helper.setText(R.id.tv_name,item.getNickname());
+                helper.setText(R.id.tv_msg_type,item.getAnchor_type_name());
+                helper.setText(R.id.tv_age,item.getAge());
                 LinearLayout ll_sex_age = helper.getView(R.id.ll_sex_age);
 
                 String status = item.getStatus();
@@ -160,9 +167,9 @@ public class MyOrderFragment extends BaseFragment implements RequestFinish{
                 helper.setText(R.id.tv_state,status);
                 String coin_time = "";
                 if (item.getAnchor_bus_type().equals("1"))
-                    coin_time = item.getTotal()+"虚拟币1/"+item.getNum()+"分钟x"+item.getNum();
+                    coin_time = item.getTotal()+"Y豆/"+item.getNum()+"分钟x"+item.getNum();
                 else
-                    coin_time = item.getTotal()+"虚拟币1/"+item.getNum()+"次x"+item.getNum();
+                    coin_time = item.getTotal()+"Y豆/"+item.getNum()+"次x"+item.getNum();
                 helper.setText(R.id.tv_coin_time,coin_time);
                 if (item.getSex().equals("1")){
                     ll_sex_age.setBackgroundResource(R.drawable.shape_corner5_boy);
@@ -172,9 +179,35 @@ public class MyOrderFragment extends BaseFragment implements RequestFinish{
                     iv_sex.setImageResource(R.mipmap.girl);
                 }
 
-                Glide.with(getActivity()).load(item.getHead_image()).into(iv_head);
+                Glide.with(getActivity()).load(item.getHead_image()).apply(new RequestOptions().error(R.mipmap.wd_tx_nor)).into(iv_head);
             }
         };
+
+        mAdapter.setOnLoadMoreListener(new BaseQuickAdapter.RequestLoadMoreListener() {
+            @Override
+            public void onLoadMoreRequested() {
+                OkHttpUtils.getInstance().order_list(API.TOKEN_TEST, type_id, mPage, new RequestFinish() {
+                    @Override
+                    public void onSuccess(BaseModel result, String params) {
+                        mAdapter.loadMoreComplete();
+                        OrderList orderList = (OrderList)result.getData();
+                        if (orderList.getList().isEmpty()){
+                            mAdapter.loadMoreEnd();
+                            ToastUtil.toastShow("暂无更多数据");
+                        }else {
+                            mPage++;
+                            mAdapter.addData(orderList.getList());
+                            mAdapter.notifyDataSetChanged();
+                        }
+                    }
+                    @Override
+                    public void onError(String result) {
+                        mAdapter.loadMoreComplete();
+                        ToastUtil.toastShow(result);
+                    }
+                });
+            }
+        },recycleView);
         mAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
@@ -184,18 +217,10 @@ public class MyOrderFragment extends BaseFragment implements RequestFinish{
                 startActivity(intent);
             }
         });
+        mAdapter.setEmptyView(EmptyViewUtil.getEmptyView(getActivity(),2));
         recycleView.setAdapter(mAdapter);
     }
 
-//    @OnClick({R.id.rl_more})
-//    public void onViewClicked(View view) {
-//        switch (view.getId()) {
-//            case R.id.rl_more:
-//                //跳转更多
-//                break;
-//        }
-//
-//    }
 
     @Override
     public void onDestroyView() {

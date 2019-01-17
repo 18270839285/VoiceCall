@@ -36,6 +36,15 @@ public class OrderInfo implements Serializable {
         String anchor_price;
         String anchor_bus_type;
         String total;
+        String expire_time;
+
+        public String getExpire_time() {
+            return expire_time;
+        }
+
+        public void setExpire_time(String expire_time) {
+            this.expire_time = expire_time;
+        }
 
         public String getIs_anchor() {
             return is_anchor;

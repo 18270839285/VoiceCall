@@ -55,9 +55,9 @@ public class OkManager {
         //需要设置请求超时调用下面两行
         httpBuilder = new OkHttpClient.Builder();
         client = httpBuilder.readTimeout(10, TimeUnit.SECONDS)
-                .connectTimeout(10, TimeUnit.SECONDS).writeTimeout(15, TimeUnit.SECONDS) //设置超时
+                .connectTimeout(10, TimeUnit.SECONDS)
+                .writeTimeout(15, TimeUnit.SECONDS) //设置超时
                 .build();
-
     }
 
     /**
@@ -102,7 +102,11 @@ public class OkManager {
                     onError(callBack, "取消了这次请求");
                 else if (e.getClass().equals(SocketTimeoutException.class))
                     onError(callBack, "请求超时");
+                else if (e instanceof SocketTimeoutException)
+                    onError(callBack, "请求超时");
                 else if (e.getClass().equals(ConnectException.class))
+                    onError(callBack, "网络错误");
+                else if (e instanceof ConnectException)
                     onError(callBack, "网络错误");
                 else
                     onError(callBack, "服务器异常");

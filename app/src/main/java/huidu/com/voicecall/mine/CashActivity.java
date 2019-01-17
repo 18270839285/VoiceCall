@@ -44,7 +44,7 @@ public class CashActivity extends BaseActivity implements RequestFinish {
     @BindView(R.id.iv_check_ali)
     ImageView iv_check_ali;
 
-    //虚拟币人民币比率
+    //Y豆人民币比率
     String exchange_pro;
     //最大提现金额
     String max_money;

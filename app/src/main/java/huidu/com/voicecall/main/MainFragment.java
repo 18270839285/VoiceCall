@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -30,6 +31,7 @@ import huidu.com.voicecall.http.BaseModel;
 import huidu.com.voicecall.http.OkHttpUtils;
 import huidu.com.voicecall.http.RequestFinish;
 import huidu.com.voicecall.utils.Loading;
+import huidu.com.voicecall.utils.NetWorkUtil;
 import huidu.com.voicecall.utils.ToastUtil;
 
 /**
@@ -47,8 +49,12 @@ public class MainFragment extends BaseFragment implements RequestFinish {
     Unbinder unbinder;
     List<Home.Type> tabList = new ArrayList<>();
     List<Fragment> fragmentList = new ArrayList<>();
-
     Loading loading ;
+
+    @BindView(R.id.ll_nonet)
+    LinearLayout ll_nonet;
+    @BindView(R.id.tv_reload)
+    TextView tv_reload;
 
     @Override
     protected int getLayoutId() {
@@ -58,15 +64,31 @@ public class MainFragment extends BaseFragment implements RequestFinish {
     @Override
     protected void initView(View view) {
         loading = new Loading(getActivity());
-        loading.show();
-        OkHttpUtils.getInstance().home(API.TOKEN_TEST,"","",this);
 
+        tv_reload.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                initData();
+            }
+        });
     }
 
     @Override
     protected void initData() {
-
+        if (NetWorkUtil.isNetworkAvailable() == false) {
+            ToastUtil.toastShow("网络无连接，请检查网络");
+            ll_nonet.setVisibility(View.VISIBLE);
+            viewPager.setVisibility(View.GONE);
+            if (loading!=null&&loading.isShowing())
+                loading.dismiss();
+            return;
+        }
+        ll_nonet.setVisibility(View.GONE);
+        viewPager.setVisibility(View.VISIBLE);
+        loading.show();
+        OkHttpUtils.getInstance().home(API.TOKEN_TEST,"","",this);
     }
+
     @Override
     public void onSuccess(BaseModel result, String params) {
         loading.dismiss();
@@ -82,13 +104,6 @@ public class MainFragment extends BaseFragment implements RequestFinish {
     }
 
     private void initTab(){
-//        tabList.add("热门推荐");
-//        tabList.add("语音陪聊");
-//        tabList.add("线上歌手");
-//        tabList.add("哄睡觉");
-//        tabList.add("逗你笑");
-//        tabList.add("瞎几把搞");
-//        tabList.add("不想乱搞");
         for (int i = 0; i < tabList.size(); i++) {
             HotFragment fragment = HotFragment.newInstance(tabList.get(i).getId(),tabList.get(i).getType_name());
             fragmentList.add(fragment);

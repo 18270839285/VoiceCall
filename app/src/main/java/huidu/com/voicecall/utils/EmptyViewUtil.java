@@ -6,6 +6,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+
 import huidu.com.voicecall.R;
 
 
@@ -30,30 +32,30 @@ public class EmptyViewUtil {
 //        return inflate;
 //    }
 //
-//    public static View getEmptyView(Context context, int type) {
-//        View inflate = LayoutInflater.from(context).inflate(R.layout.custome_empty_view, null, false);
-//        ImageView iv_empty = inflate.findViewById(R.id.iv_empty);
-//        TextView tv_msg = inflate.findViewById(R.id.tv_msg);
-//        switch (type) {
-//            case 1://系统消息
-//                Glide.with(context).load(R.drawable.pingtai_kongbaiye).into(iv_empty);
-//                tv_msg.setText("平台还没有发布任何公告哦");
-//                break;
-//            case 2://平台公告
-//                Glide.with(context).load(R.drawable.xitong_konmgbaiye).into(iv_empty);
-//                tv_msg.setText("暂时还没有最新消息哦");
-//                break;
-//            case 3://商品搜索
-//                Glide.with(context).load(R.drawable.ss_zwsp).into(iv_empty);
-//                tv_msg.setText("抱歉，没有找到相关的宝贝~");
-//                break;
-//            case 4://账单管理
-//                Glide.with(context).load(R.drawable.zdgl_zwzd).into(iv_empty);
-//                tv_msg.setText("你还没有账单哦!");
-//                break;
-//        }
-//        return inflate;
-//    }
+    public static View getEmptyView(Context context, int type) {
+        View inflate = LayoutInflater.from(context).inflate(R.layout.empty_view, null, false);
+        ImageView iv_empty = inflate.findViewById(R.id.iv_empty);
+        TextView tv_msg = inflate.findViewById(R.id.tv_message);
+        switch (type) {
+            case 1://充值记录、提现记录
+                Glide.with(context).load(R.mipmap.czjl).into(iv_empty);
+                tv_msg.setText("这里什么也没有呢?");
+                break;
+            case 2://我的订单
+                Glide.with(context).load(R.mipmap.wddd).into(iv_empty);
+                tv_msg.setText("还没有相关订单呢~");
+                break;
+            case 3://我的粉丝
+                Glide.with(context).load(R.mipmap.wdgz).into(iv_empty);
+                tv_msg.setText("还没有粉丝呢~");
+                break;
+            case 4://我的关注
+                Glide.with(context).load(R.mipmap.wdgz).into(iv_empty);
+                tv_msg.setText("还没有关注别人哦~");
+                break;
+        }
+        return inflate;
+    }
 //
 //
 //    public static View getErrorView(Context context, final View.OnClickListener listener) {
