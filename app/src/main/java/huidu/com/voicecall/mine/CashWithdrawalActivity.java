@@ -25,6 +25,7 @@ import huidu.com.voicecall.http.OkHttpUtils;
 import huidu.com.voicecall.http.RequestFinish;
 import huidu.com.voicecall.utils.DateUtil;
 import huidu.com.voicecall.utils.EmptyViewUtil;
+import huidu.com.voicecall.utils.SPUtils;
 import huidu.com.voicecall.utils.ToastUtil;
 
 /**
@@ -51,14 +52,14 @@ public class CashWithdrawalActivity extends BaseActivity implements RequestFinis
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                OkHttpUtils.getInstance().order_withdrawal_log(API.TOKEN_TEST, CashWithdrawalActivity.this);
+                OkHttpUtils.getInstance().order_withdrawal_log(SPUtils.getValue("token"), CashWithdrawalActivity.this);
             }
         });
     }
 
     @Override
     protected void initData() {
-        OkHttpUtils.getInstance().order_withdrawal_log(API.TOKEN_TEST, this);
+        OkHttpUtils.getInstance().order_withdrawal_log(SPUtils.getValue("token"), this);
         recycleView.setLayoutManager(new LinearLayoutManager(this));
         recycleView.setHasFixedSize(true);
         mAdapter = new BaseQuickAdapter<WithdrawalLog.ListBean, BaseViewHolder>(R.layout.item_withdrawal, mList) {

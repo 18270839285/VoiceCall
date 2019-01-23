@@ -2,11 +2,11 @@ package huidu.com.voicecall.mine;
 
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
@@ -20,6 +20,7 @@ import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,6 +40,7 @@ import huidu.com.voicecall.http.RequestFinish;
 import huidu.com.voicecall.main.OrderDetailActivity;
 import huidu.com.voicecall.utils.DialogUtil;
 import huidu.com.voicecall.utils.Loading;
+import huidu.com.voicecall.utils.SPUtils;
 import huidu.com.voicecall.utils.ToastUtil;
 
 /**
@@ -75,10 +77,14 @@ public class AnchorsSkillsActivity extends BaseActivity implements RequestFinish
     @BindView(R.id.tv_price)
     TextView tv_price;
 
-    String anchor_id;
-    String anchor_type_id;
+    private String anchor_id;
+    private String anchor_type_id;
 
-    Loading mLoading;
+    private Loading mLoading;
+
+    private MediaPlayer mediaPlayer;
+    private String audioUrl = "";
+    private boolean isRobot = false;
 
     @Override
     protected int getLayoutId() {
@@ -90,19 +96,20 @@ public class AnchorsSkillsActivity extends BaseActivity implements RequestFinish
         mLoading = new Loading(this);
         anchor_id = getIntent().getStringExtra("anchor_id");
         anchor_type_id = getIntent().getStringExtra("anchor_type_id");
+        isRobot = getIntent().getBooleanExtra("isRobot",false);
         refresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                OkHttpUtils.getInstance().anchor_info(API.TOKEN_TEST, anchor_id, anchor_type_id, AnchorsSkillsActivity.this);
-                OkHttpUtils.getInstance().anchor_price(API.TOKEN_TEST, anchor_id, anchor_type_id, AnchorsSkillsActivity.this);
+                OkHttpUtils.getInstance().anchor_info(SPUtils.getValue("token"), anchor_id, anchor_type_id, isRobot, AnchorsSkillsActivity.this);
+                OkHttpUtils.getInstance().anchor_price(SPUtils.getValue("token"), anchor_id, anchor_type_id, isRobot, AnchorsSkillsActivity.this);
             }
         });
     }
 
     @Override
     protected void initData() {
-        OkHttpUtils.getInstance().anchor_info(API.TOKEN_TEST, anchor_id, anchor_type_id, this);
-        OkHttpUtils.getInstance().anchor_price(API.TOKEN_TEST, anchor_id, anchor_type_id, this);
+        OkHttpUtils.getInstance().anchor_info(SPUtils.getValue("token"), anchor_id, anchor_type_id, isRobot, this);
+        OkHttpUtils.getInstance().anchor_price(SPUtils.getValue("token"), anchor_id, anchor_type_id, isRobot, this);
     }
 
     @OnClick({R.id.iv_back, R.id.iv_audio, R.id.ll_attention, R.id.ll_chat})
@@ -113,26 +120,33 @@ public class AnchorsSkillsActivity extends BaseActivity implements RequestFinish
                 break;
             case R.id.iv_audio:
                 //试听语音
+                if (mediaPlayer != null && mediaPlayer.isPlaying()) {
+                    mediaPlayer.pause();
+                } else {
+                    if (!audioUrl.isEmpty()) {
+                        startAudio(audioUrl);
+                    }
+                }
                 break;
             case R.id.ll_attention:
-                if(anchorInfo.getIs_attention().equals("1")){
+                if (anchorInfo.getIs_attention().equals("1")) {
                     //取消关注
-                    OkHttpUtils.getInstance().user_attention_cancel(API.TOKEN_TEST,anchor_id,this);
-                }else {
+                    OkHttpUtils.getInstance().user_attention_cancel(SPUtils.getValue("token"), anchor_id, this);
+                } else {
                     //关注
-                    OkHttpUtils.getInstance().user_attention(API.TOKEN_TEST,anchor_id,this);
+                    OkHttpUtils.getInstance().user_attention(SPUtils.getValue("token"), anchor_id, this);
                 }
                 break;
             case R.id.ll_chat:
                 //约聊
                 goChat(anchorPrice.getInfo());
-
                 break;
         }
     }
 
     AnchorPrice anchorPrice;
     AnchorInfo anchorInfo;
+
     @Override
     public void onSuccess(BaseModel result, String params) {
         refresh.setRefreshing(false);
@@ -157,6 +171,7 @@ public class AnchorsSkillsActivity extends BaseActivity implements RequestFinish
                     tv_attention.setText("关注");
                     tv_attention.setTextColor(getResources().getColor(R.color.textColor));
                 }
+                audioUrl = anchorInfo.getVoice();
                 break;
             case API.ANCHOR_PRICE:
                 anchorPrice = (AnchorPrice) result.getData();
@@ -164,11 +179,11 @@ public class AnchorsSkillsActivity extends BaseActivity implements RequestFinish
             case API.ORDER_VOICE:
                 //提交订单跳转订单详情页
                 ToastUtil.toastShow("下单成功");
-                SpareBean spareBean = (SpareBean)result.getData();
-                startActivity(new Intent(this,OrderDetailActivity.class)
-                        .putExtra("order_no",""+spareBean.getOrder_no())
-                        .putExtra("order_type","2"));
-                if (alertDialog!=null&&alertDialog.isShowing()){
+                SpareBean spareBean = (SpareBean) result.getData();
+                startActivity(new Intent(this, OrderDetailActivity.class)
+                        .putExtra("order_no", "" + spareBean.getOrder_no())
+                        .putExtra("order_type", "2"));
+                if (alertDialog != null && alertDialog.isShowing()) {
                     alertDialog.dismiss();
                 }
 //                jumpTo(OrderDetailActivity.class);
@@ -185,8 +200,12 @@ public class AnchorsSkillsActivity extends BaseActivity implements RequestFinish
 
     @Override
     public void onError(String result) {
-        refresh.setRefreshing(false);
-        mLoading.dismiss();
+        if (refresh!=null&&refresh.isRefreshing()){
+            refresh.setRefreshing(false);
+        }
+        if (mLoading!=null&&mLoading.isShowing()){
+            mLoading.dismiss();
+        }
         ToastUtil.toastShow(result);
     }
 
@@ -212,7 +231,7 @@ public class AnchorsSkillsActivity extends BaseActivity implements RequestFinish
         }, "立即充值", new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (alertDialog!=null&&alertDialog.isShowing()){
+                if (alertDialog != null && alertDialog.isShowing()) {
                     alertDialog.dismiss();
                 }
                 jumpTo(MyAccountActivity.class);
@@ -226,8 +245,9 @@ public class AnchorsSkillsActivity extends BaseActivity implements RequestFinish
     int TIMES_POSITION = 0;
     int FEE_PRICE = 0;
     AlertDialog alertDialog;
+
     private void goChat(final AnchorPrice.Info apInfo) {
-       alertDialog = new AlertDialog.Builder(this,
+        alertDialog = new AlertDialog.Builder(this,
                 R.style.dialog).create();
         alertDialog.show();
         final Window window = alertDialog.getWindow();
@@ -255,9 +275,9 @@ public class AnchorsSkillsActivity extends BaseActivity implements RequestFinish
         tv_pay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (Integer.parseInt(apInfo.getBalance())>=FEE_PRICE){
-                     OkHttpUtils.getInstance().order_voice(API.TOKEN_TEST,anchor_id,anchor_type_id,apInfo.getTimes().get(TIMES_POSITION)+"",tv_num.getText().toString(),AnchorsSkillsActivity.this);
-                }else {
+                if (Integer.parseInt(apInfo.getBalance()) >= FEE_PRICE) {
+                    OkHttpUtils.getInstance().order_voice(SPUtils.getValue("token"), anchor_id, anchor_type_id, apInfo.getTimes().get(TIMES_POSITION) + "", tv_num.getText().toString(), AnchorsSkillsActivity.this);
+                } else {
                     showMessage();
                 }
             }
@@ -331,5 +351,38 @@ public class AnchorsSkillsActivity extends BaseActivity implements RequestFinish
         };
 
         recyclerView.setAdapter(adapter);
+    }
+
+    private void startAudio(String audioUrl) {
+        mediaPlayer = new MediaPlayer();
+        try {
+            mediaPlayer.setDataSource(audioUrl);
+            //3 准备播放
+            mediaPlayer.prepareAsync();
+            mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                @Override
+                public void onPrepared(MediaPlayer media) {
+                    mediaPlayer.start();
+                }
+            });
+            mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                @Override
+                public void onCompletion(MediaPlayer media) {
+                    mediaPlayer.stop();
+                    mediaPlayer = null;
+                }
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mediaPlayer != null && mediaPlayer.isPlaying()) {
+            mediaPlayer.stop();
+            mediaPlayer = null;
+        }
     }
 }

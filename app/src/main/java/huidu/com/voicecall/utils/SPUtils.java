@@ -3,12 +3,9 @@ package huidu.com.voicecall.utils;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-/**
- * Created by zzj on 2017/9/12.
- */
+import huidu.com.voicecall.VoiceApp;
 
 public class SPUtils {
-
 
     /**
      * 向SharedPreferences中写入int类型数据
@@ -23,8 +20,19 @@ public class SPUtils {
 
     public SPUtils() {
         super();
+    }
 
+    public static void putValue(String key,
+                                String value) {
+        SharedPreferences.Editor sp = getEditor(VoiceApp.mContext);
+        sp.putString(key, value);
+        sp.commit();
+    }
 
+    public static String getValue(String key) {
+        SharedPreferences sp = VoiceApp.mContext.getSharedPreferences(SPREADER, Context.MODE_PRIVATE);
+        String value = sp.getString(key, "");
+        return value;
     }
 
     public static void putValue(Context ctx, String key,
@@ -49,7 +57,6 @@ public class SPUtils {
         sp.putString(key, value);
         sp.commit();
     }
-
 
     public static void putValue(Context ctx, String key,
                                 float value) {
@@ -89,6 +96,7 @@ public class SPUtils {
         String value = sp.getString(key, defValue);
         return value;
     }
+
     public static String getValue(Context ctx, String key) {
         SharedPreferences sp = ctx.getSharedPreferences(SPREADER, Context.MODE_PRIVATE);
         String value = sp.getString(key, "");

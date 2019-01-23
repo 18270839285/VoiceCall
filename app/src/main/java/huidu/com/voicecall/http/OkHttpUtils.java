@@ -1,13 +1,16 @@
 package huidu.com.voicecall.http;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
 import huidu.com.voicecall.bean.AnchorInfo;
 import huidu.com.voicecall.bean.AnchorPrice;
+import huidu.com.voicecall.bean.AnchorType;
 import huidu.com.voicecall.bean.CoinLog;
 import huidu.com.voicecall.bean.Home;
 import huidu.com.voicecall.bean.IDCard;
+import huidu.com.voicecall.bean.ImInfo;
 import huidu.com.voicecall.bean.OrderInfo;
 import huidu.com.voicecall.bean.OrderList;
 import huidu.com.voicecall.bean.PackageRecharge;
@@ -314,7 +317,7 @@ public class OkHttpUtils {
     /**
      * 主播资料
      */
-    public void anchor_info(String token,String anchor_id,String anchor_type_id, RequestFinish protocol) {
+    public void anchor_info(String token,String anchor_id,String anchor_type_id,boolean is_robot, RequestFinish protocol) {
         RequestConfig config = new RequestConfig();
         config.setCls(AnchorInfo.class);
         config.setRequestCode(API.ANCHOR_INFO);
@@ -322,12 +325,13 @@ public class OkHttpUtils {
         data.put("token", token);
         data.put("anchor_id", anchor_id);
         data.put("anchor_type_id", anchor_type_id);
+        data.put("is_robot", is_robot?"1":"");
         okManager.postRequest(config, API.BASE_URL + API.ANCHOR_INFO, data, protocol);
     }
     /**
      * 主播价格
      */
-    public void anchor_price(String token,String anchor_id,String anchor_type_id, RequestFinish protocol) {
+    public void anchor_price(String token,String anchor_id,String anchor_type_id,boolean is_robot, RequestFinish protocol) {
         RequestConfig config = new RequestConfig();
         config.setCls(AnchorPrice.class);
         config.setRequestCode(API.ANCHOR_PRICE);
@@ -335,6 +339,7 @@ public class OkHttpUtils {
         data.put("token", token);
         data.put("anchor_id", anchor_id);
         data.put("anchor_type_id", anchor_type_id);
+        data.put("is_robot", is_robot?"1":"");
         okManager.postRequest(config, API.BASE_URL + API.ANCHOR_PRICE, data, protocol);
     }
     /**
@@ -544,5 +549,51 @@ public class OkHttpUtils {
         data.put("voice", voice);
         data.put("description", description);
         okManager.postRequest(config, API.BASE_URL + API.AUTH_ANCHOR, data, protocol);
+    }
+    /**
+     * 主播类型
+     */
+    public void auth_anchor_type(String token, RequestFinish protocol) {
+        RequestConfig config = new RequestConfig();
+        config.setElement(AnchorType.class);
+        config.setRequestCode(API.AUTH_ANCHOR_TYPE);
+        Map<String, String> data = new HashMap<String, String>();
+        data.put("token", token);
+        okManager.postRequest(config, API.BASE_URL + API.AUTH_ANCHOR_TYPE, data, protocol);
+    }
+    /**
+     * 用户im信息
+     */
+    public void sign_im_info(String token, RequestFinish protocol) {
+        RequestConfig config = new RequestConfig();
+        config.setCls(ImInfo.class);
+        config.setRequestCode(API.SIGN_IM_INFO);
+        Map<String, String> data = new HashMap<String, String>();
+        data.put("token", token);
+        okManager.postRequest(config, API.BASE_URL + API.SIGN_IM_INFO, data, protocol);
+    }
+    /**
+     * accid获取信息
+     */
+    public void accid_name(String accid, RequestFinish protocol) {
+        RequestConfig config = new RequestConfig();
+        config.setCls(ImInfo.class);
+        config.setRequestCode(API.ACCID_NAME);
+        Map<String, String> data = new HashMap<String, String>();
+        data.put("accid", accid);
+        okManager.postRequest(config, API.BASE_URL + API.ACCID_NAME, data, protocol);
+    }
+
+
+
+
+    /**
+     * 音频上传
+     */
+    public void common_audio(String audio, RequestFinish protocol) {
+        RequestConfig config = new RequestConfig();
+        config.setCls(SpareBean.class);
+        config.setRequestCode(API.COMMON_AUDIO);
+        okManager.postFileRequest(config, API.BASE_URL + API.COMMON_AUDIO, audio, protocol);
     }
 }

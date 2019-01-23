@@ -28,6 +28,7 @@ import huidu.com.voicecall.http.OkHttpUtils;
 import huidu.com.voicecall.http.RequestFinish;
 import huidu.com.voicecall.utils.DateUtil;
 import huidu.com.voicecall.utils.EmptyViewUtil;
+import huidu.com.voicecall.utils.SPUtils;
 import huidu.com.voicecall.utils.ToastUtil;
 
 /**
@@ -56,13 +57,13 @@ public class SystemNotificationFragment extends BaseFragment implements RequestF
     @Override
     protected void initView(View view) {
 
-        OkHttpUtils.getInstance().notice_system(API.TOKEN_TEST, mPage + "", this);
+        OkHttpUtils.getInstance().notice_system(SPUtils.getValue("token"), mPage + "", this);
 
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 mPage = 1;
-                OkHttpUtils.getInstance().notice_system(API.TOKEN_TEST, mPage+"", new RequestFinish() {
+                OkHttpUtils.getInstance().notice_system(SPUtils.getValue("token"), mPage+"", new RequestFinish() {
                     @Override
                     public void onSuccess(BaseModel result, String params) {
                         refreshLayout.setRefreshing(false);

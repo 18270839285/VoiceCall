@@ -31,21 +31,12 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        if (Build.VERSION.SDK_INT >= 21){
-//            View decorView = getWindow().getDecorView();
-//            decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
-//            getWindow().setStatusBarColor(Color.TRANSPARENT);
-//        }
         setContentView(getLayoutId());
         fullScreen(this);
-        setAndroidNativeLightStatusBar(this,true);
-//        setStatusBar();
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        setAndroidNativeLightStatusBar(this, true);
         Log.e(TAG, "onCreate: this:" + TAG);
         bind = ButterKnife.bind(this);
         AtyContainer.getInstance().addActivity(this);
-//        StatusBarUtil.setStatusBarColor(this, R.color.white_ffffff);
-//        StatusBarUtil.StatusBarLightMode(this);
         initView();
         initData();
         getPermissions();
@@ -53,6 +44,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     protected boolean useThemestatusBarColor = false;//是否使用特殊的标题栏背景颜色，android5.0以上可以设置状态栏背景色，如果不使用则使用透明色值
     protected boolean useStatusBarColor = true;//是否使用状态栏文字和图标为暗色，如果状态栏采用了白色系，则需要使状态栏和图标为暗色，android6.0以上可以设置
+
     /**
      * 通过设置全屏，设置状态栏透明
      *
@@ -128,6 +120,9 @@ public abstract class BaseActivity extends AppCompatActivity {
             if (checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 permissions.add(Manifest.permission.ACCESS_COARSE_LOCATION);
             }
+            if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                permissions.add(Manifest.permission.READ_EXTERNAL_STORAGE);
+            }
             if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
                 permissions.add(Manifest.permission.CAMERA);
             }
@@ -139,6 +134,13 @@ public abstract class BaseActivity extends AppCompatActivity {
             }
             if (checkSelfPermission(Manifest.permission.WRITE_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
                 permissions.add(Manifest.permission.WRITE_CONTACTS);
+            }
+            // 读写权限
+            if (addPermission(permissions, Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                permissionInfo += "Manifest.permission.WRITE_EXTERNAL_STORAGE Deny \n";
+            }
+            if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                permissions.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
             }
             /*
              * 读写权限和电话状态权限非必要权限(建议授予)只会申请一次，用户同意或者禁止，只会弹一次

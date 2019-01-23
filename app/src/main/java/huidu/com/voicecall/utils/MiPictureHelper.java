@@ -18,6 +18,7 @@ import android.util.Log;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -127,41 +128,41 @@ public class MiPictureHelper {
         return "com.google.android.apps.photos.content".equals(uri.getAuthority());
     }
 
-    /**
-     * 剪切头像
-     *
-     * @param uri
-     * @function:
-     * @author:Jerry
-     * @date:2013-12-30
-     */
-    public static String cropHeadImg(Activity activity, Uri uri) {
-        SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmmss");//获取当前时间，进一步转化为字符串
-        String str = format.format(new Date());
-        String path = str + API.temp_filename;
-        File tempFile = new File(Environment.getExternalStorageDirectory(), path);
-        // 裁剪图片意图
-        Intent intent = new Intent("com.android.camera.action.CROP");
-        intent.setDataAndType(uri, "image/*");
-        intent.putExtra("crop", "true");
-        // 裁剪框的比例，1：1
-        intent.putExtra("aspectX", 0.1);
-        intent.putExtra("aspectY", 0.1);
-        // 图片格式
-        intent.putExtra("noFaceDetection", true);// 取消人脸识别
-        // intent.putExtra("return-data", true);// true:不返回uri，false：返回uri
-        intent.putExtra("return-data", false);
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(tempFile));
-        activity.startActivityForResult(intent, PicturePickerFragment.PHOTO_REQUEST_CUT);
-        return tempFile.getAbsolutePath();
-    }
+//    /**
+//     * 剪切头像
+//     *
+//     * @param uri
+//     * @function:
+//     * @author:Jerry
+//     * @date:2013-12-30
+//     */
+//    public static String cropHeadImg(Activity activity, Uri uri) {
+//        SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmmss");//获取当前时间，进一步转化为字符串
+//        String str = format.format(new Date());
+//        String path = str + API.temp_filename;
+//        File tempFile = new File(Environment.getExternalStorageDirectory(), path);
+//        // 裁剪图片意图
+//        Intent intent = new Intent("com.android.camera.action.CROP");
+//        intent.setDataAndType(uri, "image/*");
+//        intent.putExtra("crop", "true");
+//        // 裁剪框的比例，1：1
+//        intent.putExtra("aspectX", 0.1);
+//        intent.putExtra("aspectY", 0.1);
+//        // 图片格式
+//        intent.putExtra("noFaceDetection", true);// 取消人脸识别
+//        // intent.putExtra("return-data", true);// true:不返回uri，false：返回uri
+//        intent.putExtra("return-data", false);
+//        intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(tempFile));
+//        activity.startActivityForResult(intent, PicturePickerFragment.PHOTO_REQUEST_CUT);
+//        return tempFile.getAbsolutePath();
+//    }
 
 
     public static String cropSquareCard(Activity activity, Uri uri) {
         SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmmss");//获取当前时间，进一步转化为字符串
         String str = format.format(new Date());
         String path = str + API.temp_filename;
-        File tempFile = new File(Environment.getExternalStorageDirectory(), path);
+        File tempFile = new File(API.FILE_DIR, path);
         // 裁剪图片意图
         Intent intent = new Intent("com.android.camera.action.CROP");
         intent.setDataAndType(uri, "image/*");
@@ -188,7 +189,7 @@ public class MiPictureHelper {
         SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmmss");//获取当前时间，进一步转化为字符串
         String str = format.format(new Date());
         String path = str + API.temp_filename;
-        File tempFile = new File(Environment.getExternalStorageDirectory(), path);
+        File tempFile = new File(API.FILE_DIR, path);
         // 裁剪图片意图
         Intent intent = new Intent("com.android.camera.action.CROP");
         intent.setDataAndType(uri, "image/*");
@@ -213,6 +214,7 @@ public class MiPictureHelper {
         String str = format.format(new Date());
         String path = str + API.temp_filename;
         File tempFile = new File(Environment.getExternalStorageDirectory(), path);
+//        File tempFile = new File(API.FILE_DIR, path);
         // 裁剪图片意图
         Intent intent = new Intent("com.android.camera.action.CROP");
         intent.setDataAndType(uri, "image/*");
@@ -239,18 +241,53 @@ public class MiPictureHelper {
         String str = format.format(new Date());
         String path = str + API.temp_filename;
         File tempFile = new File(Environment.getExternalStorageDirectory(), path);
+//        File tempFile = new File(API.FILE_DIR, path);
         // 裁剪图片意图
         Intent intent = new Intent("com.android.camera.action.CROP");
         intent.setDataAndType(uri, "image/*");
         intent.putExtra("crop", "true");
-        intent.putExtra("outputX", 640);
-        intent.putExtra("outputY", 440);
+//        intent.putExtra("outputX", 200);
+//        intent.putExtra("outputY", 200);
         intent.putExtra("aspectX", 16);
         intent.putExtra("aspectY", 11);
         intent.putExtra("return-data", true);
         intent.putExtra("scale", true);
         intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(tempFile));
-        activity.startActivityForResult(intent, PHOTO_REQUEST_CUT);
+        activity.startActivityForResult(intent, PicturePicker.PHOTO_REQUEST_CUT);
+        return tempFile;
+    }
+    /**
+     * 获取封面
+     *
+     * @param activity
+     * @param uri
+     * @return
+     */
+    public static File cropHandCard4(Activity activity, Uri uri) {
+//        SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmmss");//获取当前时间，进一步转化为字符串
+//        String str = format.format(new Date());
+//        String path = str + API.temp_filename;
+//        String path = API.temp_filename;
+        File tempFile = new File(Environment.getExternalStorageDirectory(), API.temp_filename);
+        if (!tempFile.exists()){
+            try {
+                tempFile.createNewFile();
+            }catch (IOException e){
+                e.printStackTrace();
+            }
+        }
+        // 裁剪图片意图
+        Intent intent = new Intent("com.android.camera.action.CROP");
+        intent.setDataAndType(uri, "image/*");
+        intent.putExtra("crop", "true");
+//        intent.putExtra("outputX", 640);
+//        intent.putExtra("outputY", 440);
+        intent.putExtra("aspectX", 45);
+        intent.putExtra("aspectY", 29);
+        intent.putExtra("return-data", true);
+        intent.putExtra("scale", true);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(tempFile));
+        activity.startActivityForResult(intent, PicturePicker.PHOTO_REQUEST_CUT);
         return tempFile;
     }
 
@@ -259,18 +296,18 @@ public class MiPictureHelper {
         String str = format.format(new Date());
         String path = str + API.temp_filename;
         File tempFile = new File(Environment.getExternalStorageDirectory(), path);
+        // 裁剪图片意图
         Intent intent = new Intent("com.android.camera.action.CROP");
         intent.setDataAndType(uri, "image/*");
         intent.putExtra("crop", "true");
-        intent.putExtra("outputX", 640);
-        intent.putExtra("outputY", 440);
+//        intent.putExtra("outputX", 640);
+//        intent.putExtra("outputY", 440);
         intent.putExtra("aspectX", 16);
         intent.putExtra("aspectY", 11);
-        intent.putExtra("return-data", false);
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
-        intent.putExtra("outputFormat",  Uri.fromFile(tempFile));
-        intent.putExtra("noFaceDetection", true);
-        activity.startActivityForResult(intent, PHOTO_REQUEST_CUT);
+        intent.putExtra("return-data", true);
+        intent.putExtra("scale", true);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(tempFile));
+        activity.startActivityForResult(intent, PicturePicker.PHOTO_REQUEST_CUT);
     }
     /**
      * 手持身份证
@@ -283,7 +320,7 @@ public class MiPictureHelper {
         SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmmss");//获取当前时间，进一步转化为字符串
         String str = format.format(new Date());
         String path = str + API.temp_filename;
-        File tempFile = new File(Environment.getExternalStorageDirectory(), path);
+        File tempFile = new File(API.FILE_DIR, path);
         // 裁剪图片意图
         Intent intent = new Intent("com.android.camera.action.CROP");
         intent.setDataAndType(uri, "image/*");
@@ -306,7 +343,7 @@ public class MiPictureHelper {
         SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmmss");//获取当前时间，进一步转化为字符串
         String str = format.format(new Date());
         String path = str + API.temp_filename;
-        File tempFile = new File(Environment.getExternalStorageDirectory(), path);
+        File tempFile = new File(API.FILE_DIR, path);
         // 裁剪图片意图
         Intent intent = new Intent("com.android.camera.action.CROP");
         intent.setDataAndType(uri, "image/*");
@@ -325,7 +362,7 @@ public class MiPictureHelper {
         SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmmss");//获取当前时间，进一步转化为字符串
         String str = format.format(new Date());
         String path = str + API.temp_filename;
-        File tempFile = new File(Environment.getExternalStorageDirectory(), path);
+        File tempFile = new File(API.FILE_DIR, path);
         // 裁剪图片意图
         Intent intent = new Intent("com.android.camera.action.CROP");
         intent.setDataAndType(uri, "image/*");

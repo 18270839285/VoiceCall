@@ -30,6 +30,7 @@ import huidu.com.voicecall.http.OkHttpUtils;
 import huidu.com.voicecall.http.RequestFinish;
 import huidu.com.voicecall.utils.DateUtil;
 import huidu.com.voicecall.utils.EmptyViewUtil;
+import huidu.com.voicecall.utils.SPUtils;
 import huidu.com.voicecall.utils.ToastUtil;
 
 /**
@@ -57,14 +58,14 @@ public class VirtualCoinRecordActivity extends BaseActivity implements RequestFi
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                OkHttpUtils.getInstance().order_coin1_log(API.TOKEN_TEST, VirtualCoinRecordActivity.this);
+                OkHttpUtils.getInstance().order_coin1_log(SPUtils.getValue("token"), VirtualCoinRecordActivity.this);
             }
         });
     }
 
     @Override
     protected void initData() {
-        OkHttpUtils.getInstance().order_coin1_log(API.TOKEN_TEST, this);
+        OkHttpUtils.getInstance().order_coin1_log(SPUtils.getValue("token"), this);
         recycleView.setLayoutManager(new LinearLayoutManager(this));
         recycleView.setHasFixedSize(true);
         mAdapter = new BaseQuickAdapter<CoinLog.ListBean, BaseViewHolder>(R.layout.item_virtual_record, mList) {

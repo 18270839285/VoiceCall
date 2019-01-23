@@ -1,1 +1,1 @@
-include ':app',':RecycleViewLibrary'
+include ':app',':RecycleViewLibrary', ':ocr_ui',':faceplatform-ui',':faceplatform'

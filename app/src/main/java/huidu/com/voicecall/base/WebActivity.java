@@ -27,9 +27,10 @@ public class WebActivity extends BaseActivity {
     String web_url;
     int web_type = 1;
 
-    private static final int WITHDRAWAL = 1;//提现规则
-//    private static final int WITHDRAWAL1 = 2;//人脸认证
-//    private static final int VOICECARD = 3;//身份认证
+    private static final int WITHDRAWAL0 = 1;//提现规则
+    private static final int WITHDRAWAL1 = 2;//注册协议
+    private static final int WITHDRAWAL2 = 3;//充值服务协议
+    private static final int WITHDRAWAL3 = 4;//隐私策略
 
     @Override
     protected int getLayoutId() {
@@ -42,18 +43,22 @@ public class WebActivity extends BaseActivity {
             web_type = getIntent().getIntExtra("web_type", 1);
         }
         switch (web_type) {
-            case WITHDRAWAL:
+            case WITHDRAWAL0:
                 tv_title.setText("提现规则");
                 web_url = API.WithdrawalUrl;
                 break;
-//            case WITHDRAWAL1:
-//                tv_title.setText("主播认证");
-//                web_url = API.WithdrawalUrl;
-//                break;
-//            case VOICECARD:
-//                tv_title.setText("身份认证");
-//                web_url = API.VOICECARD;
-//                break;
+            case WITHDRAWAL1:
+                tv_title.setText("注册协议");
+                web_url = API.REGISTER_PROTOCOL;
+                break;
+            case WITHDRAWAL2:
+                tv_title.setText("充值服务协议");
+                web_url = API.RECHARGE_PROTOCOL;
+                break;
+            case WITHDRAWAL3:
+                tv_title.setText("隐私策略");
+                web_url = API.SECRET_PROTOCOL;
+                break;
         }
     }
 

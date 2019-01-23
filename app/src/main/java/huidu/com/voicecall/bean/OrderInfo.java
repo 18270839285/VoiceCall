@@ -37,6 +37,15 @@ public class OrderInfo implements Serializable {
         String anchor_bus_type;
         String total;
         String expire_time;
+        String accid;
+
+        public String getAccid() {
+            return accid;
+        }
+
+        public void setAccid(String accid) {
+            this.accid = accid;
+        }
 
         public String getExpire_time() {
             return expire_time;

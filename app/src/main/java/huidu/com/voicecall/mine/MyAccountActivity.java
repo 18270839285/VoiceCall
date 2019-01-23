@@ -1,5 +1,7 @@
 package huidu.com.voicecall.mine;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -23,11 +25,15 @@ import butterknife.OnClick;
 import de.hdodenhof.circleimageview.CircleImageView;
 import huidu.com.voicecall.R;
 import huidu.com.voicecall.base.BaseActivity;
+import huidu.com.voicecall.base.WebActivity;
 import huidu.com.voicecall.bean.PackageRecharge;
+import huidu.com.voicecall.bean.UserInfo;
 import huidu.com.voicecall.http.API;
 import huidu.com.voicecall.http.BaseModel;
 import huidu.com.voicecall.http.OkHttpUtils;
 import huidu.com.voicecall.http.RequestFinish;
+import huidu.com.voicecall.utils.DialogUtil;
+import huidu.com.voicecall.utils.SPUtils;
 import huidu.com.voicecall.utils.ToastUtil;
 
 /**
@@ -50,6 +56,7 @@ public class MyAccountActivity extends BaseActivity implements RequestFinish {
     List<PackageRecharge.PackageListBean> mList = new ArrayList<>();
 
     int payType = 0;
+    String custom_tel;//客服电话
 
     @Override
     protected int getLayoutId() {
@@ -58,7 +65,7 @@ public class MyAccountActivity extends BaseActivity implements RequestFinish {
 
     @Override
     protected void initView() {
-
+        OkHttpUtils.getInstance().user_info(SPUtils.getValue("token"),SPUtils.getValue("user_id"),this);
     }
 
     /**
@@ -68,7 +75,7 @@ public class MyAccountActivity extends BaseActivity implements RequestFinish {
 
     @Override
     protected void initData() {
-        OkHttpUtils.getInstance().package_recharge(API.TOKEN_TEST, this);
+        OkHttpUtils.getInstance().package_recharge(SPUtils.getValue("token"), this);
         recycleView.setLayoutManager(new GridLayoutManager(this, 3));
         recycleView.setHasFixedSize(true);
         mAdapter = new BaseQuickAdapter<PackageRecharge.PackageListBean, BaseViewHolder>(R.layout.item_package_recharge, mList) {
@@ -128,6 +135,10 @@ public class MyAccountActivity extends BaseActivity implements RequestFinish {
                 ToastUtil.toastShow("充值成功");
                 finish();
                 break;
+            case API.USER_INFO:
+                UserInfo userInfo = (UserInfo)result.getData();
+                custom_tel = userInfo.getCustom_tel();
+                break;
         }
     }
 
@@ -144,6 +155,7 @@ public class MyAccountActivity extends BaseActivity implements RequestFinish {
                 break;
             case R.id.tv_protocol:
                 //服务协议
+                startActivity(new Intent(this,WebActivity.class).putExtra("web_type",3));
                 break;
             case R.id.tv_right:
                 //Y豆记录
@@ -151,7 +163,16 @@ public class MyAccountActivity extends BaseActivity implements RequestFinish {
                 break;
             case R.id.tv_sure:
                 //确认充值
-                OkHttpUtils.getInstance().order_recharge(API.TOKEN_TEST,"1",payType+"",mList.get(COIN_POSITION).getIs_sale(),this);//mList.get(COIN_POSITION).getPackage_id()
+                DialogUtil.showServiceDialog(this,custom_tel , new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(Intent.ACTION_DIAL);
+                        Uri data = Uri.parse("tel:" + custom_tel);
+                        intent.setData(data);
+                        startActivity(intent);
+                    }
+                }).show();
+//                OkHttpUtils.getInstance().order_recharge(SPUtils.getValue("token"),"1",payType+"",mList.get(COIN_POSITION).getIs_sale(),this);//mList.get(COIN_POSITION).getPackage_id()
                 break;
             case R.id.tv_pay_ali:
                 //微信

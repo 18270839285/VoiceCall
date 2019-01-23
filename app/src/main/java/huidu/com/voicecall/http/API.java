@@ -1,5 +1,9 @@
 package huidu.com.voicecall.http;
 
+import android.os.Environment;
+
+import java.io.File;
+
 /**
  * Created ： LiLin
  * Date ： 2017/10/11
@@ -17,12 +21,12 @@ public interface API {
      */
     String BASE_URL = "http://voice.51qdd.net/api/";
 //    String TOKEN_TEST = "L2uk5tVN4CUQQb0P6n650BRTVLc4q0tV7K050Bdd0u0N7TKP";
-    String TOKEN_TEST = "UfCQ19B0Y9XQX1Q0m8nDxbCyx1w0XnY000BY1cy013eCC3tq";
-    String USERID = "1";
+//    String TOKEN_TEST = "UfCQ19B0Y9XQX1Q0m8nDxbCyx1w0XnY000BY1cy013eCC3tq";
+//    String USERID = "1";
 //    String TOKEN_TEST = "Sf3JalUwgJEYIl32FSgyYe3YwYS1FeLYjiwfjMuIffls8LYy";
 //    String USERID = "6";
-//    String TOKEN_TEST = "H5K2SBXac8Bm5JscrYA3j88kwyBy5mZ555W0fcZ5DzF5Cr26";
-//    String USERID = "14";
+    String TOKEN_TEST = "H5K2SBXac8Bm5JscrYA3j88kwyBy5mZ555W0fcZ5DzF5Cr26";
+    String USERID = "14";
 
     /**
      * h5地址
@@ -30,9 +34,14 @@ public interface API {
     String WithdrawalUrl = "http://support.51qdd.net/Withdrawal/#/";//提现规则
     String WithdrawalUrl1 = "http://support.51qdd.net/Withdrawal/#/";//主播认证
     String VOICECARD = "http://support.51qdd.net/demo.html";//身份认证
+    String REGISTER_PROTOCOL = "http://voice.51qdd.net/api/pact?mark=register";//用户注册
+    String RECHARGE_PROTOCOL = "http://voice.51qdd.net/api/pact?mark=recharge";//充值服务协议
+    String TIXIAN_PROTOCOL = "http://voice.51qdd.net/api/pact?mark=tixian";//提现
+    String SECRET_PROTOCOL = "http://voice.51qdd.net/api/pact?mark=secret";//隐私政策
 //    String VOICECARD = "http://support.51qdd.net/attestation/#/voiceCard";//身份认证
 
     String COMMON_IMAGE_UPLOAD = "common/image/upload";//图片上传
+    String COMMON_AUDIO = "common/audio";//音频上传
     String USER_INFO = "user/info";//个人资料
     String USER_INFO_EDIT = "user/info/edit";//个人资料— 修改
     String USER_FANS_LIST = "user/fans/list";//粉丝列表
@@ -50,6 +59,9 @@ public interface API {
     String SIGN_FORGET = "sign/forget";//忘记密码
     String SIGN_VERIFY_CODE = "sign/verify/code";//验证验证码
     String CHANGE = "change";//修改密码
+
+    String SIGN_IM_INFO = "sign/im/info";//用户im信息
+    String ACCID_NAME = "accid/name";//accid获取信息
 
     /**
      * 充值
@@ -91,12 +103,22 @@ public interface API {
     String AUTH_IDENTITY = "auth/identity";//身份证认证
     String AUTH_FACE = "auth/face";//身份证认证
     String AUTH_ANCHOR = "auth/anchor";//主播认证
+    String AUTH_ANCHOR_TYPE = "auth/anchor/type";//主播类型
     /**
      * Returns 参数返回列表
      */
     String HTTP_OK = "0";
-    int NORECORD = 550;// 没有找到记录
+    String TOKEN_FAILURE = "10086";// token失效
     int DATABASEADDERROR = 600;// 数据库添加错误
 
     String temp_filename = "temp.jpg";
+//    String FILE_DIR = "YinYuan";
+    File FILE_DIR = Environment.getExternalStorageDirectory();
+    String YinYuan = "/YinYuan/";
+
+    String apiKey = "FG6igBnkGmEimwCvwkuxqeyU";
+    String secretKey = "Qb2Qdb9lwKtdQaFYAGa1AGGpNr9PlE6n";
+    String licenseID = "YinYuan-face-android";
+    String licenseFileName = "idl-license.face-android";
+
 }

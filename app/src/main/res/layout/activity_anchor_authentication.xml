@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical"
+    tools:context=".authentication.AnchorAuthenticationActivity">
+
+    <include layout="@layout/title_common" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp1"
+        android:background="@color/line" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:id="@+id/rl_anchor_type"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp45">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="@dimen/dp15"
+                    android:gravity="center_vertical"
+                    android:text="主播类型"
+                    android:textColor="@color/textColor"
+                    android:textSize="@dimen/sp14" />
+
+                <TextView
+                    android:id="@+id/tv_anchor_type"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="@dimen/dp15"
+                    android:drawablePadding="@dimen/dp5"
+                    android:drawableRight="@mipmap/sy_gd"
+                    android:gravity="center_vertical"
+                    android:text="语音聊天"
+                    android:textColor="@color/textColor" />
+            </RelativeLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp1"
+                android:background="@color/line" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp45"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="@dimen/dp15"
+                    android:gravity="center_vertical"
+                    android:text="收费设置"
+                    android:textColor="@color/textColor"
+                    android:textSize="@dimen/sp14" />
+
+                <EditText
+                    android:id="@+id/et_price"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginRight="@dimen/dp15"
+                    android:layout_weight="1"
+                    android:background="@null"
+                    android:gravity="right|center_vertical"
+                    android:hint="请输入收费价格"
+                    android:inputType="number"
+                    android:maxLength="8"
+                    android:textColor="@color/textColor"
+                    android:textColorHint="@color/textColorHint"
+                    android:textSize="@dimen/sp14" />
+
+                <!--<ImageView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_gravity="center_vertical"-->
+                <!--android:layout_marginRight="@dimen/dp15"-->
+                <!--android:src="@mipmap/sy_gd" />-->
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/bg_f6"
+                android:orientation="horizontal"
+                android:paddingBottom="@dimen/dp10"
+                android:paddingTop="@dimen/dp10">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dp15"
+                    android:text="* "
+                    android:textColor="@color/textSelectColor" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="请输入合适的单价，这将直接影响你的接单情况"
+                    android:textSize="@dimen/sp12" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingBottom="@dimen/dp10"
+                android:paddingTop="@dimen/dp10">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dp15"
+                    android:text="封面照片"
+                    android:textColor="@color/textColor"
+                    android:textSize="@dimen/sp14" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="(必填)"
+                    android:textColor="@color/textSelectColor"
+                    android:textSize="@dimen/sp13" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/bg_f6"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/iv_cover"
+                    android:layout_width="224dp"
+                    android:layout_height="144dp"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="@dimen/dp20"
+                    android:scaleType="centerCrop"
+                    android:src="@mipmap/zbrz_fm" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:paddingBottom="@dimen/dp15"
+                    android:paddingTop="@dimen/dp10">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/dp15"
+                        android:text="* "
+                        android:textColor="@color/textSelectColor" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="请上传个人唯美照作为封面，大小不超过1M"
+                        android:textColor="@color/textColor2"
+                        android:textSize="@dimen/sp12" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingBottom="@dimen/dp10"
+                android:paddingTop="@dimen/dp10">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dp15"
+                    android:text="声音介绍"
+                    android:textColor="@color/textColor"
+                    android:textSize="@dimen/sp14" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="(必填)"
+                    android:textColor="@color/textSelectColor"
+                    android:textSize="@dimen/sp13" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/bg_f6"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/iv_record"
+                    android:layout_width="223dp"
+                    android:layout_height="@dimen/dp40"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="@dimen/dp20"
+                    android:src="@mipmap/zbrz_yy" />
+
+                <TextView
+                    android:id="@+id/tv_re_recording"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:paddingTop="@dimen/dp8"
+                    android:text="重新录制"
+                    android:textColor="@color/textSelectColor"
+                    android:textSize="@dimen/sp12"
+                    android:visibility="gone" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:paddingBottom="@dimen/dp15"
+                    android:paddingTop="@dimen/dp10">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/dp15"
+                        android:text="* "
+                        android:textColor="@color/textSelectColor" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="请上传一段15s以内的语音自我介绍"
+                        android:textColor="@color/textColor2"
+                        android:textSize="@dimen/sp12" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/dp10"
+                android:layout_marginLeft="@dimen/dp15"
+                android:layout_marginTop="@dimen/dp10"
+                android:text="技能说明"
+                android:textColor="@color/textColor"
+                android:textSize="@dimen/sp14" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp120"
+                android:background="@color/bg_f6">
+
+                <EditText
+                    android:id="@+id/et_introduce"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="@dimen/dp15"
+                    android:background="@null"
+                    android:gravity="start"
+                    android:hint="请填写自己的技能介绍,不超过40个字"
+                    android:maxLength="40"
+                    android:textColor="@color/textColor"
+                    android:textColorHint="@color/textColorHint"
+                    android:textSize="@dimen/sp14" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginBottom="@dimen/dp15"
+                    android:layout_marginRight="@dimen/dp15"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tv_text_num"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0"
+                        android:textColor="@color/textColor2"
+                        android:textSize="@dimen/sp12" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="/40"
+                        android:textColor="@color/textColor2"
+                        android:textSize="@dimen/sp12" />
+                </LinearLayout>
+
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/tv_submit"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp45"
+                android:layout_margin="@dimen/dp30"
+                android:background="@mipmap/zc_button"
+                android:gravity="center"
+                android:text="提交"
+                android:textColor="@color/textSelectColor"
+                android:textSize="@dimen/sp15" />
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

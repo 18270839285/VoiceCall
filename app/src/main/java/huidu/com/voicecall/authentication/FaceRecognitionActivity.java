@@ -35,14 +35,15 @@ public class FaceRecognitionActivity extends BaseActivity implements RequestFini
 
     }
 
-    @OnClick({R.id.iv_back,R.id.iv_head})
+    @OnClick({R.id.iv_back,R.id.tv_start})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.iv_back:
                 finish();
                 break;
-            case R.id.iv_head:
+            case R.id.tv_start:
                 //去人脸识别
+                jumpTo(IdentifyBaiDuFaceActivity.class);
                 break;
         }
     }

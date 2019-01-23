@@ -1,14 +1,22 @@
 package huidu.com.voicecall.utils;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.os.Environment;
 import android.util.Base64;
 import android.util.Log;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import huidu.com.voicecall.http.API;
 
 public class FileUtils {
     private static final String TAG = "FileUtils";
@@ -46,6 +54,20 @@ public class FileUtils {
 
     public static File getSaveFile(Context context) {
         File file = new File(context.getFilesDir(), "pic.jpg");
+        return file;
+    }
+
+    public static File saveBitmapFile(Bitmap bitmap) {
+        String path = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date())+ API.temp_filename;
+        File file = new File(Environment.getExternalStorageDirectory(), path);//将要保存图片的路径
+        try {
+            BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(file));
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bos);
+            bos.flush();
+            bos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return file;
     }
 }

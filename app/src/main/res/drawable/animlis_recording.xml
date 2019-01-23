@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<animation-list xmlns:android="http://schemas.android.com/apk/res/android"
+    android:oneshot="false">
+    <item
+        android:drawable="@mipmap/zbrz_yy"
+        android:duration="280" />
+    <item
+        android:drawable="@mipmap/zbrz_ly1"
+        android:duration="280" />
+    <item
+        android:drawable="@mipmap/zbrz_ly2"
+        android:duration="280" />
+    <item
+        android:drawable="@mipmap/zbrz_ly3"
+        android:duration="280" />
+
+
+</animation-list>

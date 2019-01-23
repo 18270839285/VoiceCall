@@ -19,6 +19,7 @@ import huidu.com.voicecall.http.BaseModel;
 import huidu.com.voicecall.http.OkHttpUtils;
 import huidu.com.voicecall.http.RequestFinish;
 import huidu.com.voicecall.utils.AtyContainer;
+import huidu.com.voicecall.utils.SPUtils;
 import huidu.com.voicecall.utils.ToastUtil;
 
 /**
@@ -199,7 +200,7 @@ public class CashActivity extends BaseActivity implements RequestFinish {
             }
             RECEIVE_ACCOUNT = et_weixin_account.getText().toString();
         }
-        OkHttpUtils.getInstance().order_withdrawal(API.TOKEN_TEST, et_cash.getText().toString(),
+        OkHttpUtils.getInstance().order_withdrawal(SPUtils.getValue("token"), et_cash.getText().toString(),
                 Integer.parseInt(exchange_pro) * Integer.parseInt(et_cash.getText().toString()) + "", payType + "", RECEIVE_ACCOUNT, this);
     }
 

@@ -10,6 +10,15 @@ import java.io.Serializable;
 public class SpareBean implements Serializable {
     String order_no;
     String image_url;
+    String audioUrl;
+
+    public String getAudioUrl() {
+        return audioUrl;
+    }
+
+    public void setAudioUrl(String audioUrl) {
+        this.audioUrl = audioUrl;
+    }
 
     public String getImage_url() {
         return image_url;

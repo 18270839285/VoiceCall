@@ -22,6 +22,7 @@ public  class Loading extends Dialog {
         // 加载布局
         setContentView(R.layout.view_loading);
         // 设置Dialog参数
+        setCanceledOnTouchOutside(false);
         Window window = getWindow();
         WindowManager.LayoutParams params = window.getAttributes();
         params.gravity = Gravity.CENTER;

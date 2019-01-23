@@ -68,7 +68,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/dp2"
-                android:text="22"
+                android:text=""
                 android:textColor="@color/white"
                 android:textSize="@dimen/sp10" />
         </LinearLayout>
@@ -98,7 +98,7 @@
                 android:id="@+id/tv_attention"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="13关注 "
+                android:text=""
                 android:textColor="@color/whitecc"
                 android:textSize="@dimen/sp13" />
 
@@ -111,7 +111,7 @@
                 android:id="@+id/tv_fans"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text=" 100粉丝 "
+                android:text=""
                 android:textColor="@color/whitecc"
                 android:textSize="@dimen/sp13" />
         </LinearLayout>
@@ -149,7 +149,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp45"
-            android:text="1234567"
+            android:text=""
             android:textColor="@color/textColor" />
     </RelativeLayout>
 
@@ -171,7 +171,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp45"
-            android:text="天秤座"
+            android:text=""
             android:textColor="@color/textColor" />
     </RelativeLayout>
 
@@ -193,7 +193,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp45"
-            android:text="不知道什么"
+            android:text=""
             android:textColor="@color/textColor" />
     </RelativeLayout>
 </LinearLayout>

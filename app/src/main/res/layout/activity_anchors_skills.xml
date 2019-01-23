@@ -17,8 +17,7 @@
                 android:id="@+id/iv_background"
                 android:layout_width="match_parent"
                 android:layout_height="365dp"
-                android:scaleType="centerCrop"
-                android:src="@mipmap/sy_hb" />
+                android:scaleType="centerCrop" />
 
             <ImageView
                 android:id="@+id/iv_back"
@@ -114,9 +113,8 @@
                 android:id="@+id/iv_head"
                 android:layout_width="88dp"
                 android:layout_height="88dp"
-                android:scaleType="centerCrop"
                 android:layout_alignParentTop="true"
-                android:src="@mipmap/ic_launcher" />
+                android:scaleType="centerCrop" />
 
             <ImageView
                 android:id="@+id/iv_vip_type"

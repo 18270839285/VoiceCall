@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
+    android:fitsSystemWindows="true"
     android:orientation="vertical"
     tools:context=".authentication.FaceRecognitionActivity">
 
@@ -41,26 +42,42 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="1.确保光线充足"
-            android:textColor="@color/textColor2"
+            android:drawableTop="@mipmap/sfrz_dtyp"
+            android:text="不能低头仰拍"
+            android:drawablePadding="@dimen/dp10"
+            android:textColor="@color/textColor666"
             android:textSize="@dimen/sp12" />
 
         <TextView
+            android:drawableTop="@mipmap/sfrz_zdlb"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="2.清晰无遮挡"
-            android:textColor="@color/textColor2"
+            android:drawablePadding="@dimen/dp10"
+            android:text="不能遮挡脸部"
+            android:textColor="@color/textColor666"
             android:textSize="@dimen/sp12" />
 
         <TextView
+            android:drawableTop="@mipmap/sfrz_bnfg"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="3.摘掉眼镜、免冠"
-            android:textColor="@color/textColor2"
+            android:text="眼睛不能反光"
+            android:drawablePadding="@dimen/dp10"
+            android:textColor="@color/textColor666"
             android:textSize="@dimen/sp12" />
     </LinearLayout>
+    <TextView
+        android:id="@+id/tv_start"
+        android:background="@mipmap/zc_button"
+        android:text="开始识别"
+        android:gravity="center"
+        android:textColor="@color/textSelectColor"
+        android:textSize="@dimen/sp14"
+        android:layout_margin="@dimen/dp30"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp45" />
 </LinearLayout>

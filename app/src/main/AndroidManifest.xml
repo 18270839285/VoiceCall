@@ -50,25 +50,22 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".main.MainActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+        <activity
+            android:name=".main.MainActivity"
+            android:screenOrientation="portrait">
         </activity>
 
         <!-- &lt;!&ndash; APP key, 可以在这里设置，也可以在 SDKOptions 中提供。 -->
         <!-- 如果 SDKOptions 中提供了，取 SDKOptions 中的值。 &ndash;&gt; -->
-        <!-- <meta-data -->
-        <!-- android:name="f0c2e363ab9ac4693c0994fd2e3bceaa" -->
-        <!-- android:value="f9042fda3b5c" /> -->
-        <!-- <meta-data -->
-        <!-- android:name="huidu.com.voicecall" -->
-        <!-- android:value="f0c2e363ab9ac4693c0994fd2e3bceaa" /> -->
-        <meta-data
-            android:name="com.netease.nim.appKey"
-            android:value="45c6af3c98409b18a84451215d0bdd6e" />
+         <!--<meta-data-->
+             <!--android:name="f0c2e363ab9ac4693c0994fd2e3bceaa"-->
+             <!--android:value="f9042fda3b5c" />-->
+         <meta-data
+             android:name="f9042fda3b5c"
+             android:value="f0c2e363ab9ac4693c0994fd2e3bceaa" />
+        <!--<meta-data-->
+            <!--android:name="com.netease.nim.appKey"-->
+            <!--android:value="45c6af3c98409b18a84451215d0bdd6e" />-->
 
         <!-- 云信后台服务，请使用独立进程。 -->
         <service
@@ -120,35 +117,94 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name=".login.LoginActivity">
+        <activity
+            android:name=".login.LoginActivity"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
-            <!-- <intent-filter> -->
-            <!-- <action android:name="android.intent.action.MAIN" /> -->
-            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
-            <!-- </intent-filter> -->
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
-        <activity android:name=".login.RegisterActivity" />
-        <activity android:name=".test.TestActivity" />
-        <activity android:name=".mine.AnchorsSkillsActivity" />
-        <activity android:name=".mine.RechargeActivity" />
-        <activity android:name=".mine.MyWealthActivity" />
-        <activity android:name=".mine.PersonalActivity" />
-        <activity android:name=".mine.EditingMaterialsActivity" />
-        <activity android:name=".mine.MyFansActivity" />
-        <activity android:name=".mine.MyAttentionActivity" />
-        <activity android:name=".mine.CashWithdrawalActivity" />
-        <activity android:name=".login.ForgetPwdActivity" />
-        <activity android:name=".login.Register2Activity" />
-        <activity android:name=".login.ResetPwdActivity" />
-        <activity android:name=".mine.MyAccountActivity" />
-        <activity android:name=".mine.VirtualCoinRecordActivity" />
-        <activity android:name=".main.OrderDetailActivity" />
-        <activity android:name=".mine.CashActivity" />
-        <activity android:name=".mine.MyOrderActivity" />
-        <activity android:name=".voice.ChattingRoomActivity" />
-        <activity android:name=".base.WebActivity" />
-        <activity android:name=".authentication.IDCardAuthenticationActivity" />
-        <activity android:name=".authentication.FaceRecognitionActivity"></activity>
+        <activity
+            android:name=".login.RegisterActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".test.TestActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".mine.AnchorsSkillsActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".mine.RechargeActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".mine.MyWealthActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".mine.PersonalActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".mine.EditingMaterialsActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".mine.MyFansActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".mine.MyAttentionActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".mine.CashWithdrawalActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".login.ForgetPwdActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".login.Register2Activity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".login.ResetPwdActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".mine.MyAccountActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".mine.VirtualCoinRecordActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".main.OrderDetailActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".mine.CashActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".mine.MyOrderActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".voice.ChattingRoomActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".base.WebActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".authentication.IDCardAuthenticationActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".authentication.FaceRecognitionActivity"
+            android:screenOrientation="portrait"></activity>
+        <activity
+            android:name=".authentication.IdentifyBaiDuFaceActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".authentication.AnchorAuthenticationActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|adjustResize" />
+
+        <service android:name=".audio.RecordingService" />
+
+        <activity
+            android:name=".voice.ReceiveRoomActivity"
+            android:screenOrientation="portrait"></activity>
     </application>
 
 </manifest>

@@ -26,6 +26,24 @@ public class UserInfo implements Serializable {
     String is_anchor_auth;
     String order_sum;
     String custom_tel;
+    String is_face_auth;
+    String is_show_withdrawal;
+
+    public String getIs_show_withdrawal() {
+        return is_show_withdrawal;
+    }
+
+    public void setIs_show_withdrawal(String is_show_withdrawal) {
+        this.is_show_withdrawal = is_show_withdrawal;
+    }
+
+    public String getIs_face_auth() {
+        return is_face_auth;
+    }
+
+    public void setIs_face_auth(String is_face_auth) {
+        this.is_face_auth = is_face_auth;
+    }
 
     public String getCustom_tel() {
         return custom_tel;

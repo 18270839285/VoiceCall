@@ -43,6 +43,7 @@ import huidu.com.voicecall.http.RequestFinish;
 import huidu.com.voicecall.main.OrderDetailActivity;
 import huidu.com.voicecall.utils.EmptyViewUtil;
 import huidu.com.voicecall.utils.GlideImageLoader;
+import huidu.com.voicecall.utils.SPUtils;
 import huidu.com.voicecall.utils.ToastUtil;
 
 /**
@@ -72,13 +73,13 @@ public class MyOrderFragment extends BaseFragment implements RequestFinish{
     protected void initView(View view) {
         type_id = getArguments().getString("is_receive")+"";
 
-        OkHttpUtils.getInstance().order_list(API.TOKEN_TEST,type_id,mPage,this);
+        OkHttpUtils.getInstance().order_list(SPUtils.getValue("token"),type_id,mPage,this);
 
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 mPage = 1;
-                OkHttpUtils.getInstance().order_list(API.TOKEN_TEST, type_id,mPage, new RequestFinish() {
+                OkHttpUtils.getInstance().order_list(SPUtils.getValue("token"), type_id,mPage, new RequestFinish() {
                     @Override
                     public void onSuccess(BaseModel result, String params) {
                         refreshLayout.setRefreshing(false);
@@ -186,7 +187,7 @@ public class MyOrderFragment extends BaseFragment implements RequestFinish{
         mAdapter.setOnLoadMoreListener(new BaseQuickAdapter.RequestLoadMoreListener() {
             @Override
             public void onLoadMoreRequested() {
-                OkHttpUtils.getInstance().order_list(API.TOKEN_TEST, type_id, mPage, new RequestFinish() {
+                OkHttpUtils.getInstance().order_list(SPUtils.getValue("token"), type_id, mPage, new RequestFinish() {
                     @Override
                     public void onSuccess(BaseModel result, String params) {
                         mAdapter.loadMoreComplete();

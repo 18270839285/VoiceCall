@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merger version="3"><dataSet config="main"><source path="D:\work\Video\VoiceCall\ocr_ui\src\main\jniLibs"><file name="armeabi/libidcard_quality.1.1.1.so" path="D:\work\Video\VoiceCall\ocr_ui\src\main\jniLibs\armeabi\libidcard_quality.1.1.1.so"/><file name="armeabi/libidl_license.so" path="D:\work\Video\VoiceCall\ocr_ui\src\main\jniLibs\armeabi\libidl_license.so"/></source></dataSet><dataSet config="debug"><source path="D:\work\Video\VoiceCall\ocr_ui\src\debug\jniLibs"/></dataSet></merger>

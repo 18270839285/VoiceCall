@@ -44,7 +44,9 @@ import butterknife.OnClick;
 import de.hdodenhof.circleimageview.CircleImageView;
 import huidu.com.voicecall.R;
 import huidu.com.voicecall.base.BaseActivity;
+import huidu.com.voicecall.http.API;
 import huidu.com.voicecall.http.BaseModel;
+import huidu.com.voicecall.http.OkHttpUtils;
 import huidu.com.voicecall.http.RequestFinish;
 import huidu.com.voicecall.utils.GlideBlurformation;
 import huidu.com.voicecall.utils.MD5;
@@ -77,13 +79,17 @@ public class ChattingRoomActivity extends BaseActivity implements RequestFinish 
     @BindView(R.id.ll_type3)
     LinearLayout ll_type3;
 
-    int IDENTITY_TYPE = 1;//1.主播2.用户
+    int IDENTITY_TYPE = 1;//2.主播1.用户
     //    int RECEIVE_TYPE = 1; //1.拨号2.来电
     String head_image = "";
     String nickname = "";
+    String order_no = "";
 
     boolean isMute = false;
     boolean isHandsFree = false;
+    boolean isBegin = false;
+    String accid1;
+    String accid2;
 
     @Override
     protected int getLayoutId() {
@@ -95,12 +101,15 @@ public class ChattingRoomActivity extends BaseActivity implements RequestFinish 
         IDENTITY_TYPE = getIntent().getIntExtra("IDENTITY_TYPE", 1);
         nickname = getIntent().getStringExtra("nickname");
         head_image = getIntent().getStringExtra("head_image");
+        order_no = getIntent().getStringExtra("order_no");
+        accid2 = getIntent().getStringExtra("accid2");
         tv_name.setText(nickname);
         Glide.with(this).load(head_image).into(iv_head);
         Glide.with(this)
                 .load(head_image)
                 .apply(RequestOptions.bitmapTransform(new GlideBlurformation(this)))
                 .into(iv_bg);
+        OkHttpUtils.getInstance().sign_im_info(SPUtils.getValue("token"),this);
 //        RECEIVE_TYPE = getIntent().getIntExtra("RECEIVE_TYPE",1);
     }
 
@@ -119,17 +128,13 @@ public class ChattingRoomActivity extends BaseActivity implements RequestFinish 
 
     }
 
-    @OnClick({R.id.iv_icon, R.id.ll_cancel, R.id.ll_refuse, R.id.ll_agree, R.id.ll_mute, R.id.ll_hang_up, R.id.ll_hands_free})
+    @OnClick({R.id.iv_icon, R.id.ll_cancel, R.id.ll_mute, R.id.ll_hang_up, R.id.ll_hands_free})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.iv_icon:
                 break;
             case R.id.ll_cancel:
                 hangUp();
-                break;
-            case R.id.ll_refuse:
-                break;
-            case R.id.ll_agree:
                 break;
             case R.id.ll_mute:
                 //是否静音
@@ -185,16 +190,19 @@ public class ChattingRoomActivity extends BaseActivity implements RequestFinish 
     }
 
     public void doLogin() {
+//        LoginInfo info = new LoginInfo("liyunwei", tokenFromPassword("123456")); // config...
         LoginInfo info = new LoginInfo("voicecall", tokenFromPassword("qwe123")); // config...
         RequestCallback<LoginInfo> callback =
                 new RequestCallback<LoginInfo>() {
                     @Override
                     public void onSuccess(LoginInfo param) {
 //                        ToastUtil.toastShow("登录成功!");
+//                        outGoingCalling("voicecall");
                         outGoingCalling("liyunwei");
                         Log.e("RequestCallback", "onSuccess: account1 = " + param.getAccount() + "  password1 = " + param.getToken());
-                        SPUtils.putValue(getApplicationContext(), "account1", param.getAccount());
-                        SPUtils.putValue(getApplicationContext(), "password1", param.getToken());
+                        // 可以在此保存LoginInfo到本地，下次启动APP做自动登录用
+                        SPUtils.putValue("account1", param.getAccount());
+                        SPUtils.putValue("password1", param.getToken());
                     }
 
                     @Override
@@ -207,7 +215,7 @@ public class ChattingRoomActivity extends BaseActivity implements RequestFinish 
                     public void onException(Throwable exception) {
                         Log.e("RequestCallback", "onException: " + exception);
                     }
-                    // 可以在此保存LoginInfo到本地，下次启动APP做自动登录用
+
                 };
         NIMClient.getService(AuthService.class).login(info)
                 .setCallback(callback);
@@ -279,7 +287,7 @@ public class ChattingRoomActivity extends BaseActivity implements RequestFinish 
                 } else if (ackInfo.getEvent() == AVChatEventType.CALLEE_ACK_REJECT) {
                     // 对方拒绝接听
                     ToastUtil.toastShow("对方拒绝接听");
-                    logOut();
+                    logOut(IDENTITY_TYPE==1?2:1);
                     Log.e("callAckObserver", "onEvent: 对方拒绝接听");
                 } else if (ackInfo.getEvent() == AVChatEventType.CALLEE_ACK_AGREE) {
                     // 对方同意接听
@@ -298,7 +306,7 @@ public class ChattingRoomActivity extends BaseActivity implements RequestFinish 
                 // 结束通话
                 Log.e("callAckObserver", "onEvent: 结束通话");
                 setStop();
-                logOut();
+                logOut(IDENTITY_TYPE==1?2:1);
             }
         };
         AVChatManager.getInstance().observeHangUpNotification(callHangupObserver, true);
@@ -311,8 +319,21 @@ public class ChattingRoomActivity extends BaseActivity implements RequestFinish 
             public void onCallEstablished() {
                 ll_type3.setVisibility(View.VISIBLE);
                 ll_cancel.setVisibility(View.GONE);
+                ToastUtil.toastShow("已接通");
                 setStart();
-                Log.e("onCallEstablished: ", "正在通话");
+//                OkHttpUtils.getInstance().order_begin(SPUtils.getValue("token"), order_no, IDENTITY_TYPE + "", new RequestFinish() {
+//                    @Override
+//                    public void onSuccess(BaseModel result, String params) {
+//                        Log.e("onSuccess: ", "开始通话");
+//                        isBegin = true;
+//                    }
+//
+//                    @Override
+//                    public void onError(String result) {
+//
+//                    }
+//                });
+//                Log.e("onCallEstablished: ", "正在通话");
             }
 
             @Override
@@ -414,7 +435,7 @@ public class ChattingRoomActivity extends BaseActivity implements RequestFinish 
     }
 
     /**
-     * //挂断
+     * 挂断
      */
     private void hangUp() {
 
@@ -422,7 +443,7 @@ public class ChattingRoomActivity extends BaseActivity implements RequestFinish 
             @Override
             public void onSuccess(Void aVoid) {
                 Log.e("hangUp", "onSuccess: 已挂断");
-                logOut();
+                logOut(IDENTITY_TYPE);
             }
 
             @Override
@@ -443,10 +464,26 @@ public class ChattingRoomActivity extends BaseActivity implements RequestFinish 
     /**
      * 登出
      */
-    private void logOut(){
-        NIMClient.getService(AuthService.class).logout();
-        finish();
+    private void logOut(int overMan){
+//        NIMClient.getService(AuthService.class).logout();
+        if (isBegin){
+//            OkHttpUtils.getInstance().order_over(SPUtils.getValue("token"), "", "", overMan+"", new RequestFinish() {
+//                @Override
+//                public void onSuccess(BaseModel result, String params) {
+//                    isBegin = false;
+//                    finish();
+//                }
+//
+//                @Override
+//                public void onError(String result) {
+//
+//                }
+//            });
+        }else {
+            finish();
+        }
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

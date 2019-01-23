@@ -12,11 +12,14 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import huidu.com.voicecall.R;
 import huidu.com.voicecall.base.BaseActivity;
+import huidu.com.voicecall.bean.ImInfo;
+import huidu.com.voicecall.http.API;
 import huidu.com.voicecall.http.BaseModel;
 import huidu.com.voicecall.http.OkHttpUtils;
 import huidu.com.voicecall.http.RequestFinish;
 import huidu.com.voicecall.utils.MD5Util;
 import huidu.com.voicecall.utils.OnTextChanged;
+import huidu.com.voicecall.utils.SPUtils;
 import huidu.com.voicecall.utils.ToastUtil;
 
 /**
@@ -55,12 +58,21 @@ public class Register2Activity extends BaseActivity implements RequestFinish {
 
     @Override
     public void onSuccess(BaseModel result, String params) {
-        ToastUtil.toastShow("注册成功!");
-        Intent intent = new Intent(this,LoginActivity.class);
-        intent.putExtra("telephone",telephone);
-        intent.putExtra("password",et_password1.getText().toString());
-        startActivity(intent);
-        finish();
+        switch (params){
+            case API.SIGN_REGISTER:
+//                OkHttpUtils.getInstance().sign_im_info(SPUtils.getValue("token"),this);
+                ToastUtil.toastShow("注册成功!");
+                Intent intent = new Intent(this,LoginActivity.class);
+                intent.putExtra("telephone",telephone);
+                intent.putExtra("password",et_password1.getText().toString());
+                startActivity(intent);
+                break;
+//            case API.SIGN_IM_INFO:
+//                ImInfo imInfo = (ImInfo)result.getData();
+//                SPUtils.putValue("accid",imInfo.getAccid());
+//                finish();
+//                break;
+        }
     }
 
     @Override

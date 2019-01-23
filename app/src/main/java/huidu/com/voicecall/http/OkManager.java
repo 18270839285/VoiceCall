@@ -83,7 +83,7 @@ public class OkManager {
      * @param params
      * @param callBack
      */
-    public void postRequest( final RequestConfig config, String url, Map<String, String> params, final RequestFinish callBack) {
+    public void postRequest(final RequestConfig config, String url, Map<String, String> params, final RequestFinish callBack) {
         StringBuffer string = new StringBuffer();
         FormBody.Builder form_builder = new FormBody.Builder();
         if (params != null && !params.isEmpty()) {
@@ -95,6 +95,50 @@ public class OkManager {
         RequestBody request_body = form_builder.build();
         Log.e("postRequest", "url = " + url + "  request_body :  " + string);
         Request request = new Request.Builder().url(url).post(request_body).build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                if (call.isCanceled()) //关闭界面的取消请求执行这里
+                    onError(callBack, "取消了这次请求");
+                else if (e.getClass().equals(SocketTimeoutException.class))
+                    onError(callBack, "请求超时");
+                else if (e instanceof SocketTimeoutException)
+                    onError(callBack, "请求超时");
+                else if (e.getClass().equals(ConnectException.class))
+                    onError(callBack, "网络错误");
+                else if (e instanceof ConnectException)
+                    onError(callBack, "网络错误");
+                else
+                    onError(callBack, "服务器异常");
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (response != null && response.isSuccessful()) {
+                    onSuccess(config, response.body().string(), callBack);
+                }
+            }
+        });
+    }
+
+    /**
+     * post请求
+     *
+     * @param url
+     * @param callBack
+     */
+    public void postFileRequest(final RequestConfig config, String url, String filePath, final RequestFinish callBack) {
+        File file = new File(filePath);
+        RequestBody image = RequestBody.create(MediaType.parse("audio/mpeg"), file);
+        RequestBody requestBody = new MultipartBody.Builder()
+                .setType(MultipartBody.FORM)
+                .addFormDataPart("audio", file.getName(), image)
+                .build();
+        Request request = new Request.Builder()
+                .url(url)
+                .post(requestBody)
+                .build();
+
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {

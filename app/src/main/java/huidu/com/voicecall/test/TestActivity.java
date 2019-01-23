@@ -93,8 +93,8 @@ public class TestActivity extends AppCompatActivity {
                         ToastUtil.toastShow("登录成功!");
 
                         Log.e("RequestCallback", "onSuccess: account1 = " + param.getAccount() + "  password1 = " + param.getToken());
-                        SPUtils.putValue(getApplicationContext(), "account1", param.getAccount());
-                        SPUtils.putValue(getApplicationContext(), "password1", param.getToken());
+                        SPUtils.putValue("account1", param.getAccount());
+                        SPUtils.putValue( "password1", param.getToken());
                     }
 
                     @Override

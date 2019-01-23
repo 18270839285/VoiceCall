@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -19,6 +20,8 @@ import butterknife.OnClick;
 import butterknife.Unbinder;
 import de.hdodenhof.circleimageview.CircleImageView;
 import huidu.com.voicecall.R;
+import huidu.com.voicecall.authentication.AnchorAuthenticationActivity;
+import huidu.com.voicecall.authentication.FaceRecognitionActivity;
 import huidu.com.voicecall.authentication.IDCardAuthenticationActivity;
 import huidu.com.voicecall.base.WebActivity;
 import huidu.com.voicecall.bean.UserInfo;
@@ -36,6 +39,7 @@ import huidu.com.voicecall.mine.PersonalActivity;
 import huidu.com.voicecall.test.TestActivity;
 import huidu.com.voicecall.base.BaseFragment;
 import huidu.com.voicecall.utils.DialogUtil;
+import huidu.com.voicecall.utils.SPUtils;
 import huidu.com.voicecall.utils.ToastUtil;
 
 /**
@@ -57,8 +61,13 @@ public class MineFragment extends BaseFragment implements RequestFinish{
     TextView tv_fans_num;
     @BindView(R.id.tv_order_num)
     TextView tv_order_num;
+    @BindView(R.id.ll_income)
+    LinearLayout ll_income;
 
-    String custom_tel;//客服电话
+    private String custom_tel;//客服电话
+    private String is_idcard_auth = "";
+    private String is_face_auth = "";
+    private String is_anchor_auth = "";
 
     Unbinder unbinder;
     @Override
@@ -73,7 +82,7 @@ public class MineFragment extends BaseFragment implements RequestFinish{
 
     @Override
     protected void initData() {
-        OkHttpUtils.getInstance().user_info(API.TOKEN_TEST,API.USERID,this);
+        OkHttpUtils.getInstance().user_info(SPUtils.getValue("token"),SPUtils.getValue("user_id"),this);
     }
 
     @OnClick({R.id.iv_setting, R.id.rl_personal, R.id.ll_recharge, R.id.ll_income,R.id.ll_anchor,
@@ -110,10 +119,23 @@ public class MineFragment extends BaseFragment implements RequestFinish{
                 break;
             case R.id.ll_anchor:
                 //主播认证
+                if (is_anchor_auth.equals("1")){
+                    ToastUtil.toastShow("已认证");
+                }else if (!is_idcard_auth.equals("1")||!is_face_auth.equals("1")){
+                    ToastUtil.toastShow("请先完成身份认证");
+                }else {
+                    jump(AnchorAuthenticationActivity.class);
+                }
                 break;
             case R.id.ll_idCard:
                 //身份认证
-                jump(IDCardAuthenticationActivity.class);
+                if (is_idcard_auth.equals("1")&&is_face_auth.equals("1")){
+                    ToastUtil.toastShow("已认证");
+                }else if (is_idcard_auth.equals("1")&&!is_face_auth.equals("1")){
+                    jump(FaceRecognitionActivity.class);
+                }else {
+                    jump(IDCardAuthenticationActivity.class);
+                }
                 break;
             case R.id.ll_about_us:
                 //关于我们
@@ -153,7 +175,7 @@ public class MineFragment extends BaseFragment implements RequestFinish{
     @Override
     public void onResume() {
         super.onResume();
-        OkHttpUtils.getInstance().user_info(API.TOKEN_TEST,API.USERID,this);
+        OkHttpUtils.getInstance().user_info(SPUtils.getValue("token"),SPUtils.getValue("user_id"),this);
     }
 
     @Override
@@ -166,6 +188,14 @@ public class MineFragment extends BaseFragment implements RequestFinish{
         tv_fans_num.setText(userInfo.getFans_count());
         tv_order_num.setText(userInfo.getOrder_sum());
         custom_tel = userInfo.getCustom_tel();
+        is_idcard_auth = userInfo.getIs_idcard_auth();
+        is_face_auth = userInfo.getIs_face_auth();
+        is_anchor_auth = userInfo.getIs_anchor_auth();
+        if (userInfo.getIs_show_withdrawal().equals("1")){
+            ll_income.setVisibility(View.VISIBLE);
+        }else {
+            ll_income.setVisibility(View.GONE);
+        }
     }
 
     @Override

@@ -2,6 +2,7 @@ package huidu.com.voicecall.bean;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Description:
@@ -13,6 +14,15 @@ public class Home implements Serializable {
     List<Banner> banner;
     List<Anchor> anchor;
     List<Type> type;
+    TypeImage type_image;
+
+    public TypeImage getType_image() {
+        return type_image;
+    }
+
+    public void setType_image(TypeImage type_image) {
+        this.type_image = type_image;
+    }
 
     public List<Banner> getBanner() {
         return banner;
@@ -36,6 +46,28 @@ public class Home implements Serializable {
 
     public void setType(List<Type> type) {
         this.type = type;
+    }
+
+
+    public class TypeImage implements Serializable{
+        String type_img;
+        String rec_img;
+
+        public String getType_img() {
+            return type_img;
+        }
+
+        public void setType_img(String type_img) {
+            this.type_img = type_img;
+        }
+
+        public String getRec_img() {
+            return rec_img;
+        }
+
+        public void setRec_img(String rec_img) {
+            this.rec_img = rec_img;
+        }
     }
 
     public class Banner implements Serializable {
@@ -77,6 +109,15 @@ public class Home implements Serializable {
         String anchor_type_id;
         String anchor_id;
         String age;
+        String is_robot;
+
+        public String getIs_robot() {
+            return is_robot;
+        }
+
+        public void setIs_robot(String is_robot) {
+            this.is_robot = is_robot;
+        }
 
         public String getNickname() {
             return nickname;

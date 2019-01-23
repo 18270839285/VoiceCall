@@ -26,6 +26,7 @@ import huidu.com.voicecall.http.OkHttpUtils;
 import huidu.com.voicecall.http.RequestFinish;
 import huidu.com.voicecall.utils.DateUtil;
 import huidu.com.voicecall.utils.DialogUtil;
+import huidu.com.voicecall.utils.SPUtils;
 import huidu.com.voicecall.utils.ToastUtil;
 import huidu.com.voicecall.voice.ChattingRoomActivity;
 
@@ -106,7 +107,7 @@ public class OrderDetailActivity extends BaseActivity implements RequestFinish {
 
     @Override
     protected void initData() {
-        OkHttpUtils.getInstance().order_info(API.TOKEN_TEST, order_no, this);
+        OkHttpUtils.getInstance().order_info(SPUtils.getValue("token"), order_no, this);
     }
 
     private void initTimer(int times) {
@@ -142,7 +143,7 @@ public class OrderDetailActivity extends BaseActivity implements RequestFinish {
                 @Override
                 public void onFinish() {
                     Log.e("initTimer", "onFinish: ");
-                    OkHttpUtils.getInstance().order_info(API.TOKEN_TEST, order_no, OrderDetailActivity.this);
+                    OkHttpUtils.getInstance().order_info(SPUtils.getValue("token"), order_no, OrderDetailActivity.this);
                 }
             };
             mTimer.start();
@@ -341,34 +342,44 @@ public class OrderDetailActivity extends BaseActivity implements RequestFinish {
                     if (ORDER_STATUS==2){
                         //立即开始
                         startActivity(new Intent(this,ChattingRoomActivity.class)
-                                .putExtra("IDENTITY_TYPE",1)
+                                .putExtra("IDENTITY_TYPE",2)
                                 .putExtra("nickname",infoBean.getNickname())
+                                .putExtra("order_no",order_no)
+                                .putExtra("accid2",infoBean.getAccid())
                                 .putExtra("head_image",infoBean.getHead_image()));
                     }else if (ORDER_STATUS==3){
                         //联系Ta
                         startActivity(new Intent(this,ChattingRoomActivity.class)
-                                .putExtra("IDENTITY_TYPE",1)
+                                .putExtra("IDENTITY_TYPE",2)
                                 .putExtra("nickname",infoBean.getNickname())
+                                .putExtra("order_no",order_no)
+                                .putExtra("accid2",infoBean.getAccid())
                                 .putExtra("head_image",infoBean.getHead_image()));
                     }
                 }else {
                     //提醒主播
+                    ToastUtil.toastShow("提醒成功，请耐心等待！");
                 }
 
                 break;
             case R.id.tv_refuse:
                 if (order_type.equals("1")){
                     //拒绝
-                    OkHttpUtils.getInstance().order_refuse(API.TOKEN_TEST,order_no,this);
+                    OkHttpUtils.getInstance().order_refuse(SPUtils.getValue("token"),order_no,this);
                 }else {
                     //联系Ta
-                    startActivity(new Intent(this,ChattingRoomActivity.class).putExtra("IDENTITY_TYPE",2));
+                    startActivity(new Intent(this,ChattingRoomActivity.class)
+                            .putExtra("IDENTITY_TYPE",1)
+                            .putExtra("nickname",infoBean.getNickname())
+                            .putExtra("accid2",infoBean.getAccid())
+                            .putExtra("head_image",infoBean.getHead_image())
+                            .putExtra("order_no",order_no));
                 }
                 break;
             case R.id.tv_agree:
                 if (order_type.equals("1")){
                     //同意
-                    OkHttpUtils.getInstance().order_receive(API.TOKEN_TEST,order_no,this);
+                    OkHttpUtils.getInstance().order_receive(SPUtils.getValue("token"),order_no,this);
                 }else {
                     //完成订单
                     DialogUtil.showDialogConfirm1(this, "是否确定完成订单?", "取消", new View.OnClickListener() {
@@ -379,7 +390,7 @@ public class OrderDetailActivity extends BaseActivity implements RequestFinish {
                     }, "确定", new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            OkHttpUtils.getInstance().order_finish(API.TOKEN_TEST,order_no,OrderDetailActivity.this);
+                            OkHttpUtils.getInstance().order_finish(SPUtils.getValue("token"),order_no,OrderDetailActivity.this);
                         }
                     },View.VISIBLE).show();
 
@@ -390,7 +401,7 @@ public class OrderDetailActivity extends BaseActivity implements RequestFinish {
                 DialogUtil.showOrderCancelDialog(this, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        OkHttpUtils.getInstance().order_cancel(API.TOKEN_TEST,order_no,OrderDetailActivity.this);
+                        OkHttpUtils.getInstance().order_cancel(SPUtils.getValue("token"),order_no,OrderDetailActivity.this);
                     }
                 }, new View.OnClickListener() {
                     @Override
@@ -411,7 +422,7 @@ public class OrderDetailActivity extends BaseActivity implements RequestFinish {
     @Override
     protected void onResume() {
         super.onResume();
-        OkHttpUtils.getInstance().order_info(API.TOKEN_TEST, order_no, this);
+        OkHttpUtils.getInstance().order_info(SPUtils.getValue("token"), order_no, this);
     }
 
     @Override

@@ -6,6 +6,8 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Build;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
@@ -14,7 +16,14 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.BaseViewHolder;
+
+import java.util.List;
+
 import huidu.com.voicecall.R;
+import huidu.com.voicecall.bean.AnchorType;
+import huidu.com.voicecall.bean.Home;
 
 /**
  * 创    建:  lt  2018/1/8--11:51
@@ -23,6 +32,63 @@ import huidu.com.voicecall.R;
  */
 
 public class DialogUtil {
+    /**
+     * 确定----取消
+     */
+    public static Dialog showTakePhoto(Context context, final View.OnClickListener takeListener,final View.OnClickListener selectListener) {
+        View dialogView = View.inflate(context, R.layout.dialog_takephoto, null);
+        final Dialog dialog = new Dialog(context, R.style.dialog);
+        dialog.setContentView(dialogView);
+        TextView tv_take = (TextView) dialogView.findViewById(R.id.tv_take);
+        TextView tv_select = (TextView) dialogView.findViewById(R.id.tv_select);
+        TextView tv_cancel = (TextView) dialogView.findViewById(R.id.tv_cancel);
+        tv_take.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                if (takeListener != null) {
+                    takeListener.onClick(v);
+                }
+            }
+        });
+        tv_select.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                if (selectListener != null) {
+                    selectListener.onClick(v);
+                }
+            }
+        });
+        tv_cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        dialog.setOnKeyListener(new DialogInterface.OnKeyListener() {
+                                    @Override
+                                    public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+                                        if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
+                                            dialog.dismiss();
+                                            return true;
+                                        } else {
+                                            return false;
+                                        }
+                                    }
+                                }
+        );
+        Window dialogWindow = dialog.getWindow();
+        WindowManager.LayoutParams lp = dialogWindow.getAttributes();
+//        lp.width = DensityUtils.dp2px(context, 300);
+        dialogWindow.setGravity(Gravity.BOTTOM);
+        dialogWindow.setWindowAnimations(R.style.dialog_up_down_animation);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            dialog.create();
+        }
+        dialog.setCanceledOnTouchOutside(true);
+        return dialog;
+    }
     /**
      * 确定----取消
      */
@@ -291,65 +357,56 @@ public class DialogUtil {
 
 
     public interface onItemClick {
-        void onClickItem(int item, String string);
+        void onClickItem(String string);
     }
 
 
-//    /**
-//     * 选择支付方式
-//     *
-//     * @return
-//     * @paramADBean
-//     */
-//    public static void selectPayType(Activity activity, final List<Integer> in, final onItemClick listener) {
-//        final AlertDialog alertDialog = new AlertDialog.Builder(activity,
-//                R.style.DialogStyleBottom).create();
-//        alertDialog.show();
-//        final Window window = alertDialog.getWindow();
-//        window.setContentView(R.layout.item_income_bottom_ppw);
-//        window.setLayout(
-//                window.getContext().getResources().getDisplayMetrics().widthPixels,
-//                WindowManager.LayoutParams.WRAP_CONTENT);
-//        window.setGravity(Gravity.BOTTOM);
-//        window.setWindowAnimations(R.style.dialog_up_down_animation);
-//        window.clearFlags(WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
-//        alertDialog.setCanceledOnTouchOutside(true);
-//        RecyclerView recyclerView = (RecyclerView) window.findViewById(R.id.recycleview);
-//        recyclerView.setLayoutManager(new LinearLayoutManager(activity));
-//        recyclerView.setHasFixedSize(true);
-//        BaseQuickAdapter adapter = new BaseQuickAdapter<Integer, BaseViewHolder>(R.layout.item_income, in) {
+    /**
+     * 选择主播类型
+     *
+     * @return
+     * @paramADBean
+     */
+    public static void selectAnchorType(Activity activity, final List<AnchorType> typeList, final onItemClick listener) {
+        final AlertDialog alertDialog = new AlertDialog.Builder(activity,
+                R.style.DialogStyleBottom).create();
+        alertDialog.show();
+        final Window window = alertDialog.getWindow();
+        window.setContentView(R.layout.layout_anchor_type);
+        window.setLayout(
+                window.getContext().getResources().getDisplayMetrics().widthPixels,
+                WindowManager.LayoutParams.WRAP_CONTENT);
+        window.setGravity(Gravity.BOTTOM);
+        window.setWindowAnimations(R.style.dialog_up_down_animation);
+        window.clearFlags(WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
+        alertDialog.setCanceledOnTouchOutside(true);
+        RecyclerView recyclerView = (RecyclerView) window.findViewById(R.id.recycleView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(activity));
+        recyclerView.setHasFixedSize(true);
+        BaseQuickAdapter adapter = new BaseQuickAdapter<AnchorType, BaseViewHolder>(R.layout.item_anchor_type, typeList) {
+            @Override
+            protected void convert(BaseViewHolder helper, final AnchorType item) {
+                final TextView textView = helper.getView(R.id.tv_title);
+                textView.setText(item.getType_name());
+                textView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        listener.onClickItem(textView.getText().toString());
+                        alertDialog.dismiss();
+                    }
+                });
+            }
+        };
+
+//        adapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
 //            @Override
-//            protected void convert(BaseViewHolder helper, final Integer item) {
-//                final TextView textView = helper.getView(R.id.tv_income);
-//                if (item == 1){
-//                    helper.setText(R.id.tv_income, "线上支付");
-//                }
-//                if (item == 2){
-//                    helper.setText(R.id.tv_income, "赊销支付");
-//                }
-//                if (item == 3){
-//                    helper.setText(R.id.tv_income, "货到付款");
-//                }
-//                textView.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//                        listener.onClickItem(item,textView.getText().toString());
-//                        alertDialog.dismiss();
-//                    }
-//                });
+//            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+//                listener.onItemClick(adapter, view, position);
+//                alertDialog.dismiss();
 //            }
-//        };
-//
-////        adapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
-////            @Override
-////            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-////                listener.onItemClick(adapter, view, position);
-////                alertDialog.dismiss();
-////            }
-////        });
-//        recyclerView.setAdapter(adapter);
-////        return alertDialog;
-//    }
+//        });
+        recyclerView.setAdapter(adapter);
+    }
 
     /**
      * 提示框，确定

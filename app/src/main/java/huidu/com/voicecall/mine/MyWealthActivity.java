@@ -18,6 +18,7 @@ import huidu.com.voicecall.http.API;
 import huidu.com.voicecall.http.BaseModel;
 import huidu.com.voicecall.http.OkHttpUtils;
 import huidu.com.voicecall.http.RequestFinish;
+import huidu.com.voicecall.utils.SPUtils;
 
 /**
  * 我的财富
@@ -49,7 +50,7 @@ public class MyWealthActivity extends BaseActivity implements RequestFinish{
     @Override
     protected void initData() {
 
-        OkHttpUtils.getInstance().user_myaccount2(API.TOKEN_TEST,this);
+        OkHttpUtils.getInstance().user_myaccount2(SPUtils.getValue("token"),this);
 
     }
 

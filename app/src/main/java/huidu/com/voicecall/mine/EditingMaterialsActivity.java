@@ -53,6 +53,7 @@ import huidu.com.voicecall.utils.Loading;
 import huidu.com.voicecall.utils.MiPictureHelper;
 import huidu.com.voicecall.utils.PicturePicker;
 import huidu.com.voicecall.utils.PicturePickerFragment;
+import huidu.com.voicecall.utils.SPUtils;
 import huidu.com.voicecall.utils.ToastUtil;
 
 /**
@@ -122,8 +123,8 @@ public class EditingMaterialsActivity extends BaseActivity implements RequestFin
 
     @Override
     protected void initData() {
-        OkHttpUtils.getInstance().user_info(API.TOKEN_TEST, API.USERID, this);
-        tv_userId.setText("1");
+        OkHttpUtils.getInstance().user_info(SPUtils.getValue("token"), SPUtils.getValue("user_id"), this);
+        tv_userId.setText(SPUtils.getValue("user_id"));
     }
 
     @Override
@@ -141,8 +142,18 @@ public class EditingMaterialsActivity extends BaseActivity implements RequestFin
                 }
                 if (userInfo.getSex() != null && !userInfo.getSex().isEmpty()) {
                     sex = userInfo.getSex();
-                    tv_sex.setText(sex.equals("1") ? "男" : "女");
-                    ll_sex.setEnabled(false);
+                    if (sex.equals("1")){
+                        tv_sex.setText( "男");
+                        ll_sex.setEnabled(false);
+                    }
+                    else if (sex.equals("2")){
+                        tv_sex.setText("女");
+                        ll_sex.setEnabled(false);
+                    } else{
+                        tv_sex.setText("请选择");
+                        ll_sex.setEnabled(true);
+                    }
+
                 }
                 if (userInfo.getBirthday() != null && !userInfo.getBirthday().isEmpty()) {
                     birthday = userInfo.getBirthday();
@@ -339,7 +350,7 @@ public class EditingMaterialsActivity extends BaseActivity implements RequestFin
 
         for (int i = 1; i < zodiacs.size(); i++) {
             if (zodiacs.get(i).equals(tv_constellation.getText().toString())) {
-                OkHttpUtils.getInstance().user_info_edit(API.TOKEN_TEST, head_image, nickname, sex,
+                OkHttpUtils.getInstance().user_info_edit(SPUtils.getValue("token"), head_image, nickname, sex,
                         birthday, i + "", introduce, this);
             }
         }
@@ -400,9 +411,9 @@ public class EditingMaterialsActivity extends BaseActivity implements RequestFin
             }
         } else if (requestCode == PicturePickerFragment.PICK_SYSTEM_PHOTO && resultCode == Activity.RESULT_OK) {//PICK_TACK_PHOTO
             if (MiPictureHelper.hasSdcard()) {
-                tempFile = new File(Environment.getExternalStorageDirectory(), API.temp_filename);
-                String path = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) + "voiceCall";//新文件地址
-                newFile = new File(Environment.getExternalStorageDirectory(), path);
+                tempFile = new File(API.FILE_DIR, API.temp_filename);
+                String path = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) + API.temp_filename;//新文件地址
+                newFile = new File(API.FILE_DIR, path);
                 tempFile.renameTo(newFile);
                 cropPath = Uri.fromFile(newFile).getPath();
                 File newFile1 = CompressHelper.getDefault(this).compressToFile(new File(cropPath));
@@ -418,14 +429,14 @@ public class EditingMaterialsActivity extends BaseActivity implements RequestFin
             Bundle extras = data.getExtras();
             if (extras != null) {
                 Bitmap photo = extras.getParcelable("data");
-                File newFile = saveBitmapFile(photo);
+                File newFile = FileUtils.saveBitmapFile(photo);
                 loading.show();
                 OkHttpUtils.getInstance().common_image_upload(FileUtils.fileToBase64(newFile), this);
             } else {
                 Uri uri = data.getData();
                 if (uri != null) {
                     Bitmap photo = BitmapFactory.decodeFile(uri.getPath());
-                    File newFile = saveBitmapFile(photo);
+                    File newFile = FileUtils.saveBitmapFile(photo);
                     loading.show();
                     OkHttpUtils.getInstance().common_image_upload(FileUtils.fileToBase64(newFile), this);
                 }
@@ -433,17 +444,4 @@ public class EditingMaterialsActivity extends BaseActivity implements RequestFin
         }
     }
 
-    public File saveBitmapFile(Bitmap bitmap) {
-        String path = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) + "voiceCall";
-        File file = new File(Environment.getExternalStorageDirectory(), path);//将要保存图片的路径
-        try {
-            BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(file));
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bos);
-            bos.flush();
-            bos.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return file;
-    }
 }

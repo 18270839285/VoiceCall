@@ -68,7 +68,7 @@ public class PicturePickerFragment {
     public void initCamera() {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         Uri fileUri = Uri
-                .fromFile(new File(Environment.getExternalStorageDirectory(),
+                .fromFile(new File(API.FILE_DIR,
                         API.temp_filename));
         intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
         act.startActivityForResult(intent, PICK_SYSTEM_PHOTO);

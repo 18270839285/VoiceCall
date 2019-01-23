@@ -52,7 +52,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/dp25"
                     android:layout_marginTop="@dimen/dp35"
-                    android:text="楠楠自语"
+                    android:text=""
                     android:textColor="@color/textColor"
                     android:textSize="@dimen/sp20" />
 
@@ -63,7 +63,7 @@
                     android:layout_below="@+id/userName"
                     android:layout_marginLeft="@dimen/dp25"
                     android:layout_marginTop="@dimen/dp10"
-                    android:text="ID:1234567890"
+                    android:text="ID:"
                     android:textColor="@color/textColor2"
                     android:textSize="@dimen/sp12" />
 
@@ -215,6 +215,7 @@
             </LinearLayout>
 
             <LinearLayout
+                android:visibility="gone"
                 android:id="@+id/ll_income"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp50"
