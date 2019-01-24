@@ -77,7 +77,6 @@ public class ResetPwdActivity extends BaseActivity implements RequestFinish {
         Intent intent = new Intent(this,LoginActivity.class);
         intent.putExtra("telephone",telephone);
         intent.putExtra("password",et_password1.getText().toString());
-
         startActivity(intent);
         finish();
     }

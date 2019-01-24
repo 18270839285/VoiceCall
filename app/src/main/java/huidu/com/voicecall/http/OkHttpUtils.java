@@ -360,13 +360,14 @@ public class OkHttpUtils {
     /**
      * 关注
      */
-    public void user_attention(String token,String anchor_id, RequestFinish protocol) {
+    public void user_attention(String token,String anchor_id,String is_robot, RequestFinish protocol) {//,String is_robot
         RequestConfig config = new RequestConfig();
         config.setCls(Object.class);
         config.setRequestCode(API.USER_ATTENTION);
         Map<String, String> data = new HashMap<String, String>();
         data.put("token", token);
         data.put("anchor_id", anchor_id);
+        data.put("is_robot", is_robot);
         okManager.postRequest(config, API.BASE_URL + API.USER_ATTENTION, data, protocol);
     }
     /**

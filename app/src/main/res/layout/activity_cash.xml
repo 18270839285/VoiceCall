@@ -35,7 +35,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:text="110元"
+            android:text=""
             android:textColor="@color/textSelectColor" />
     </RelativeLayout>
 
@@ -76,10 +76,10 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@null"
-                android:maxLength="8"
                 android:gravity="bottom"
                 android:inputType="number"
-                android:text="110"
+                android:maxLength="8"
+                android:text=""
                 android:textColor="@color/black"
                 android:textColorHint="@color/textColorHint"
                 android:textSize="24sp" />
@@ -118,7 +118,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="99元"
+                android:text=""
                 android:textColor="@color/textSelectColor"
                 android:textSize="@dimen/sp15" />
 
@@ -133,7 +133,7 @@
                 android:id="@+id/tv_fee"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="11元"
+                android:text=""
                 android:textColor="@color/textColor2"
                 android:textSize="@dimen/sp12" />
         </LinearLayout>
@@ -238,14 +238,13 @@
         android:id="@+id/ll_protocol"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingLeft="@dimen/dp15"
-        android:paddingTop="@dimen/dp10">
+        android:layout_marginLeft="@dimen/dp15"
+        android:layout_gravity="center_vertical"
+        android:orientation="horizontal">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
             android:text="* "
             android:textColor="@color/textSelectColor" />
 
@@ -256,8 +255,11 @@
             android:textSize="@dimen/sp12" />
 
         <TextView
+            android:id="@+id/tv_protocol"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:paddingBottom="@dimen/dp10"
+            android:paddingTop="@dimen/dp10"
             android:text="《提现服务协议》"
             android:textColor="@color/textSelectColor"
             android:textSize="@dimen/sp12" />

@@ -3,10 +3,12 @@ package huidu.com.voicecall.login;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.netease.nimlib.sdk.NIMClient;
 import com.netease.nimlib.sdk.RequestCallback;
@@ -26,7 +28,9 @@ import huidu.com.voicecall.http.BaseModel;
 import huidu.com.voicecall.http.OkHttpUtils;
 import huidu.com.voicecall.http.RequestFinish;
 import huidu.com.voicecall.main.MainActivity;
+import huidu.com.voicecall.utils.AtyContainer;
 import huidu.com.voicecall.utils.CheckUtils;
+import huidu.com.voicecall.utils.Loading;
 import huidu.com.voicecall.utils.MD5Util;
 import huidu.com.voicecall.utils.SPUtils;
 import huidu.com.voicecall.utils.ToastUtil;
@@ -42,18 +46,20 @@ public class LoginActivity extends BaseActivity implements RequestFinish {
     EditText et_account;
     @BindView(R.id.et_password)
     EditText et_password;
-    boolean isCheck = true;
 
+    private boolean isCheck = true;
+    private String telephone;
+    private String password;
+    private Loading mLoading;
     @Override
     protected int getLayoutId() {
         return R.layout.activity_login;
     }
 
-    String telephone;
-    String password;
 
     @Override
     protected void initView() {
+        mLoading = new Loading(this);
         if (getIntent() != null) {
             telephone = getIntent().getStringExtra("telephone");
             password = getIntent().getStringExtra("password");
@@ -88,7 +94,6 @@ public class LoginActivity extends BaseActivity implements RequestFinish {
                 ImInfo imInfo = (ImInfo) result.getData();
                 SPUtils.putValue("accid", imInfo.getAccid());
                 doLogin(SPUtils.getValue("token"));
-                jumpTo(MainActivity.class);
                 break;
         }
 
@@ -96,6 +101,8 @@ public class LoginActivity extends BaseActivity implements RequestFinish {
 
     @Override
     public void onError(String result) {
+        if (mLoading!=null&&mLoading.isShowing())
+            mLoading.dismiss();
         ToastUtil.toastShow(result);
     }
 
@@ -106,20 +113,22 @@ public class LoginActivity extends BaseActivity implements RequestFinish {
                 new RequestCallback<LoginInfo>() {
                     @Override
                     public void onSuccess(LoginInfo param) {
+                        mLoading.dismiss();
                         ToastUtil.toastShow("登录成功");
-//                        Log.e(TAG, "onSuccess: 登录成功");
-                        Log.e("RequestCallback", "onSuccess: account1 = " + param.getAccount() + "  password1 = " + param.getToken());
+                        jumpTo(MainActivity.class);
                         // 可以在此保存LoginInfo到本地，下次启动APP做自动登录用
                         SPUtils.putValue("account1", param.getAccount());
                     }
 
                     @Override
                     public void onFailed(int code) {
+                        mLoading.dismiss();
                         Log.e("RequestCallback", "onFailed: code = " + code);
                     }
 
                     @Override
                     public void onException(Throwable exception) {
+                        mLoading.dismiss();
                         Log.e("RequestCallback", "onException: " + exception);
                     }
 
@@ -142,6 +151,7 @@ public class LoginActivity extends BaseActivity implements RequestFinish {
             return;
         }
         String code = MD5Util.GetMD5Code(et_password.getText().toString());
+        mLoading.show();
         OkHttpUtils.getInstance().login(et_account.getText().toString(), code, this);
     }
 
@@ -181,5 +191,24 @@ public class LoginActivity extends BaseActivity implements RequestFinish {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ButterKnife.bind(this);
+    }
+
+    private long mFirstTime = 0;
+
+    //改写物理按键——返回的逻辑
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            long secondTime = System.currentTimeMillis();
+            if (secondTime - mFirstTime > 2000) {   //如果两次按键时间间隔大于2秒，则不退出
+                Toast.makeText(this, "再按一次退出程序", Toast.LENGTH_SHORT).show();
+                mFirstTime = secondTime;//更新firstTime
+                return true;
+            } else { //两次按键小于2秒时，退出应用
+                AtyContainer.getInstance().finishAllActivity();
+                System.exit(0);
+            }
+        }
+        return super.onKeyDown(keyCode, event);
     }
 }

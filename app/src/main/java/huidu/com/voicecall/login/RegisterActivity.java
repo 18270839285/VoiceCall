@@ -63,7 +63,7 @@ public class RegisterActivity extends BaseActivity implements RequestFinish {
 
     }
 
-    @OnClick({R.id.tv_next, R.id.tv_getCode})
+    @OnClick({R.id.tv_next, R.id.tv_getCode,R.id.iv_back})
     public void onViewClick(View view) {
         switch (view.getId()) {
             case R.id.tv_getCode:
@@ -78,6 +78,9 @@ public class RegisterActivity extends BaseActivity implements RequestFinish {
             case R.id.tv_next:
                 //下一步
                 checkNext();
+                break;
+            case R.id.iv_back:
+                finish();
                 break;
         }
 

@@ -63,10 +63,12 @@ public class SystemNotificationFragment extends BaseFragment implements RequestF
             @Override
             public void onRefresh() {
                 mPage = 1;
+                mList.clear();
                 OkHttpUtils.getInstance().notice_system(SPUtils.getValue("token"), mPage+"", new RequestFinish() {
                     @Override
                     public void onSuccess(BaseModel result, String params) {
                         refreshLayout.setRefreshing(false);
+                        mPage++;
                         SystemNotice orderList = (SystemNotice) result.getData();
                         mList = orderList.getNotice();
                         mAdapter.setNewData(mList);

@@ -44,6 +44,7 @@ import butterknife.OnClick;
 import de.hdodenhof.circleimageview.CircleImageView;
 import huidu.com.voicecall.R;
 import huidu.com.voicecall.base.BaseActivity;
+import huidu.com.voicecall.bean.ImInfo;
 import huidu.com.voicecall.http.API;
 import huidu.com.voicecall.http.BaseModel;
 import huidu.com.voicecall.http.OkHttpUtils;
@@ -88,8 +89,8 @@ public class ChattingRoomActivity extends BaseActivity implements RequestFinish 
     boolean isMute = false;
     boolean isHandsFree = false;
     boolean isBegin = false;
-    String accid1;
-    String accid2;
+    String accid1;//自己的accid
+    String accid2;//对方的accid
 
     @Override
     protected int getLayoutId() {
@@ -115,12 +116,15 @@ public class ChattingRoomActivity extends BaseActivity implements RequestFinish 
 
     @Override
     protected void initData() {
-        doLogin();
+        outGoingCalling(accid2);
     }
 
     @Override
     public void onSuccess(BaseModel result, String params) {
-
+         if (params.equals(API.SIGN_IM_INFO)){
+             ImInfo imInfo = (ImInfo)result.getData();
+             accid1 = imInfo.getAccid();
+         }
     }
 
     @Override
@@ -208,7 +212,6 @@ public class ChattingRoomActivity extends BaseActivity implements RequestFinish 
                     @Override
                     public void onFailed(int code) {
                         Log.e("RequestCallback", "onFailed: code = " + code);
-//                        ToastUtil.toastShow("登录失败! code = " + code);
                     }
 
                     @Override
@@ -321,18 +324,18 @@ public class ChattingRoomActivity extends BaseActivity implements RequestFinish 
                 ll_cancel.setVisibility(View.GONE);
                 ToastUtil.toastShow("已接通");
                 setStart();
-//                OkHttpUtils.getInstance().order_begin(SPUtils.getValue("token"), order_no, IDENTITY_TYPE + "", new RequestFinish() {
-//                    @Override
-//                    public void onSuccess(BaseModel result, String params) {
-//                        Log.e("onSuccess: ", "开始通话");
-//                        isBegin = true;
-//                    }
-//
-//                    @Override
-//                    public void onError(String result) {
-//
-//                    }
-//                });
+                OkHttpUtils.getInstance().order_begin(SPUtils.getValue("token"), order_no, IDENTITY_TYPE + "", new RequestFinish() {
+                    @Override
+                    public void onSuccess(BaseModel result, String params) {
+                        Log.e("onSuccess: ", "开始通话");
+                        isBegin = true;
+                    }
+
+                    @Override
+                    public void onError(String result) {
+
+                    }
+                });
 //                Log.e("onCallEstablished: ", "正在通话");
             }
 
@@ -449,11 +452,13 @@ public class ChattingRoomActivity extends BaseActivity implements RequestFinish 
             @Override
             public void onFailed(int code) {
                 Log.e("hangUp", "onFailed: 挂断失败");
+                AVChatManager.getInstance().disableRtc();
             }
 
             @Override
             public void onException(Throwable exception) {
                 exception.printStackTrace();
+                AVChatManager.getInstance().disableRtc();
                 Log.e("hangUp", "onException: " + exception.getMessage());
             }
         });
@@ -466,19 +471,20 @@ public class ChattingRoomActivity extends BaseActivity implements RequestFinish 
      */
     private void logOut(int overMan){
 //        NIMClient.getService(AuthService.class).logout();
+        AVChatManager.getInstance().disableRtc();
         if (isBegin){
-//            OkHttpUtils.getInstance().order_over(SPUtils.getValue("token"), "", "", overMan+"", new RequestFinish() {
-//                @Override
-//                public void onSuccess(BaseModel result, String params) {
-//                    isBegin = false;
-//                    finish();
-//                }
-//
-//                @Override
-//                public void onError(String result) {
-//
-//                }
-//            });
+            OkHttpUtils.getInstance().order_over(SPUtils.getValue("token"), accid1, accid2, overMan+"", new RequestFinish() {
+                @Override
+                public void onSuccess(BaseModel result, String params) {
+                    isBegin = false;
+                    finish();
+                }
+
+                @Override
+                public void onError(String result) {
+
+                }
+            });
         }else {
             finish();
         }

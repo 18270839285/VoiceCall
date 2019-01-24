@@ -1,8 +1,7 @@
 package huidu.com.voicecall.voice;
 
-import android.os.SystemClock;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.util.Log;
 import android.view.View;
 import android.widget.Chronometer;
@@ -12,12 +11,9 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.netease.nimlib.sdk.NIMClient;
 import com.netease.nimlib.sdk.Observer;
-import com.netease.nimlib.sdk.auth.AuthService;
 import com.netease.nimlib.sdk.avchat.AVChatCallback;
 import com.netease.nimlib.sdk.avchat.AVChatManager;
-import com.netease.nimlib.sdk.avchat.AVChatManagerLite;
 import com.netease.nimlib.sdk.avchat.AVChatStateObserverLite;
 import com.netease.nimlib.sdk.avchat.constant.AVChatChannelProfile;
 import com.netease.nimlib.sdk.avchat.model.AVChatAudioFrame;
@@ -26,7 +22,6 @@ import com.netease.nimlib.sdk.avchat.model.AVChatData;
 import com.netease.nimlib.sdk.avchat.model.AVChatNetworkStats;
 import com.netease.nimlib.sdk.avchat.model.AVChatParameters;
 import com.netease.nimlib.sdk.avchat.model.AVChatSessionStats;
-import com.netease.nimlib.sdk.avchat.model.AVChatVideoCapturerFactory;
 import com.netease.nimlib.sdk.avchat.model.AVChatVideoFrame;
 
 import java.util.Map;
@@ -38,7 +33,6 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import huidu.com.voicecall.R;
 import huidu.com.voicecall.base.BaseActivity;
 import huidu.com.voicecall.bean.ImInfo;
-import huidu.com.voicecall.http.API;
 import huidu.com.voicecall.http.BaseModel;
 import huidu.com.voicecall.http.OkHttpUtils;
 import huidu.com.voicecall.http.RequestFinish;
@@ -48,7 +42,7 @@ import huidu.com.voicecall.utils.ToastUtil;
 /**
  * 接收来电
  */
-public class ReceiveRoomActivity extends BaseActivity implements RequestFinish{
+public class ReceiveRoomActivity extends BaseActivity implements RequestFinish {
     @BindView(R.id.iv_bg)
     ImageView iv_bg;
     @BindView(R.id.iv_hands_free)
@@ -75,7 +69,7 @@ public class ReceiveRoomActivity extends BaseActivity implements RequestFinish{
     boolean isHandsFree = false;
 
     private AVChatData avChatData;
-    boolean isBegin = false;
+
     @Override
     protected int getLayoutId() {
         return R.layout.activity_receive_room;
@@ -83,10 +77,10 @@ public class ReceiveRoomActivity extends BaseActivity implements RequestFinish{
 
     @Override
     protected void initView() {
-        avChatData = (AVChatData)getIntent().getSerializableExtra("AVChatData");
-//        OkHttpUtils.getInstance().accid_name(avChatData.getAccount(),this);
-        Log.e(TAG, "initView: account = "+avChatData.getAccount()+"  chatId = "+avChatData.getChatId() );
-        OkHttpUtils.getInstance().accid_name("yinyuan14",this);
+        avChatData = (AVChatData) getIntent().getSerializableExtra("AVChatData");
+        OkHttpUtils.getInstance().accid_name(avChatData.getAccount(), this);
+        Log.e(TAG, "initView: account = " + avChatData.getAccount() + "  chatId = " + avChatData.getChatId());
+//        OkHttpUtils.getInstance().accid_name("yinyuan14",this);
     }
 
     @Override
@@ -228,11 +222,10 @@ public class ReceiveRoomActivity extends BaseActivity implements RequestFinish{
 
     @Override
     public void onSuccess(BaseModel result, String params) {
-        Log.e(TAG, "onSuccess");
-        ImInfo info = (ImInfo)result.getData();
+        ImInfo info = (ImInfo) result.getData();
         head_image = info.getIcon();
         nickname = info.getName();
-        Log.e(TAG, "onSuccess: headImage : "+ head_image+"  nickname : "+nickname);
+        Log.e(TAG, "onSuccess: headImage : " + head_image + "  nickname : " + nickname);
         tv_name.setText(nickname);
         Glide.with(this).load(head_image).into(iv_head);
         Glide.with(this)
@@ -243,7 +236,7 @@ public class ReceiveRoomActivity extends BaseActivity implements RequestFinish{
 
     @Override
     public void onError(String result) {
-        Log.e(TAG, "onError"+result);
+        Log.e(TAG, "onError" + result);
     }
 
     @OnClick({R.id.iv_icon, R.id.ll_refuse, R.id.ll_agree, R.id.ll_mute, R.id.ll_hang_up, R.id.ll_hands_free})
@@ -260,10 +253,10 @@ public class ReceiveRoomActivity extends BaseActivity implements RequestFinish{
             case R.id.ll_mute:
                 //是否静音
                 isMute = !isMute;
-                AVChatManager.getInstance(). setMicrophoneMute(isMute);
-                if (isMute){
+                AVChatManager.getInstance().setMicrophoneMute(isMute);
+                if (isMute) {
                     iv_mute.setImageResource(R.mipmap.djt_jy_pre);
-                }else {
+                } else {
                     iv_mute.setImageResource(R.mipmap.djt_jy);
                 }
                 break;
@@ -274,9 +267,9 @@ public class ReceiveRoomActivity extends BaseActivity implements RequestFinish{
                 //是否免提
                 isHandsFree = !isHandsFree;
                 AVChatManager.getInstance().setSpeaker(isHandsFree);
-                if (isHandsFree){
+                if (isHandsFree) {
                     iv_hands_free.setImageResource(R.mipmap.djt_mt_pre);
-                }else {
+                } else {
                     iv_hands_free.setImageResource(R.mipmap.djt_mt);
                 }
                 break;
@@ -307,7 +300,7 @@ public class ReceiveRoomActivity extends BaseActivity implements RequestFinish{
         AVChatManager.getInstance().accept2(avChatData.getChatId(), new AVChatCallback<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
-                Log.e("receiveInComingCall", "onSuccess: " );
+                Log.e("receiveInComingCall", "onSuccess: ");
                 ll_type2.setVisibility(View.GONE);
                 ll_type3.setVisibility(View.VISIBLE);
                 setStart();
@@ -315,7 +308,6 @@ public class ReceiveRoomActivity extends BaseActivity implements RequestFinish{
 
             @Override
             public void onFailed(int code) {
-                Log.e("receiveInComingCall", "onFailed: code = "+code );
                 if (code == -1) {
                     ToastUtil.toastShow("本地音视频启动失败");
                 } else {
@@ -326,7 +318,7 @@ public class ReceiveRoomActivity extends BaseActivity implements RequestFinish{
 
             @Override
             public void onException(Throwable exception) {
-                Log.e("receiveInComingCall", "onException: "+exception.getMessage() );
+                Log.e("receiveInComingCall", "onException: " + exception.getMessage());
                 handleAcceptFailed();
             }
         });
@@ -352,23 +344,25 @@ public class ReceiveRoomActivity extends BaseActivity implements RequestFinish{
             @Override
             public void onFailed(int code) {
                 Log.e("hangUp", "onFailed: 挂断失败");
+                handleAcceptFailed();
             }
 
             @Override
             public void onException(Throwable exception) {
                 exception.printStackTrace();
+                handleAcceptFailed();
                 Log.e("hangUp", "onException: " + exception.getMessage());
             }
         });
-        //销毁音视频引擎和释放资源
-        AVChatManager.getInstance().disableRtc();
     }
 
     /**
      * 登出
      */
-    private void logOut(){
+    private void logOut() {
 //        NIMClient.getService(AuthService.class).logout();
+        //销毁音视频引擎和释放资源
+        handleAcceptFailed();
         finish();
     }
 

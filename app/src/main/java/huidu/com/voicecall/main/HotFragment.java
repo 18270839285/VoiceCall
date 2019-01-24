@@ -88,9 +88,11 @@ public class HotFragment extends BaseFragment implements RequestFinish {
             @Override
             public void onRefresh() {
                 mPage = 1;
+                mList.clear();
                 OkHttpUtils.getInstance().home(SPUtils.getValue("token"), type_id, mPage + "", new RequestFinish() {
                     @Override
                     public void onSuccess(BaseModel result, String params) {
+                        mPage++;
                         refreshLayout.setRefreshing(false);
                         Home home = (Home) result.getData();
                         List<Home.Banner> banners = home.getBanner();
@@ -126,7 +128,6 @@ public class HotFragment extends BaseFragment implements RequestFinish {
         mPage++;
         Home home = (Home) result.getData();
         List<Home.Banner> banners = home.getBanner();
-
         List<String> images = new ArrayList<>();
         for (Home.Banner img : banners) {
             images.add(img.getImage_url());
@@ -138,8 +139,13 @@ public class HotFragment extends BaseFragment implements RequestFinish {
             initBanner(images, typeImg.getType_img());
         }
 
-        mList = home.getAnchor();
-        mAdapter.setNewData(mList);
+        if (mPage==1){
+            mList = home.getAnchor();
+            mAdapter.setNewData(mList);
+        }else {
+            mAdapter.addData(home.getAnchor());
+            mAdapter.notifyDataSetChanged();
+        }
 
     }
 
@@ -191,9 +197,8 @@ public class HotFragment extends BaseFragment implements RequestFinish {
                 //通过RequestOptions扩展功能,override:采样率,因为ImageView就这么大,可以压缩图片,降低内存消耗
                 RequestOptions options = RequestOptions.bitmapTransform(roundedCorners).override(300, 300);
 
-                Glide.with(getActivity()).load(item.getHead_image()).apply(options).into(iv_head);
+                Glide.with(getActivity()).load(item.getCover()).apply(options).into(iv_head);
 
-//                Glide.with(getActivity()).load(item.getHead_image()).into(iv_head);
             }
         };
         mAdapter.openLoadAnimation();

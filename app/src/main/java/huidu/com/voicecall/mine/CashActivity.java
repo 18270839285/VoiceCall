@@ -1,5 +1,6 @@
 package huidu.com.voicecall.mine;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -14,6 +15,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import huidu.com.voicecall.R;
 import huidu.com.voicecall.base.BaseActivity;
+import huidu.com.voicecall.base.WebActivity;
 import huidu.com.voicecall.http.API;
 import huidu.com.voicecall.http.BaseModel;
 import huidu.com.voicecall.http.OkHttpUtils;
@@ -221,6 +223,7 @@ public class CashActivity extends BaseActivity implements RequestFinish {
                 break;
             case R.id.ll_protocol:
                 //点击协议
+                startActivity(new Intent(this, WebActivity.class).putExtra("web_type",1));
                 break;
             case R.id.tv_submit:
                 //立即提现

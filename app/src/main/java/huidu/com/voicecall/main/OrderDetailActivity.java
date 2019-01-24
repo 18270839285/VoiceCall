@@ -220,7 +220,8 @@ public class OrderDetailActivity extends BaseActivity implements RequestFinish {
                     case "1":
 //                      "待确定";\
                         ORDER_STATUS = 1;
-                        tv_status.setText("待确定");
+                        tv_status.setText("用户下单");
+//                        tv_status.setText("待确定");
                         tv_message.setVisibility(View.VISIBLE);
                         iv_icon.setImageResource(R.mipmap.wddd_dfw);
                         tv_message.setText("若主播在15分钟内未确定订单，订单将会自动取消");
@@ -242,7 +243,8 @@ public class OrderDetailActivity extends BaseActivity implements RequestFinish {
                     case "2":
 //                      "待服务";
                         ORDER_STATUS = 2;
-                        tv_status.setText("待服务");
+                        tv_status.setText("主播接单");
+//                        tv_status.setText("待服务");
                         tv_message.setVisibility(View.VISIBLE);
                         iv_icon.setImageResource(R.mipmap.wddd_dfw);
                         tv_time_status.setText("开始服务倒计时：");
@@ -262,7 +264,7 @@ public class OrderDetailActivity extends BaseActivity implements RequestFinish {
                     case "3":
 //                      "进行中";
                         ORDER_STATUS = 3;
-                        tv_status.setText("进行中");
+                        tv_status.setText("交易进行中");
                         tv_message.setVisibility(View.VISIBLE);
                         iv_icon.setImageResource(R.mipmap.wddd_dfw);
                         if (Integer.parseInt(infoBean.getExpire_time())>0){
@@ -285,7 +287,7 @@ public class OrderDetailActivity extends BaseActivity implements RequestFinish {
                     case "5":
 //                     "已完成";
                         ORDER_STATUS = 5;
-                        tv_status.setText("已完成");
+                        tv_status.setText("交易完成");
                         ll_times_over.setVisibility(View.GONE);
                         iv_icon.setImageResource(R.mipmap.wddd_ywc);
 //                        tv_time_status.setVisibility(View.GONE);
@@ -294,7 +296,7 @@ public class OrderDetailActivity extends BaseActivity implements RequestFinish {
                     case "6":
 //                     "已取消";
                         ORDER_STATUS = 6;
-                        tv_status.setText("已取消");
+                        tv_status.setText("取消订单 ");
                         iv_icon.setImageResource(R.mipmap.wddd_yqx);
                         ll_times_over.setVisibility(View.GONE);
 //                        tv_time_status.setVisibility(View.GONE);
@@ -303,7 +305,7 @@ public class OrderDetailActivity extends BaseActivity implements RequestFinish {
                     case "7":
 //                      "已拒绝";
                         ORDER_STATUS = 7;
-                        tv_status.setText("已拒绝");
+                        tv_status.setText("拒绝订单");
                         ll_times_over.setVisibility(View.GONE);
                         iv_icon.setImageResource(R.mipmap.wddd_yqx);
 //                        tv_time_status.setVisibility(View.GONE);
@@ -312,7 +314,7 @@ public class OrderDetailActivity extends BaseActivity implements RequestFinish {
                     case "8":
 //                     "已关闭";
                         ORDER_STATUS = 8;
-                        tv_status.setText("已关闭");
+                        tv_status.setText("自动关闭");
                         ll_times_over.setVisibility(View.GONE);
                         iv_icon.setImageResource(R.mipmap.wddd_yqx);
 //                        tv_time_status.setVisibility(View.GONE);

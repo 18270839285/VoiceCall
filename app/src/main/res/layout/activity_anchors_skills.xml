@@ -153,7 +153,7 @@
                         android:id="@+id/iv_attention"
                         android:layout_width="16dp"
                         android:layout_height="16dp"
-                        android:src="@mipmap/zbjn_ygz" />
+                        android:src="@mipmap/zbjn_wgz" />
 
                     <TextView
                         android:id="@+id/tv_attention"

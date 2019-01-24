@@ -32,6 +32,7 @@ import huidu.com.voicecall.http.BaseModel;
 import huidu.com.voicecall.http.OkHttpUtils;
 import huidu.com.voicecall.http.RequestFinish;
 import huidu.com.voicecall.utils.EmptyViewUtil;
+import huidu.com.voicecall.utils.Loading;
 import huidu.com.voicecall.utils.SPUtils;
 import huidu.com.voicecall.utils.ToastUtil;
 
@@ -48,6 +49,7 @@ public class MyAttentionActivity extends BaseActivity implements RequestFinish{
 
     BaseQuickAdapter mAdapter;
     List<UserAttention> mList = new ArrayList<>();
+    Loading mLoadind;
     @Override
     protected int getLayoutId() {
         return R.layout.activity_my_attention;
@@ -56,7 +58,7 @@ public class MyAttentionActivity extends BaseActivity implements RequestFinish{
     @Override
     protected void initView() {
         tv_title.setText("我的关注");
-
+        mLoadind = new Loading(this);
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -90,6 +92,7 @@ public class MyAttentionActivity extends BaseActivity implements RequestFinish{
                 tv_attention.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        mLoadind.show();
                         OkHttpUtils.getInstance().user_attention_cancel(SPUtils.getValue("token"),item.getUser_id()+"",MyAttentionActivity.this);
                     }
                 });
@@ -108,6 +111,8 @@ public class MyAttentionActivity extends BaseActivity implements RequestFinish{
                 mAdapter.setNewData(mList);
                 break;
             case API.USER_ATTENTION_CANCEL:
+                mLoadind.dismiss();
+                ToastUtil.toastShow("取消关注成功");
                 OkHttpUtils.getInstance().user_attention_list(SPUtils.getValue("token"),this);
                 break;
         }
@@ -116,6 +121,9 @@ public class MyAttentionActivity extends BaseActivity implements RequestFinish{
     @Override
     public void onError(String result) {
         refreshLayout.setRefreshing(false);
+        if (mLoadind!=null&&mLoadind.isShowing()){
+            mLoadind.dismiss();
+        }
         ToastUtil.toastShow(result);
     }
 

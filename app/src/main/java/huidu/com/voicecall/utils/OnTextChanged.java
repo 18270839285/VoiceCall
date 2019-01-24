@@ -5,7 +5,7 @@ import android.text.TextWatcher;
 import android.widget.EditText;
 
 /**
- * Description:
+ * Description:控制不能输入空格
  * Data：2018/12/13-11:31
  * Author: lin
  */

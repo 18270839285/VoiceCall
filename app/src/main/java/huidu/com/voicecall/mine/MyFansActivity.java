@@ -32,6 +32,7 @@ import huidu.com.voicecall.http.BaseModel;
 import huidu.com.voicecall.http.OkHttpUtils;
 import huidu.com.voicecall.http.RequestFinish;
 import huidu.com.voicecall.utils.EmptyViewUtil;
+import huidu.com.voicecall.utils.Loading;
 import huidu.com.voicecall.utils.SPUtils;
 import huidu.com.voicecall.utils.ToastUtil;
 
@@ -49,6 +50,7 @@ public class MyFansActivity extends BaseActivity implements RequestFinish {
     BaseQuickAdapter mAdapter;
 
     List<UserFans> mList = new ArrayList<>();
+    Loading mLoadind;
     @Override
     protected int getLayoutId() {
         return R.layout.activity_my_fans;
@@ -57,6 +59,7 @@ public class MyFansActivity extends BaseActivity implements RequestFinish {
     @Override
     protected void initView() {
         tv_title.setText("我的粉丝");
+        mLoadind = new Loading(this);
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -99,10 +102,11 @@ public class MyFansActivity extends BaseActivity implements RequestFinish {
                 tv_attention.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        mLoadind.show();
                         if (item.getIs_attention().equals("1")){
                             OkHttpUtils.getInstance().user_attention_cancel(SPUtils.getValue("token"),item.getUser_id()+"",MyFansActivity.this);
                         }else {
-                            OkHttpUtils.getInstance().user_attention(SPUtils.getValue("token"),item.getUser_id()+"",MyFansActivity.this);
+                            OkHttpUtils.getInstance().user_attention(SPUtils.getValue("token"),item.getUser_id()+"","",MyFansActivity.this);
                         }
                     }
                 });
@@ -121,9 +125,13 @@ public class MyFansActivity extends BaseActivity implements RequestFinish {
                 mAdapter.setNewData(mList);
                 break;
             case API.USER_ATTENTION:
+                mLoadind.dismiss();
+                ToastUtil.toastShow("关注成功");
                 OkHttpUtils.getInstance().user_fans_list(SPUtils.getValue("token"),this);
                 break;
             case API.USER_ATTENTION_CANCEL:
+                mLoadind.dismiss();
+                ToastUtil.toastShow("取消关注成功");
                 OkHttpUtils.getInstance().user_fans_list(SPUtils.getValue("token"),this);
                 break;
         }
@@ -132,6 +140,9 @@ public class MyFansActivity extends BaseActivity implements RequestFinish {
     @Override
     public void onError(String result) {
         refreshLayout.setRefreshing(false);
+        if (mLoadind!=null&&mLoadind.isShowing()){
+            mLoadind.dismiss();
+        }
         ToastUtil.toastShow(result);
     }
     @OnClick({R.id.iv_back})

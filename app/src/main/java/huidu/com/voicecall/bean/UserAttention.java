@@ -14,6 +14,15 @@ public class UserAttention implements Serializable{
     String sex;
     String nickname;
     String head_image;
+    String is_robot;
+
+    public String getIs_robot() {
+        return is_robot;
+    }
+
+    public void setIs_robot(String is_robot) {
+        this.is_robot = is_robot;
+    }
 
     public String getUser_id() {
         return user_id;

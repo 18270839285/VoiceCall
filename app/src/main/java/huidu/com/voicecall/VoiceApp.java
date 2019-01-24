@@ -47,6 +47,7 @@ public class VoiceApp extends MultiDexApplication {
         SDKOptions options = new SDKOptions();
         options.appKey = "f0c2e363ab9ac4693c0994fd2e3bceaa";
         NIMClient.init(this, loginInfo(), options);
+//        NIMClient.init(this, loginInfo(), options);
         enableAVChat();
     }
 

@@ -36,6 +36,7 @@ import huidu.com.voicecall.mine.MyFansActivity;
 import huidu.com.voicecall.mine.MyOrderActivity;
 import huidu.com.voicecall.mine.MyWealthActivity;
 import huidu.com.voicecall.mine.PersonalActivity;
+import huidu.com.voicecall.mine.SettingActivity;
 import huidu.com.voicecall.test.TestActivity;
 import huidu.com.voicecall.base.BaseFragment;
 import huidu.com.voicecall.utils.DialogUtil;
@@ -91,7 +92,7 @@ public class MineFragment extends BaseFragment implements RequestFinish{
         switch (view.getId()) {
             case R.id.iv_setting:
                 //设置
-                jump(LoginActivity.class);
+                jump(SettingActivity.class);
                 break;
             case R.id.rl_personal:
                 //个人资料
@@ -191,11 +192,11 @@ public class MineFragment extends BaseFragment implements RequestFinish{
         is_idcard_auth = userInfo.getIs_idcard_auth();
         is_face_auth = userInfo.getIs_face_auth();
         is_anchor_auth = userInfo.getIs_anchor_auth();
-        if (userInfo.getIs_show_withdrawal().equals("1")){
-            ll_income.setVisibility(View.VISIBLE);
-        }else {
-            ll_income.setVisibility(View.GONE);
-        }
+//        if (userInfo.getIs_show_withdrawal().equals("1")){
+//            ll_income.setVisibility(View.VISIBLE);
+//        }else {
+//            ll_income.setVisibility(View.GONE);
+//        }
     }
 
     @Override

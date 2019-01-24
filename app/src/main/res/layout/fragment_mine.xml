@@ -215,7 +215,6 @@
             </LinearLayout>
 
             <LinearLayout
-                android:visibility="gone"
                 android:id="@+id/ll_income"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp50"
@@ -295,6 +294,7 @@
             </LinearLayout>
 
             <LinearLayout
+                android:visibility="gone"
                 android:id="@+id/ll_about_us"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp50"

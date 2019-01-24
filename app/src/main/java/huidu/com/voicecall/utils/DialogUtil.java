@@ -16,6 +16,7 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.baidu.idl.face.platform.utils.DensityUtils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 
@@ -187,7 +188,7 @@ public class DialogUtil {
         );
         Window dialogWindow = dialog.getWindow();
         WindowManager.LayoutParams lp = dialogWindow.getAttributes();
-//        lp.width = DensityUtils.dp2px(context, 300);
+        lp.width = DensityUtils.dip2px(context, 300);
         dialogWindow.setGravity(Gravity.CENTER);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             dialog.create();
@@ -300,7 +301,7 @@ public class DialogUtil {
         );
         Window dialogWindow = dialog.getWindow();
         WindowManager.LayoutParams lp = dialogWindow.getAttributes();
-//        lp.width = DensityUtils.dp2px(context, 300);
+        lp.width = DensityUtils.dip2px(context, 300);
         dialogWindow.setGravity(Gravity.CENTER);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             dialog.create();

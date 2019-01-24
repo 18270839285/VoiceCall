@@ -79,9 +79,11 @@ public class MyOrderFragment extends BaseFragment implements RequestFinish{
             @Override
             public void onRefresh() {
                 mPage = 1;
+                mList.clear();
                 OkHttpUtils.getInstance().order_list(SPUtils.getValue("token"), type_id,mPage, new RequestFinish() {
                     @Override
                     public void onSuccess(BaseModel result, String params) {
+                        mPage ++;
                         refreshLayout.setRefreshing(false);
                         OrderList orderList = (OrderList)result.getData();
                         mList = orderList.getList();
@@ -102,11 +104,15 @@ public class MyOrderFragment extends BaseFragment implements RequestFinish{
     @Override
     public void onSuccess(BaseModel result, String params) {
         refreshLayout.setRefreshing(false);
-        mPage++;
         OrderList orderList = (OrderList)result.getData();
-        mList = orderList.getList();
-        mAdapter.setNewData(mList);
-
+        mPage++;
+        if (mPage==1){
+            mList = orderList.getList();
+            mAdapter.setNewData(mList);
+        }else {
+            mAdapter.addData(orderList.getList());
+            mAdapter.notifyDataSetChanged();
+        }
     }
 
     @Override

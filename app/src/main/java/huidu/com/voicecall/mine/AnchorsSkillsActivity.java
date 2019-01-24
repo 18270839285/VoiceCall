@@ -85,6 +85,7 @@ public class AnchorsSkillsActivity extends BaseActivity implements RequestFinish
     private MediaPlayer mediaPlayer;
     private String audioUrl = "";
     private boolean isRobot = false;
+    private boolean isAttention = false;
 
     @Override
     protected int getLayoutId() {
@@ -129,13 +130,16 @@ public class AnchorsSkillsActivity extends BaseActivity implements RequestFinish
                 }
                 break;
             case R.id.ll_attention:
-                if (anchorInfo.getIs_attention().equals("1")) {
+                if (isAttention){
                     //取消关注
+                    mLoading.show();
                     OkHttpUtils.getInstance().user_attention_cancel(SPUtils.getValue("token"), anchor_id, this);
-                } else {
+                }else {
                     //关注
-                    OkHttpUtils.getInstance().user_attention(SPUtils.getValue("token"), anchor_id, this);
+                    mLoading.show();
+                    OkHttpUtils.getInstance().user_attention(SPUtils.getValue("token"), anchor_id,isRobot?"1":"" ,this);
                 }
+                isAttention = !isAttention;
                 break;
             case R.id.ll_chat:
                 //约聊
@@ -150,9 +154,9 @@ public class AnchorsSkillsActivity extends BaseActivity implements RequestFinish
     @Override
     public void onSuccess(BaseModel result, String params) {
         refresh.setRefreshing(false);
-        mLoading.dismiss();
         switch (params) {
             case API.ANCHOR_INFO:
+                mLoading.dismiss();
                 anchorInfo = (AnchorInfo) result.getData();
                 Glide.with(this).load(anchorInfo.getHead_image()).into(iv_head);
                 if (anchorInfo.getCover().size() > 0) {
@@ -165,12 +169,11 @@ public class AnchorsSkillsActivity extends BaseActivity implements RequestFinish
                 tv_type.setText(type.equals("1") ? "Y豆/分钟" : "Y豆/次");
 
                 if (anchorInfo.getIs_attention().equals("1")) {
-                    tv_attention.setText("已关注");
-                    tv_attention.setTextColor(getResources().getColor(R.color.textColor2));
+                    isAttention = true;
                 } else {
-                    tv_attention.setText("关注");
-                    tv_attention.setTextColor(getResources().getColor(R.color.textColor));
+                    isAttention = false;
                 }
+                setAttention();
                 audioUrl = anchorInfo.getVoice();
                 break;
             case API.ANCHOR_PRICE:
@@ -189,14 +192,31 @@ public class AnchorsSkillsActivity extends BaseActivity implements RequestFinish
 //                jumpTo(OrderDetailActivity.class);
                 break;
             case API.USER_ATTENTION:
-                initData();
+                mLoading.dismiss();
+                ToastUtil.toastBottom(this,"关注成功");
+                setAttention();
                 break;
             case API.USER_ATTENTION_CANCEL:
-                initData();
+                mLoading.dismiss();
+                ToastUtil.toastBottom(this,"取消关注成功");
+                setAttention();
                 break;
         }
 
     }
+
+    private void setAttention(){
+        if (isAttention) {
+            tv_attention.setText("已关注");
+            tv_attention.setTextColor(getResources().getColor(R.color.textColor2));
+            iv_attention.setImageResource(R.mipmap.zbjn_ygz);
+        } else {
+            tv_attention.setText("关注");
+            tv_attention.setTextColor(getResources().getColor(R.color.textColor));
+            iv_attention.setImageResource(R.mipmap.zbjn_wgz);
+        }
+    }
+
 
     @Override
     public void onError(String result) {

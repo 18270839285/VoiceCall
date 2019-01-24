@@ -136,7 +136,7 @@ public class EditingMaterialsActivity extends BaseActivity implements RequestFin
                     head_image = userInfo.getHead_image();
                     Glide.with(this).load(head_image).apply(new RequestOptions().error(R.mipmap.wd_tx_nor)).into(iv_head);
                 }
-                if (userInfo.getIntroduce() != null && !userInfo.getIntroduce().isEmpty()) {
+                if (userInfo.getNickname() != null && !userInfo.getNickname().isEmpty()) {
                     nickname = userInfo.getNickname();
                     et_nickname.setText(nickname);
                 }
@@ -385,7 +385,7 @@ public class EditingMaterialsActivity extends BaseActivity implements RequestFin
                 break;
             case R.id.ll_area:
                 //地址
-                selectAddress();
+//                selectAddress();
                 break;
         }
     }

@@ -110,6 +110,15 @@ public class Home implements Serializable {
         String anchor_id;
         String age;
         String is_robot;
+        String cover;
+
+        public String getCover() {
+            return cover;
+        }
+
+        public void setCover(String cover) {
+            this.cover = cover;
+        }
 
         public String getIs_robot() {
             return is_robot;

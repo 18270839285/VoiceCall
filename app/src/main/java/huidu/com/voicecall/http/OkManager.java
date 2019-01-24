@@ -1,5 +1,6 @@
 package huidu.com.voicecall.http;
 
+import android.content.Intent;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
@@ -16,6 +17,8 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import huidu.com.voicecall.VoiceApp;
+import huidu.com.voicecall.login.LoginActivity;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.FormBody;
@@ -341,26 +344,14 @@ public class OkManager {
                         if (baseMode.getCode().equals(API.HTTP_OK)) {
                             callBack.onSuccess(baseMode, config.getRequestCode());
                         }
-//                        else if (baseMode.getCode().equals("-2")){
-//
-//                        }
-//                            callBack.onError("token失效");
                         else if (baseMode.getCode().equals("10086")) {
-//                            callBack.onError("token失效");
-//                            Intent intent = new Intent(App.mContext, LoginActivity.class);
-//                            intent.putExtra("isFromToken", true);
-//                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//                            App.mContext.startActivity(intent);
+                            Intent intent = new Intent(VoiceApp.mContext, LoginActivity.class);
+                            intent.putExtra("isFromToken", true);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            VoiceApp.mContext.startActivity(intent);
                         } else {
                             callBack.onError(baseMode.getMessage());
                         }
-                        //登录失效  重新登录操作
-//                        if (e.getMessage().equals("token失效:-2")) {
-//                            Intent intent = new Intent(App.getAppContext(), LoginActivity.class);
-//                            intent.putExtra("isFromToken", true);
-//                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//                            GlobalApp.getAppContext().startActivity(intent);
-//                        }
                     } catch (JsonSyntaxException e) {
                         callBack.onError("数据格式错误");
                     } catch (Exception e) {
