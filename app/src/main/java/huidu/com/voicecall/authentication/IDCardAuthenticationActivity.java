@@ -121,7 +121,6 @@ public class IDCardAuthenticationActivity extends BaseActivity implements Reques
                 break;
             case R.id.tv_next:
                 checkIDCard();
-
                 break;
             case R.id.iv_face:
                 IMG_TYPE = 1;
@@ -181,7 +180,6 @@ public class IDCardAuthenticationActivity extends BaseActivity implements Reques
                 } else {
                     filePath = back_img;
                 }
-                Log.i(TAG, "onActivityResult: filePath:" + filePath);
                 if (!TextUtils.isEmpty(contentType)) {
                     newFile = CompressHelper.getDefault(this).compressToFile(new File(filePath));
 //                    base64Str = FileUtils.fileToBase64(newFile);

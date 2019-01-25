@@ -223,7 +223,7 @@ public class CashActivity extends BaseActivity implements RequestFinish {
                 break;
             case R.id.ll_protocol:
                 //点击协议
-                startActivity(new Intent(this, WebActivity.class).putExtra("web_type",1));
+                startActivity(new Intent(this, WebActivity.class).putExtra("web_type",5));
                 break;
             case R.id.tv_submit:
                 //立即提现

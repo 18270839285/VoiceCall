@@ -31,6 +31,7 @@ public class WebActivity extends BaseActivity {
     private static final int WITHDRAWAL1 = 2;//注册协议
     private static final int WITHDRAWAL2 = 3;//充值服务协议
     private static final int WITHDRAWAL3 = 4;//隐私策略
+    private static final int WITHDRAWAL4 = 5;//提现服务协议
 
     @Override
     protected int getLayoutId() {
@@ -59,6 +60,10 @@ public class WebActivity extends BaseActivity {
                 tv_title.setText("隐私策略");
                 web_url = API.SECRET_PROTOCOL;
                 break;
+            case WITHDRAWAL4:
+                tv_title.setText("提现服务协议");
+                web_url = API.TIXIAN_PROTOCOL;
+                break;
         }
     }
 
@@ -77,6 +82,7 @@ public class WebActivity extends BaseActivity {
         webView.loadUrl(web_url);
 //        initWebViewSetting(web_url);
     }
+
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     private void initWebViewSetting(String url) {
         WebSettings settings = webView.getSettings();

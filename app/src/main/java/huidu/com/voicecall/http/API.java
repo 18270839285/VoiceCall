@@ -36,7 +36,7 @@ public interface API {
     String VOICECARD = "http://support.51qdd.net/demo.html";//身份认证
     String REGISTER_PROTOCOL = "http://voice.51qdd.net/api/pact?mark=register";//用户注册
     String RECHARGE_PROTOCOL = "http://voice.51qdd.net/api/pact?mark=recharge";//充值服务协议
-    String TIXIAN_PROTOCOL = "http://voice.51qdd.net/api/pact?mark=tixian";//提现
+    String TIXIAN_PROTOCOL = "http://voice.51qdd.net/api/pact?mark=tixian";//提现服务协议
     String SECRET_PROTOCOL = "http://voice.51qdd.net/api/pact?mark=secret";//隐私政策
 //    String VOICECARD = "http://support.51qdd.net/attestation/#/voiceCard";//身份认证
 
