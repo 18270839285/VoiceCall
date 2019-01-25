@@ -1,9 +1,8 @@
 package huidu.com.voicecall.voice;
 
-import android.content.Context;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.os.SystemClock;
 import android.util.Log;
 import android.view.View;
@@ -14,11 +13,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.netease.nimlib.sdk.NIMClient;
 import com.netease.nimlib.sdk.Observer;
-import com.netease.nimlib.sdk.RequestCallback;
-import com.netease.nimlib.sdk.auth.AuthService;
-import com.netease.nimlib.sdk.auth.LoginInfo;
 import com.netease.nimlib.sdk.avchat.AVChatCallback;
 import com.netease.nimlib.sdk.avchat.AVChatManager;
 import com.netease.nimlib.sdk.avchat.AVChatManagerLite;
@@ -50,7 +45,6 @@ import huidu.com.voicecall.http.BaseModel;
 import huidu.com.voicecall.http.OkHttpUtils;
 import huidu.com.voicecall.http.RequestFinish;
 import huidu.com.voicecall.utils.GlideBlurformation;
-import huidu.com.voicecall.utils.MD5;
 import huidu.com.voicecall.utils.SPUtils;
 import huidu.com.voicecall.utils.ToastUtil;
 
@@ -92,6 +86,8 @@ public class ChattingRoomActivity extends BaseActivity implements RequestFinish 
     String accid1;//自己的accid
     String accid2;//对方的accid
 
+    private Handler mHandler;
+
     @Override
     protected int getLayoutId() {
         return R.layout.activity_chatting_room;
@@ -110,21 +106,54 @@ public class ChattingRoomActivity extends BaseActivity implements RequestFinish 
                 .load(head_image)
                 .apply(RequestOptions.bitmapTransform(new GlideBlurformation(this)))
                 .into(iv_bg);
-        OkHttpUtils.getInstance().sign_im_info(SPUtils.getValue("token"),this);
+        OkHttpUtils.getInstance().sign_im_info(SPUtils.getValue("token"), this);
 //        RECEIVE_TYPE = getIntent().getIntExtra("RECEIVE_TYPE",1);
     }
 
     @Override
     protected void initData() {
+
         outGoingCalling(accid2);
+        mHandler = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                switch (msg.what) {
+                    case 1:
+                        if (ll_type3 == null) {
+                            ll_type3 = findViewById(R.id.ll_type3);
+                        }
+                        if (ll_cancel == null) {
+                            ll_cancel = findViewById(R.id.ll_cancel);
+                        }
+                        ll_type3.setVisibility(View.VISIBLE);
+                        ll_cancel.setVisibility(View.GONE);
+                        break;
+                    case 2:
+                        setStart();
+                        break;
+                    case 3:
+                        setStop();
+                        break;
+                    case 6:
+                        if (!isBegin) {
+                            ToastUtil.toastShow(nickname + "正忙,请稍候在播！");
+                            hangUp();
+                            logOut(IDENTITY_TYPE == 1 ? 2 : 1);
+                        }
+                        break;
+                }
+            }
+        };
+        mHandler.sendEmptyMessageDelayed(6, 10000);
     }
 
     @Override
     public void onSuccess(BaseModel result, String params) {
-         if (params.equals(API.SIGN_IM_INFO)){
-             ImInfo imInfo = (ImInfo)result.getData();
-             accid1 = imInfo.getAccid();
-         }
+        if (params.equals(API.SIGN_IM_INFO)) {
+            ImInfo imInfo = (ImInfo) result.getData();
+            accid1 = imInfo.getAccid();
+        }
     }
 
     @Override
@@ -143,10 +172,10 @@ public class ChattingRoomActivity extends BaseActivity implements RequestFinish 
             case R.id.ll_mute:
                 //是否静音
                 isMute = !isMute;
-                AVChatManager.getInstance(). setMicrophoneMute(isMute);
-                if (isMute){
+                AVChatManager.getInstance().setMicrophoneMute(isMute);
+                if (isMute) {
                     iv_mute.setImageResource(R.mipmap.djt_jy_pre);
-                }else {
+                } else {
                     iv_mute.setImageResource(R.mipmap.djt_jy);
                 }
                 break;
@@ -157,16 +186,28 @@ public class ChattingRoomActivity extends BaseActivity implements RequestFinish 
                 //是否免提
                 isHandsFree = !isHandsFree;
                 AVChatManager.getInstance().setSpeaker(isHandsFree);
-                if (isHandsFree){
+                if (isHandsFree) {
                     iv_hands_free.setImageResource(R.mipmap.djt_mt_pre);
-                }else {
+                } else {
                     iv_hands_free.setImageResource(R.mipmap.djt_mt);
                 }
                 break;
         }
     }
 
+    private void sendMsg(int what) {
+        Message message = Message.obtain();
+        message.what = what;
+        mHandler.sendMessage(message);
+    }
+
     private void setStart() {
+        if (tv_timer == null) {
+            tv_timer = findViewById(R.id.tv_timer);
+        }
+        if (tv_message == null) {
+            tv_message = findViewById(R.id.tv_message);
+        }
         tv_timer.setVisibility(View.VISIBLE);
         tv_message.setVisibility(View.GONE);
         tv_timer.setBase(SystemClock.elapsedRealtime());//计时器清零
@@ -176,70 +217,20 @@ public class ChattingRoomActivity extends BaseActivity implements RequestFinish 
     }
 
     private void setStop() {
+        if (tv_timer == null) {
+            tv_timer = findViewById(R.id.tv_timer);
+        }
+        if (tv_message == null) {
+            tv_message = findViewById(R.id.tv_message);
+        }
         tv_timer.setVisibility(View.GONE);
         tv_message.setVisibility(View.VISIBLE);
         tv_timer.setBase(SystemClock.elapsedRealtime());//计时器清零
         tv_timer.stop();
     }
 
-    //    DEMO中使用 username 作为 NIM 的account ，md5(password) 作为 token
-//    开发者需要根据自己的实际情况配置自身用户系统和 NIM 用户系统的关系
-    private String tokenFromPassword(String password) {
-        String appKey = readAppKey(this);
-        boolean isDemo = "45c6af3c98409b18a84451215d0bdd6e".equals(appKey) ||
-                "fe416640c8e8a72734219e1847ad2547".equals(appKey);
-
-//        return MD5.getStringMD5(password);
-        return isDemo ? MD5.getStringMD5(password) : password;
-    }
-
-    public void doLogin() {
-//        LoginInfo info = new LoginInfo("liyunwei", tokenFromPassword("123456")); // config...
-        LoginInfo info = new LoginInfo("voicecall", tokenFromPassword("qwe123")); // config...
-        RequestCallback<LoginInfo> callback =
-                new RequestCallback<LoginInfo>() {
-                    @Override
-                    public void onSuccess(LoginInfo param) {
-//                        ToastUtil.toastShow("登录成功!");
-//                        outGoingCalling("voicecall");
-                        outGoingCalling("liyunwei");
-                        Log.e("RequestCallback", "onSuccess: account1 = " + param.getAccount() + "  password1 = " + param.getToken());
-                        // 可以在此保存LoginInfo到本地，下次启动APP做自动登录用
-                        SPUtils.putValue("account1", param.getAccount());
-                        SPUtils.putValue("password1", param.getToken());
-                    }
-
-                    @Override
-                    public void onFailed(int code) {
-                        Log.e("RequestCallback", "onFailed: code = " + code);
-                    }
-
-                    @Override
-                    public void onException(Throwable exception) {
-                        Log.e("RequestCallback", "onException: " + exception);
-                    }
-
-                };
-        NIMClient.getService(AuthService.class).login(info)
-                .setCallback(callback);
-    }
-
-    private static String readAppKey(Context context) {
-        try {
-            ApplicationInfo appInfo = context.getPackageManager().getApplicationInfo(context.getPackageName(), PackageManager.GET_META_DATA);
-            if (appInfo != null) {
-                return appInfo.metaData.getString("com.netease.nim.appKey");
-//                return appInfo.metaData.getString("huidu.com.voicecall");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
     AVChatType callingState = AVChatType.AUDIO;
     AVChatData avChatData;
-
     /**
      * 拨打音视频
      */
@@ -290,7 +281,7 @@ public class ChattingRoomActivity extends BaseActivity implements RequestFinish 
                 } else if (ackInfo.getEvent() == AVChatEventType.CALLEE_ACK_REJECT) {
                     // 对方拒绝接听
                     ToastUtil.toastShow("对方拒绝接听");
-                    logOut(IDENTITY_TYPE==1?2:1);
+                    logOut(IDENTITY_TYPE == 1 ? 2 : 1);
                     Log.e("callAckObserver", "onEvent: 对方拒绝接听");
                 } else if (ackInfo.getEvent() == AVChatEventType.CALLEE_ACK_AGREE) {
                     // 对方同意接听
@@ -308,8 +299,8 @@ public class ChattingRoomActivity extends BaseActivity implements RequestFinish 
             public void onEvent(AVChatCommonEvent hangUpInfo) {
                 // 结束通话
                 Log.e("callAckObserver", "onEvent: 结束通话");
-                setStop();
-                logOut(IDENTITY_TYPE==1?2:1);
+                sendMsg(3);
+                logOut(IDENTITY_TYPE == 1 ? 2 : 1);
             }
         };
         AVChatManager.getInstance().observeHangUpNotification(callHangupObserver, true);
@@ -320,10 +311,9 @@ public class ChattingRoomActivity extends BaseActivity implements RequestFinish 
         AVChatStateObserverLite state = new AVChatStateObserverLite() {
             @Override
             public void onCallEstablished() {
-                ll_type3.setVisibility(View.VISIBLE);
-                ll_cancel.setVisibility(View.GONE);
+                sendMsg(1);
+                sendMsg(2);
                 ToastUtil.toastShow("已接通");
-                setStart();
                 OkHttpUtils.getInstance().order_begin(SPUtils.getValue("token"), order_no, IDENTITY_TYPE + "", new RequestFinish() {
                     @Override
                     public void onSuccess(BaseModel result, String params) {
@@ -469,11 +459,11 @@ public class ChattingRoomActivity extends BaseActivity implements RequestFinish 
     /**
      * 登出
      */
-    private void logOut(int overMan){
+    private void logOut(int overMan) {
 //        NIMClient.getService(AuthService.class).logout();
         AVChatManager.getInstance().disableRtc();
-        if (isBegin){
-            OkHttpUtils.getInstance().order_over(SPUtils.getValue("token"), accid1, accid2, overMan+"", new RequestFinish() {
+        if (isBegin) {
+            OkHttpUtils.getInstance().order_over(SPUtils.getValue("token"), accid1, accid2, overMan + "", new RequestFinish() {
                 @Override
                 public void onSuccess(BaseModel result, String params) {
                     isBegin = false;
@@ -485,7 +475,7 @@ public class ChattingRoomActivity extends BaseActivity implements RequestFinish 
 
                 }
             });
-        }else {
+        } else {
             finish();
         }
     }
@@ -494,5 +484,11 @@ public class ChattingRoomActivity extends BaseActivity implements RequestFinish 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ButterKnife.bind(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mHandler.removeCallbacksAndMessages(null);
     }
 }

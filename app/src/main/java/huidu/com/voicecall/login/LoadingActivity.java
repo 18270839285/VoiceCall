@@ -26,17 +26,21 @@ public class LoadingActivity extends BaseActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                OkHttpUtils.getInstance().home(SPUtils.getValue("token"), "0", "", new RequestFinish() {
-                    @Override
-                    public void onSuccess(BaseModel result, String params) {
-                        jumpTo(MainActivity.class);
-                    }
+                if (SPUtils.getValue("token").isEmpty()) {
+                    jumpTo(LoginActivity.class);
+                } else {
+                    OkHttpUtils.getInstance().home(SPUtils.getValue("token"), "0", "", new RequestFinish() {
+                        @Override
+                        public void onSuccess(BaseModel result, String params) {
+                            jumpTo(MainActivity.class);
+                        }
 
-                    @Override
-                    public void onError(String result) {
+                        @Override
+                        public void onError(String result) {
 
-                    }
-                });
+                        }
+                    });
+                }
             }
         }, 1500);
     }

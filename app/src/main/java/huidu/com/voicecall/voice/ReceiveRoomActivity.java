@@ -1,6 +1,8 @@
 package huidu.com.voicecall.voice;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.os.SystemClock;
 import android.util.Log;
 import android.view.View;
@@ -69,6 +71,7 @@ public class ReceiveRoomActivity extends BaseActivity implements RequestFinish {
     boolean isHandsFree = false;
 
     private AVChatData avChatData;
+    private Handler mHandler;
 
     @Override
     protected int getLayoutId() {
@@ -81,6 +84,53 @@ public class ReceiveRoomActivity extends BaseActivity implements RequestFinish {
         OkHttpUtils.getInstance().accid_name(avChatData.getAccount(), this);
         Log.e(TAG, "initView: account = " + avChatData.getAccount() + "  chatId = " + avChatData.getChatId());
 //        OkHttpUtils.getInstance().accid_name("yinyuan14",this);
+        mHandler = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                switch (msg.what) {
+                    case 1:
+                        if (ll_type3 == null) {
+                            ll_type3 = findViewById(R.id.ll_type3);
+                        }
+                        if (ll_type2 == null) {
+                            ll_type2 = findViewById(R.id.ll_type2);
+                        }
+                        ll_type3.setVisibility(View.VISIBLE);
+                        ll_type2.setVisibility(View.GONE);
+                        break;
+                    case 2:
+                        if (ll_type3 == null) {
+                            ll_type3 = findViewById(R.id.ll_type3);
+                        }
+                        if (ll_type2 == null) {
+                            ll_type2 = findViewById(R.id.ll_type2);
+                        }
+                        ll_type3.setVisibility(View.GONE);
+                        ll_type2.setVisibility(View.VISIBLE);
+                        break;
+                    case 3:
+                        if (tv_timer == null) {
+                            tv_timer = findViewById(R.id.tv_timer);
+                        }
+                        if (tv_message == null) {
+                            tv_message = findViewById(R.id.tv_message);
+                        }
+                        setStart();
+                        break;
+                    case 4:
+                        if (tv_timer == null) {
+                            tv_timer = findViewById(R.id.tv_timer);
+                        }
+                        if (tv_message == null) {
+                            tv_message = findViewById(R.id.tv_message);
+                        }
+                        setStop();
+                        break;
+                }
+
+            }
+        };
     }
 
     @Override
@@ -102,7 +152,7 @@ public class ReceiveRoomActivity extends BaseActivity implements RequestFinish {
             public void onEvent(AVChatCommonEvent hangUpInfo) {
                 // 结束通话
                 Log.e("callAckObserver", "onEvent: 结束通话");
-                setStop();
+                sendMsg(4);
                 logOut();
             }
         };
@@ -114,9 +164,8 @@ public class ReceiveRoomActivity extends BaseActivity implements RequestFinish {
         AVChatStateObserverLite state = new AVChatStateObserverLite() {
             @Override
             public void onCallEstablished() {
-                ll_type3.setVisibility(View.VISIBLE);
-                ll_type2.setVisibility(View.GONE);
-                setStart();
+                sendMsg(1);
+                sendMsg(3);
                 Log.e("onCallEstablished: ", "正在通话");
                 ToastUtil.toastShow("已接通");
             }
@@ -292,6 +341,11 @@ public class ReceiveRoomActivity extends BaseActivity implements RequestFinish {
         tv_timer.stop();
     }
 
+    private void sendMsg(int what){
+        Message message = Message.obtain();
+        message.what = what;
+        mHandler.sendMessage(message);
+    }
     /**
      * 接听来电
      */
@@ -301,9 +355,8 @@ public class ReceiveRoomActivity extends BaseActivity implements RequestFinish {
             @Override
             public void onSuccess(Void aVoid) {
                 Log.e("receiveInComingCall", "onSuccess: ");
-                ll_type2.setVisibility(View.GONE);
-                ll_type3.setVisibility(View.VISIBLE);
-                setStart();
+                sendMsg(2);
+                sendMsg(3);
             }
 
             @Override
@@ -370,5 +423,11 @@ public class ReceiveRoomActivity extends BaseActivity implements RequestFinish {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ButterKnife.bind(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mHandler.removeCallbacksAndMessages(null);
     }
 }

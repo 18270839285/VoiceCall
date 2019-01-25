@@ -1,5 +1,6 @@
 package huidu.com.voicecall;
 
+import android.app.Notification;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
@@ -16,6 +17,8 @@ import com.netease.nimlib.sdk.auth.LoginInfo;
 import com.netease.nimlib.sdk.avchat.AVChatManager;
 import com.netease.nimlib.sdk.avchat.constant.AVChatControlCommand;
 import com.netease.nimlib.sdk.avchat.model.AVChatData;
+import com.netease.nimlib.sdk.util.NIMUtil;
+import com.netease.nimlib.service.NimService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,7 +50,6 @@ public class VoiceApp extends MultiDexApplication {
         SDKOptions options = new SDKOptions();
         options.appKey = "f0c2e363ab9ac4693c0994fd2e3bceaa";
         NIMClient.init(this, loginInfo(), options);
-//        NIMClient.init(this, loginInfo(), options);
         enableAVChat();
     }
 
@@ -64,7 +66,13 @@ public class VoiceApp extends MultiDexApplication {
     }
 
     private void enableAVChat() {
-        registerAVChatIncomingCallObserver(true);
+        if (NIMUtil.isMainProcess(this)) {
+            // 注意：以下操作必须在主进程中进行
+            // 1、UI相关初始化操作
+            // 2、相关Service调用
+            registerAVChatIncomingCallObserver(true);
+//            NimService service = NimService.Aux.
+        }
     }
 
     private void registerAVChatIncomingCallObserver(boolean register) {
@@ -81,7 +89,10 @@ public class VoiceApp extends MultiDexApplication {
                 // 有网络来电打开AVChatActivity
 //                AVChatProfile.getInstance().setAVChatting(true);
 //                AVChatActivity.launch(DemoCache.getContext(), data, AVChatActivity.FROM_BROADCASTRECEIVER);
-                startActivity(new Intent(mContext, ReceiveRoomActivity.class).putExtra("AVChatData",data));
+                Intent intent = new Intent(mContext, ReceiveRoomActivity.class);
+                intent.putExtra("AVChatData",data);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);//FLAG_ACTIVITY_NEW_TASK
+                startActivity(intent);
             }
         }, register);
     }

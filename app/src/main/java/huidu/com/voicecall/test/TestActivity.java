@@ -345,3 +345,58 @@ public class TestActivity extends AppCompatActivity {
         AVChatManager.getInstance().disableRtc();
     }
 }
+
+//    DEMO中使用 username 作为 NIM 的account ，md5(password) 作为 token
+////    开发者需要根据自己的实际情况配置自身用户系统和 NIM 用户系统的关系
+//    private String tokenFromPassword(String password) {
+//        String appKey = readAppKey(this);
+//        boolean isDemo = "45c6af3c98409b18a84451215d0bdd6e".equals(appKey) ||
+//                "fe416640c8e8a72734219e1847ad2547".equals(appKey);
+//
+////        return MD5.getStringMD5(password);
+//        return isDemo ? MD5.getStringMD5(password) : password;
+//    }
+//
+//    public void doLogin() {
+////        LoginInfo info = new LoginInfo("liyunwei", tokenFromPassword("123456")); // config...
+//        LoginInfo info = new LoginInfo("voicecall", tokenFromPassword("qwe123")); // config...
+//        RequestCallback<LoginInfo> callback =
+//                new RequestCallback<LoginInfo>() {
+//                    @Override
+//                    public void onSuccess(LoginInfo param) {
+////                        ToastUtil.toastShow("登录成功!");
+////                        outGoingCalling("voicecall");
+//                        outGoingCalling("liyunwei");
+//                        Log.e("RequestCallback", "onSuccess: account1 = " + param.getAccount() + "  password1 = " + param.getToken());
+//                        // 可以在此保存LoginInfo到本地，下次启动APP做自动登录用
+//                        SPUtils.putValue("account1", param.getAccount());
+//                        SPUtils.putValue("password1", param.getToken());
+//                    }
+//
+//                    @Override
+//                    public void onFailed(int code) {
+//                        Log.e("RequestCallback", "onFailed: code = " + code);
+//                    }
+//
+//                    @Override
+//                    public void onException(Throwable exception) {
+//                        Log.e("RequestCallback", "onException: " + exception);
+//                    }
+//
+//                };
+//        NIMClient.getService(AuthService.class).login(info)
+//                .setCallback(callback);
+//    }
+
+//    private static String readAppKey(Context context) {
+//        try {
+//            ApplicationInfo appInfo = context.getPackageManager().getApplicationInfo(context.getPackageName(), PackageManager.GET_META_DATA);
+//            if (appInfo != null) {
+//                return appInfo.metaData.getString("com.netease.nim.appKey");
+////                return appInfo.metaData.getString("huidu.com.voicecall");
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        return null;
+//    }

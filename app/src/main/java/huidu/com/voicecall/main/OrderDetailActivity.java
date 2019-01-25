@@ -243,8 +243,8 @@ public class OrderDetailActivity extends BaseActivity implements RequestFinish {
                     case "2":
 //                      "待服务";
                         ORDER_STATUS = 2;
-                        tv_status.setText("主播接单");
-//                        tv_status.setText("待服务");
+//                        tv_status.setText("主播接单");
+                        tv_status.setText("待服务");
                         tv_message.setVisibility(View.VISIBLE);
                         iv_icon.setImageResource(R.mipmap.wddd_dfw);
                         tv_time_status.setText("开始服务倒计时：");
@@ -252,8 +252,8 @@ public class OrderDetailActivity extends BaseActivity implements RequestFinish {
                             initTimer(Integer.parseInt(infoBean.getExpire_time()));
                         }
                         if (order_type.equals("1")) {
-                            tv_start.setVisibility(View.VISIBLE);
-                            tv_start.setText("立即开始");
+//                            tv_start.setVisibility(View.VISIBLE);
+//                            tv_start.setText("立即开始");
                             tv_message.setText("主播接单后，有5分钟的准备时间!");
                         } else {
                             iv_right.setVisibility(View.VISIBLE);

@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".voice.ReceiveRoomActivity">
+    android:layout_height="match_parent">
 
     <ImageView
         android:id="@+id/iv_bg"
@@ -15,13 +13,13 @@
         android:src="@mipmap/th_bg" />
 
     <ImageView
-        android:visibility="gone"
         android:id="@+id/iv_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp30"
         android:padding="@dimen/dp15"
-        android:src="@mipmap/th_sf" />
+        android:src="@mipmap/th_sf"
+        android:visibility="gone" />
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -166,17 +164,7 @@
                 android:textColor="@color/white"
                 android:textSize="@dimen/sp14" />
         </LinearLayout>
-        <!--<TextView-->
-        <!--android:id="@+id/tv_mute"-->
-        <!--android:layout_width="0dp"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_weight="1"-->
-        <!--android:drawablePadding="@dimen/dp5"-->
-        <!--android:drawableTop="@mipmap/djt_jy"-->
-        <!--android:gravity="center"-->
-        <!--android:text="静音"-->
-        <!--android:textColor="@color/white"-->
-        <!--android:textSize="@dimen/sp14" />-->
+
         <LinearLayout
             android:id="@+id/ll_hang_up"
             android:layout_width="0dp"
@@ -200,17 +188,6 @@
                 android:textColor="@color/white"
                 android:textSize="@dimen/sp14" />
         </LinearLayout>
-        <!--<TextView-->
-        <!--android:id="@+id/tv_hang_up"-->
-        <!--android:layout_width="0dp"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_weight="1"-->
-        <!--android:drawablePadding="@dimen/dp5"-->
-        <!--android:drawableTop="@mipmap/djt_gd"-->
-        <!--android:gravity="center"-->
-        <!--android:text="挂断"-->
-        <!--android:textColor="@color/white"-->
-        <!--android:textSize="@dimen/sp14" />-->
 
         <LinearLayout
             android:id="@+id/ll_hands_free"
@@ -236,16 +213,5 @@
                 android:textColor="@color/white"
                 android:textSize="@dimen/sp14" />
         </LinearLayout>
-        <!--<TextView-->
-        <!--android:id="@+id/tv_hands_free"-->
-        <!--android:layout_width="0dp"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_weight="1"-->
-        <!--android:drawablePadding="@dimen/dp5"-->
-        <!--android:drawableTop="@mipmap/djt_mt"-->
-        <!--android:gravity="center"-->
-        <!--android:text="免提"-->
-        <!--android:textColor="@color/white"-->
-        <!--android:textSize="@dimen/sp14" />-->
     </LinearLayout>
 </RelativeLayout>

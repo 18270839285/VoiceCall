@@ -7,9 +7,10 @@
 
     <ImageView
         android:id="@+id/iv_head"
+        android:scaleType="centerCrop"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:src="@mipmap/ic_launcher" />
+        android:src="@mipmap/ic_launch" />
 
     <LinearLayout
         android:id="@+id/ll_sex_age"
