@@ -42,7 +42,7 @@ public class OkManager {
     private Handler handler;
     private final String TAG = OkManager.class.getSimpleName();
 
-    OkHttpClient.Builder httpBuilder;
+//    OkHttpClient.Builder httpBuilder;
     //提交json数据
     private static final MediaType JSON = MediaType.parse("application/json;charset=utf-8");
     //提交字符串
@@ -56,9 +56,10 @@ public class OkManager {
         //不需要设置请求超时是调用
 //        client = new OkHttpClient();
         //需要设置请求超时调用下面两行
-        httpBuilder = new OkHttpClient.Builder();
-        client = httpBuilder.readTimeout(10, TimeUnit.SECONDS)
+//        httpBuilder = new OkHttpClient.Builder();.
+        client = new OkHttpClient.Builder()
                 .connectTimeout(10, TimeUnit.SECONDS)
+                .readTimeout(10, TimeUnit.SECONDS)
                 .writeTimeout(15, TimeUnit.SECONDS) //设置超时
                 .build();
     }
@@ -108,9 +109,9 @@ public class OkManager {
                 else if (e instanceof SocketTimeoutException)
                     onError(callBack, "请求超时");
                 else if (e.getClass().equals(ConnectException.class))
-                    onError(callBack, "网络错误");
+                    onError(callBack, "连接超时");
                 else if (e instanceof ConnectException)
-                    onError(callBack, "网络错误");
+                    onError(callBack, "连接超时");
                 else
                     onError(callBack, "服务器异常");
             }

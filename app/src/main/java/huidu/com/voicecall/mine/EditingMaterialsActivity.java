@@ -1,13 +1,9 @@
 package huidu.com.voicecall.mine;
 
-import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -15,15 +11,20 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.nanchen.compresshelper.CompressHelper;
 
-import java.io.BufferedOutputStream;
+import org.devio.takephoto.app.TakePhoto;
+import org.devio.takephoto.app.TakePhotoImpl;
+import org.devio.takephoto.compress.CompressConfig;
+import org.devio.takephoto.model.CropOptions;
+import org.devio.takephoto.model.InvokeParam;
+import org.devio.takephoto.model.TContextWrap;
+import org.devio.takephoto.model.TResult;
+import org.devio.takephoto.permission.InvokeListener;
+import org.devio.takephoto.permission.PermissionManager;
+import org.devio.takephoto.permission.TakePhotoInvocationHandler;
+
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -48,18 +49,17 @@ import huidu.com.voicecall.http.BaseModel;
 import huidu.com.voicecall.http.OkHttpUtils;
 import huidu.com.voicecall.http.RequestFinish;
 import huidu.com.voicecall.utils.AddressInitTask;
+import huidu.com.voicecall.utils.DialogUtil;
 import huidu.com.voicecall.utils.FileUtils;
 import huidu.com.voicecall.utils.Loading;
-import huidu.com.voicecall.utils.MiPictureHelper;
-import huidu.com.voicecall.utils.PicturePicker;
-import huidu.com.voicecall.utils.PicturePickerFragment;
 import huidu.com.voicecall.utils.SPUtils;
 import huidu.com.voicecall.utils.ToastUtil;
 
 /**
  * 编辑资料
  */
-public class EditingMaterialsActivity extends BaseActivity implements RequestFinish {
+public class EditingMaterialsActivity extends BaseActivity implements RequestFinish, TakePhoto.TakeResultListener, InvokeListener {
+
     @BindView(R.id.iv_head)
     CircleImageView iv_head;
     @BindView(R.id.tv_title)
@@ -95,6 +95,11 @@ public class EditingMaterialsActivity extends BaseActivity implements RequestFin
 
     Loading loading;
 
+    private TakePhoto takePhoto;
+    private InvokeParam invokeParam;
+    private File newFile;
+
+
     @Override
     protected int getLayoutId() {
         return R.layout.activity_editing_materials;
@@ -127,6 +132,19 @@ public class EditingMaterialsActivity extends BaseActivity implements RequestFin
         tv_userId.setText(SPUtils.getValue("user_id"));
     }
 
+    /**
+     * 获取TakePhoto实例
+     *
+     * @return
+     */
+    public TakePhoto getTakePhoto() {
+        if (takePhoto == null) {
+            takePhoto = (TakePhoto) TakePhotoInvocationHandler.of(this).bind(new TakePhotoImpl(this, this));
+        }
+        takePhoto.onEnableCompress(new CompressConfig.Builder().setMaxSize(300 * 1024).create(), true);
+        return takePhoto;
+    }
+
     @Override
     public void onSuccess(BaseModel result, String params) {
         switch (params) {
@@ -142,14 +160,13 @@ public class EditingMaterialsActivity extends BaseActivity implements RequestFin
                 }
                 if (userInfo.getSex() != null && !userInfo.getSex().isEmpty()) {
                     sex = userInfo.getSex();
-                    if (sex.equals("1")){
-                        tv_sex.setText( "男");
+                    if (sex.equals("1")) {
+                        tv_sex.setText("男");
                         ll_sex.setEnabled(false);
-                    }
-                    else if (sex.equals("2")){
+                    } else if (sex.equals("2")) {
                         tv_sex.setText("女");
                         ll_sex.setEnabled(false);
-                    } else{
+                    } else {
                         tv_sex.setText("请选择");
                         ll_sex.setEnabled(true);
                     }
@@ -368,8 +385,20 @@ public class EditingMaterialsActivity extends BaseActivity implements RequestFin
                 break;
             case R.id.ll_head:
                 //头像
-                PicturePicker picker = PicturePicker.init(this);
-                picker.showPickDialog(this);
+                File file = new File(getExternalCacheDir(), System.currentTimeMillis() + ".png");
+                final Uri imageUri = Uri.fromFile(file);
+                final CropOptions cropOptions = new CropOptions.Builder().setAspectX(1).setAspectY(1).setWithOwnCrop(true).create();
+                DialogUtil.showTakePhoto(this, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        takePhoto.onPickFromCaptureWithCrop(imageUri, cropOptions);
+                    }
+                }, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        takePhoto.onPickFromGalleryWithCrop(imageUri, cropOptions);
+                    }
+                }).show();
                 break;
             case R.id.ll_sex:
                 //性别
@@ -392,56 +421,55 @@ public class EditingMaterialsActivity extends BaseActivity implements RequestFin
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        getTakePhoto().onCreate(savedInstanceState);
         super.onCreate(savedInstanceState);
         ButterKnife.bind(this);
     }
 
-    private String cropPath;
-    private File tempFile;
-    private File newFile;
+
+    @Override
+    public void takeSuccess(TResult result) {
+        newFile = new File(result.getImage().getCompressPath());
+        loading.show();
+        OkHttpUtils.getInstance().common_image_upload(FileUtils.fileToBase64(newFile), this);
+    }
+
+    @Override
+    public void takeFail(TResult result, String msg) {
+
+    }
+
+    @Override
+    public void takeCancel() {
+
+    }
+
+    @Override
+    public PermissionManager.TPermissionType invoke(InvokeParam invokeParam) {
+        PermissionManager.TPermissionType type = PermissionManager.checkPermission(TContextWrap.of(this), invokeParam.getMethod());
+        if (PermissionManager.TPermissionType.WAIT.equals(type)) {
+            this.invokeParam = invokeParam;
+        }
+        return type;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        //以下代码为处理Android6.0、7.0动态权限所需
+        PermissionManager.TPermissionType type = PermissionManager.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        PermissionManager.handlePermissionsResult(this, type, invokeParam, this);
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        getTakePhoto().onActivityResult(requestCode, resultCode, data);
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == PicturePickerFragment.PICK_TACK_PHOTO && resultCode == Activity.RESULT_OK) {
-            if (data != null) {
-                // 得到图片的全路径
-                Uri uri = data.getData();
-                MiPictureHelper.cropHandCard1(this, uri);
-            }
-        } else if (requestCode == PicturePickerFragment.PICK_SYSTEM_PHOTO && resultCode == Activity.RESULT_OK) {//PICK_TACK_PHOTO
-            if (MiPictureHelper.hasSdcard()) {
-                tempFile = new File(API.FILE_DIR, API.temp_filename);
-                String path = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) + API.temp_filename;//新文件地址
-                newFile = new File(API.FILE_DIR, path);
-                tempFile.renameTo(newFile);
-                cropPath = Uri.fromFile(newFile).getPath();
-                File newFile1 = CompressHelper.getDefault(this).compressToFile(new File(cropPath));
-                loading.show();
-                OkHttpUtils.getInstance().common_image_upload(FileUtils.fileToBase64(newFile1), this);
-            } else {
-                ToastUtil.toastShow("未找到存储卡，无法存储照片！");
-                return;
-            }
-        } else if (requestCode == PicturePicker.PHOTO_REQUEST_CUT) {
-            if (data == null)
-                return;
-            Bundle extras = data.getExtras();
-            if (extras != null) {
-                Bitmap photo = extras.getParcelable("data");
-                File newFile = FileUtils.saveBitmapFile(photo);
-                loading.show();
-                OkHttpUtils.getInstance().common_image_upload(FileUtils.fileToBase64(newFile), this);
-            } else {
-                Uri uri = data.getData();
-                if (uri != null) {
-                    Bitmap photo = BitmapFactory.decodeFile(uri.getPath());
-                    File newFile = FileUtils.saveBitmapFile(photo);
-                    loading.show();
-                    OkHttpUtils.getInstance().common_image_upload(FileUtils.fileToBase64(newFile), this);
-                }
-            }
-        }
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        getTakePhoto().onSaveInstanceState(outState);
+        super.onSaveInstanceState(outState);
+    }
 }

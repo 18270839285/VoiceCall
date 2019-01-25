@@ -2,11 +2,7 @@ package huidu.com.voicecall.authentication;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.SystemClock;
 import android.text.TextUtils;
 import android.util.Log;
@@ -15,17 +11,12 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.baidu.ocr.sdk.OCR;
 import com.baidu.ocr.ui.camera.CameraActivity;
 import com.bumptech.glide.Glide;
 import com.nanchen.compresshelper.CompressHelper;
 
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -38,13 +29,8 @@ import huidu.com.voicecall.http.OkHttpUtils;
 import huidu.com.voicecall.http.RequestFinish;
 import huidu.com.voicecall.utils.FileUtils;
 import huidu.com.voicecall.utils.Loading;
-import huidu.com.voicecall.utils.MiPictureHelper;
-import huidu.com.voicecall.utils.PicturePicker;
-import huidu.com.voicecall.utils.PicturePickerFragment;
 import huidu.com.voicecall.utils.SPUtils;
 import huidu.com.voicecall.utils.ToastUtil;
-import com.baidu.ocr.ui.camera.CameraActivity;
-import com.baidu.ocr.sdk.OCR;
 
 /**
  * 身份认证
@@ -69,7 +55,8 @@ public class IDCardAuthenticationActivity extends BaseActivity implements Reques
     String BACK_IMGBASE64 = "";
     Loading loading;
 
-    int IMG_TYPE =1;
+    int IMG_TYPE = 1;
+    private File newFile;
 
     @Override
     protected int getLayoutId() {
@@ -139,14 +126,10 @@ public class IDCardAuthenticationActivity extends BaseActivity implements Reques
             case R.id.iv_face:
                 IMG_TYPE = 1;
                 scanFrontWithNativeQuality();
-//                PicturePicker picker1 = PicturePicker.init(this);
-//                picker1.showPickDialog(this);
                 break;
             case R.id.iv_back_face:
                 IMG_TYPE = 2;
                 scanBackWithNativeQuality();
-//                PicturePicker picker2 = PicturePicker.init(this);
-//                picker2.showPickDialog(this);
                 break;
         }
     }
@@ -158,6 +141,7 @@ public class IDCardAuthenticationActivity extends BaseActivity implements Reques
     }
 
     private static final int REQUEST_CODE_CAMERA = 102; //照相机扫描的请求码
+
     // 调用拍摄身份证正面（带本地质量控制）activity
     private void scanFrontWithNativeQuality() {
         face_img = FileUtils.getSaveFile(getApplication()).getAbsolutePath() + SystemClock.currentThreadTimeMillis();
@@ -184,69 +168,10 @@ public class IDCardAuthenticationActivity extends BaseActivity implements Reques
         intent.putExtra(CameraActivity.KEY_CONTENT_TYPE, CameraActivity.CONTENT_TYPE_ID_CARD_BACK);
         startActivityForResult(intent, REQUEST_CODE_CAMERA);
     }
-    private String cropPath;
-    private File tempFile;
-    private File newFile;
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-//        if (requestCode == PicturePickerFragment.PICK_TACK_PHOTO && resultCode == Activity.RESULT_OK) {
-//            if (data != null) {
-//                // 得到图片的全路径
-//                Uri uri = data.getData();
-////                MiPictureHelper.cropImg(this, uri);
-//                MiPictureHelper.cropHandCard2(this, uri);
-//            }
-//        } else if (requestCode == PicturePickerFragment.PICK_SYSTEM_PHOTO && resultCode == Activity.RESULT_OK) {//PICK_TACK_PHOTO
-//            if (MiPictureHelper.hasSdcard()) {
-////                 Bitmap bitmap = decodeUriAsBitmap(data.getData());
-//                tempFile = new File(API.FILE_DIR, API.temp_filename);
-//                String path = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) + "voiceCall";//新文件地址
-//                newFile = new File(API.FILE_DIR, path);
-//                tempFile.renameTo(newFile);
-//                cropPath = Uri.fromFile(newFile).getPath();
-//                File newFile1 = CompressHelper.getDefault(this).compressToFile(new File(cropPath));
-//                Bitmap photo = BitmapFactory.decodeFile(newFile1.getPath());
-//                if (IMG_TYPE ==1){
-//                    iv_face.setImageBitmap(photo);
-//                    face_img = FileUtils.fileToBase64(newFile1);
-//                }else {
-//                    iv_back_face.setImageBitmap(photo);
-//                    back_img = FileUtils.fileToBase64(newFile1);
-//                }
-//            } else {
-//                ToastUtil.toastShow("未找到存储卡，无法存储照片！");
-//                return;
-//            }
-//        } else if (requestCode == PicturePicker.PHOTO_REQUEST_CUT) {
-//            if (data == null)
-//                return;
-//            Bundle extras = data.getExtras();
-//            if (extras != null) {
-//                Bitmap photo = extras.getParcelable("data");
-//                File newFile = FileUtils.saveBitmapFile(photo);
-//                if (IMG_TYPE ==1){
-//                    iv_face.setImageBitmap(photo);
-//                    face_img = FileUtils.fileToBase64(newFile);
-//                }else {
-//                    iv_back_face.setImageBitmap(photo);
-//                    back_img = FileUtils.fileToBase64(newFile);
-//                }
-//            } else {
-//                Uri uri = data.getData();
-//                if (uri != null) {
-//                    Bitmap photo = BitmapFactory.decodeFile(uri.getPath());
-//                    File newFile = FileUtils.saveBitmapFile(photo);
-//                    if (IMG_TYPE ==1){
-//                        iv_face.setImageBitmap(photo);
-//                        face_img = FileUtils.fileToBase64(newFile);
-//                    }else {
-//                        iv_back_face.setImageBitmap(photo);
-//                        back_img = FileUtils.fileToBase64(newFile);
-//                    }
-//                }
-//            }
-//        }
         if (requestCode == REQUEST_CODE_CAMERA && resultCode == Activity.RESULT_OK) {
             if (data != null) {
                 String filePath = null;
