@@ -15,11 +15,11 @@ public interface API {
     /**
      * 正式地址
      */
-//    String BASE_URL = "http://newshop.51qdd.net/api/";
+    String BASE_URL = "http://voice.baggen.cn/api/";
     /**
      * 测试地址
      */
-    String BASE_URL = "http://voice.51qdd.net/api/";
+//    String BASE_URL = "http://voice.51qdd.net/api/";
 //    String TOKEN_TEST = "L2uk5tVN4CUQQb0P6n650BRTVLc4q0tV7K050Bdd0u0N7TKP";
 //    String TOKEN_TEST = "UfCQ19B0Y9XQX1Q0m8nDxbCyx1w0XnY000BY1cy013eCC3tq";
 //    String USERID = "1";
@@ -32,13 +32,10 @@ public interface API {
      * h5地址
      */
     String WithdrawalUrl = "http://support.51qdd.net/Withdrawal/#/";//提现规则
-    String WithdrawalUrl1 = "http://support.51qdd.net/Withdrawal/#/";//主播认证
-    String VOICECARD = "http://support.51qdd.net/demo.html";//身份认证
     String REGISTER_PROTOCOL = "http://voice.51qdd.net/api/pact?mark=register";//用户注册
     String RECHARGE_PROTOCOL = "http://voice.51qdd.net/api/pact?mark=recharge";//充值服务协议
     String TIXIAN_PROTOCOL = "http://voice.51qdd.net/api/pact?mark=tixian";//提现服务协议
     String SECRET_PROTOCOL = "http://voice.51qdd.net/api/pact?mark=secret";//隐私政策
-//    String VOICECARD = "http://support.51qdd.net/attestation/#/voiceCard";//身份认证
 
     String COMMON_IMAGE_UPLOAD = "common/image/upload";//图片上传
     String COMMON_AUDIO = "common/audio";//音频上传

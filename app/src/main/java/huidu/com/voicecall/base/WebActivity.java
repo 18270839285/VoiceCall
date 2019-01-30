@@ -32,6 +32,7 @@ public class WebActivity extends BaseActivity {
     private static final int WITHDRAWAL2 = 3;//充值服务协议
     private static final int WITHDRAWAL3 = 4;//隐私策略
     private static final int WITHDRAWAL4 = 5;//提现服务协议
+    private static final int WITHDRAWAL9 = 9;//首页banner链接
 
     @Override
     protected int getLayoutId() {
@@ -42,6 +43,10 @@ public class WebActivity extends BaseActivity {
     protected void initView() {
         if (getIntent() != null) {
             web_type = getIntent().getIntExtra("web_type", 1);
+            if (web_type==WITHDRAWAL9){
+                web_url = getIntent().getStringExtra("web_url");
+                tv_title.setText("");
+            }
         }
         switch (web_type) {
             case WITHDRAWAL0:

@@ -31,6 +31,7 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import huidu.com.voicecall.R;
 import huidu.com.voicecall.base.BaseFragment;
+import huidu.com.voicecall.base.WebActivity;
 import huidu.com.voicecall.bean.Home;
 import huidu.com.voicecall.http.API;
 import huidu.com.voicecall.http.BaseModel;
@@ -73,7 +74,6 @@ public class HotFragment extends BaseFragment implements RequestFinish {
     }
 
     Loading mLoading;
-
     @Override
     protected void initView(View view) {
         mLoading = new Loading(getActivity());
@@ -97,14 +97,14 @@ public class HotFragment extends BaseFragment implements RequestFinish {
                         Home home = (Home) result.getData();
                         List<Home.Banner> banners = home.getBanner();
 
-                        List<String> images = new ArrayList<>();
-                        for (Home.Banner img : banners) {
-                            images.add(img.getImage_url());
-                        }
+//                        List<String> images = new ArrayList<>();
+//                        for (Home.Banner img : banners) {
+//                            images.add(img.getImage_url());
+//                        }
                         if (type_id.equals("0")) {
-                            initBanner(images, home.getType_image().getRec_img());
+                            initBanner(banners, home.getType_image().getRec_img());
                         } else {
-                            initBanner(images, home.getType_image().getType_img());
+                            initBanner(banners, home.getType_image().getType_img());
                         }
                         mList = home.getAnchor();
                         mAdapter.setNewData(mList);
@@ -128,15 +128,15 @@ public class HotFragment extends BaseFragment implements RequestFinish {
         mPage++;
         Home home = (Home) result.getData();
         List<Home.Banner> banners = home.getBanner();
-        List<String> images = new ArrayList<>();
-        for (Home.Banner img : banners) {
-            images.add(img.getImage_url());
-        }
+//        List<String> images = new ArrayList<>();
+//        for (Home.Banner img : banners) {
+//            images.add(img.getImage_url());
+//        }
         Home.TypeImage typeImg = home.getType_image();
         if (type_id.equals("0")) {
-            initBanner(images, typeImg.getRec_img());
+            initBanner(banners, typeImg.getRec_img());
         } else {
-            initBanner(images, typeImg.getType_img());
+            initBanner(banners, typeImg.getType_img());
         }
 
         if (mPage==1){
@@ -285,7 +285,11 @@ public class HotFragment extends BaseFragment implements RequestFinish {
         return view;
     }
 
-    private void initBanner(List<String> images, String imageUrl) {
+    private void initBanner(final List<Home.Banner> banners, String imageUrl) {
+        List<String> images = new ArrayList<>();
+        for (Home.Banner img : banners) {
+            images.add(img.getImage_url());
+        }
         Glide.with(getActivity()).load(imageUrl).into(iv_rec);
         banner.setBannerStyle(BannerConfig.CIRCLE_INDICATOR);
 //        banner.setBannerStyle(BannerConfig.CIRCLE_INDICATOR_TITLE);
@@ -303,6 +307,12 @@ public class HotFragment extends BaseFragment implements RequestFinish {
             @Override
             public void OnBannerClick(int position) {
                 Log.e(TAG, "OnBannerClick: position = " + position);
+                if (banners.get(position).getUrl()!=null&&banners.get(position).getUrl().length()>8){
+                    Intent intent = new Intent(getActivity(), WebActivity.class);
+                    intent.putExtra("web_type",9);
+                    intent.putExtra("web_url",banners.get(position).getUrl());
+                    startActivity(intent);
+                }
             }
         });
         //设置轮播时间

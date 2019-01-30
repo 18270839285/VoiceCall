@@ -382,13 +382,17 @@ public class AnchorsSkillsActivity extends BaseActivity implements RequestFinish
             mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
                 @Override
                 public void onPrepared(MediaPlayer media) {
-                    mediaPlayer.start();
+                    if (mediaPlayer!=null){
+                        mediaPlayer.start();
+                    }
                 }
             });
             mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                 @Override
                 public void onCompletion(MediaPlayer media) {
-                    mediaPlayer.stop();
+                    if (mediaPlayer!=null&&mediaPlayer.isPlaying()){
+                        mediaPlayer.stop();
+                    }
                     mediaPlayer = null;
                 }
             });

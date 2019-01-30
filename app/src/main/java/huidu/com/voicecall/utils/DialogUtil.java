@@ -8,9 +8,12 @@ import android.content.DialogInterface;
 import android.os.Build;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
+import android.view.Display;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
@@ -38,7 +41,7 @@ public class DialogUtil {
      */
     public static Dialog showTakePhoto(Context context, final View.OnClickListener takeListener,final View.OnClickListener selectListener) {
         View dialogView = View.inflate(context, R.layout.dialog_takephoto, null);
-        final Dialog dialog = new Dialog(context, R.style.dialog);
+        final Dialog dialog = new Dialog(context,R.style.dialog1);//, R.style.dialog
         dialog.setContentView(dialogView);
         TextView tv_take = (TextView) dialogView.findViewById(R.id.tv_take);
         TextView tv_select = (TextView) dialogView.findViewById(R.id.tv_select);
@@ -79,9 +82,11 @@ public class DialogUtil {
                                     }
                                 }
         );
+        DisplayMetrics dm = context.getResources().getDisplayMetrics();
         Window dialogWindow = dialog.getWindow();
         WindowManager.LayoutParams lp = dialogWindow.getAttributes();
-//        lp.width = DensityUtils.dp2px(context, 300);
+        lp.width = dm.widthPixels;
+//        lp.width = DensityUtils.dip2px(context, 360);
         dialogWindow.setGravity(Gravity.BOTTOM);
         dialogWindow.setWindowAnimations(R.style.dialog_up_down_animation);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {

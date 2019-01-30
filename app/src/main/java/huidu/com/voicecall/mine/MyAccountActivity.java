@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -76,43 +77,52 @@ public class MyAccountActivity extends BaseActivity implements RequestFinish {
     @Override
     protected void initData() {
         OkHttpUtils.getInstance().package_recharge(SPUtils.getValue("token"), this);
-        recycleView.setLayoutManager(new GridLayoutManager(this, 3));
+        GridLayoutManager layoutManager = new GridLayoutManager(this,3);
+        recycleView.setLayoutManager(layoutManager);
         recycleView.setHasFixedSize(true);
         mAdapter = new BaseQuickAdapter<PackageRecharge.PackageListBean, BaseViewHolder>(R.layout.item_package_recharge, mList) {
             @Override
             protected void convert(final BaseViewHolder helper, final PackageRecharge.PackageListBean item) {
 //                ¥
-                final CheckBox check = helper.getView(R.id.check);
+                final ImageView check = helper.getView(R.id.check);
                 final TextView tv_coin_num = helper.getView(R.id.tv_coin_num);
                 final TextView tv_money = helper.getView(R.id.tv_money);
                 tv_coin_num.setText(item.getCoin() + "Y豆");
                 tv_money.setText("¥ " + item.getSale_price());
                 if (COIN_POSITION == helper.getAdapterPosition()) {
-                    check.setChecked(true);
+                    check.setSelected(true);
                     tv_coin_num.setTextColor(getResources().getColor(R.color.textSelectColor));
                     tv_money.setTextColor(getResources().getColor(R.color.textSelectColor));
                 } else {
-                    check.setChecked(false);
+                    check.setSelected(false);
                     tv_coin_num.setTextColor(getResources().getColor(R.color.textColor));
                     tv_money.setTextColor(getResources().getColor(R.color.textColor2));
                 }
-                check.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                    @Override
-                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                        if (isChecked) {
-                            COIN_POSITION = helper.getAdapterPosition();
-                            notifyDataSetChanged();
-                        } else {
-                            if (COIN_POSITION == helper.getAdapterPosition()) {
-                                check.setChecked(true);
-                            } else {
-                                check.setChecked(false);
-                            }
-                        }
-                    }
-                });
+//                check.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//                    @Override
+//                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+//                        if (isChecked) {
+//                            COIN_POSITION = helper.getAdapterPosition();
+////                            mAdapter.notifyDataSetChanged();
+//                        } else {
+//                            if (COIN_POSITION == helper.getAdapterPosition()) {
+//                                check.setChecked(true);
+//                            } else {
+//                                check.setChecked(false);
+//                            }
+//                        }
+//                    }
+//                });
             }
         };
+        mAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+                COIN_POSITION = position;
+                Log.e(TAG, "onItemClick: COIN_POSITION = "+COIN_POSITION );
+                mAdapter.notifyDataSetChanged();
+            }
+        });
 
         recycleView.setAdapter(mAdapter);
     }
@@ -123,8 +133,6 @@ public class MyAccountActivity extends BaseActivity implements RequestFinish {
             case API.PACKAGE_RECHARGE:
                 PackageRecharge data = (PackageRecharge) result.getData();
                 mList = data.getPackage_list();
-                mList.addAll(mList);
-                mList.addAll(mList);
                 mAdapter.setNewData(mList);
 
                 Glide.with(this).load(data.getUser_list().getHead_image()).apply(new RequestOptions().error(R.mipmap.wd_tx_nor)).into(iv_head);
