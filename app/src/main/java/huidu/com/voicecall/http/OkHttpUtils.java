@@ -8,6 +8,7 @@ import huidu.com.voicecall.bean.AnchorInfo;
 import huidu.com.voicecall.bean.AnchorPrice;
 import huidu.com.voicecall.bean.AnchorType;
 import huidu.com.voicecall.bean.CoinLog;
+import huidu.com.voicecall.bean.DynamicData;
 import huidu.com.voicecall.bean.Home;
 import huidu.com.voicecall.bean.IDCard;
 import huidu.com.voicecall.bean.ImInfo;
@@ -584,6 +585,74 @@ public class OkHttpUtils {
         data.put("accid", accid);
         okManager.postRequest(config, API.BASE_URL + API.ACCID_NAME, data, protocol);
     }
+    /**
+     * 所有动态/我的动态接口
+     */
+    public void dynamic_index(String token,String page,String type, RequestFinish protocol) {
+        RequestConfig config = new RequestConfig();
+        config.setCls(DynamicData.class);
+        config.setRequestCode(API.DYNAMIC_INDEX);
+        Map<String, String> data = new HashMap<String, String>();
+        data.put("token", token);
+        data.put("page", page);
+        data.put("type", type);
+        okManager.postRequest(config, API.BASE_URL + API.DYNAMIC_INDEX, data, protocol);
+    }
+    /**
+     * 发布动态接口
+     */
+    public void dynamic_publish(String token,String img,String content, RequestFinish protocol) {
+        RequestConfig config = new RequestConfig();
+        config.setCls(Object.class);
+        config.setRequestCode(API.DYNAMIC_PUBLISH);
+        Map<String, String> data = new HashMap<String, String>();
+        data.put("token", token);
+        data.put("content", content);
+        data.put("img", img);
+        okManager.postRequest(config, API.BASE_URL + API.DYNAMIC_PUBLISH, data, protocol);
+    }
+    /**
+     * 动态点赞/取消
+     */
+    public void dynamic_like(String token,String dynamic_id, RequestFinish protocol) {
+        RequestConfig config = new RequestConfig();
+        config.setCls(Object.class);
+        config.setRequestCode(API.DYNAMIC_LIKE);
+        Map<String, String> data = new HashMap<String, String>();
+        data.put("token", token);
+        data.put("dynamic_id", dynamic_id);
+        okManager.postRequest(config, API.BASE_URL + API.DYNAMIC_LIKE, data, protocol);
+    }
+    /**
+     * 动态删除接口
+     */
+    public void dynamic_del(String token,String dynamic_id, RequestFinish protocol) {
+        RequestConfig config = new RequestConfig();
+        config.setCls(Object.class);
+        config.setRequestCode(API.DYNAMIC_DEL);
+        Map<String, String> data = new HashMap<String, String>();
+        data.put("token", token);
+        data.put("dynamic_id", dynamic_id);
+        okManager.postRequest(config, API.BASE_URL + API.DYNAMIC_DEL, data, protocol);
+    }
+    /**
+     * 我的赞
+     */
+    public void dynamic_my_like(String token, RequestFinish protocol) {
+        RequestConfig config = new RequestConfig();
+        config.setCls(DynamicData.class);
+        config.setRequestCode(API.DYNAMIC_MY_LIKE);
+        Map<String, String> data = new HashMap<String, String>();
+        data.put("token", token);
+        okManager.postRequest(config, API.BASE_URL + API.DYNAMIC_MY_LIKE, data, protocol);
+    }
+
+
+
+
+
+
+
 
 
 

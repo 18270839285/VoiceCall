@@ -119,8 +119,7 @@
 
         <activity
             android:name=".login.LoginActivity"
-            android:screenOrientation="portrait">
-        </activity>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".login.RegisterActivity"
             android:screenOrientation="portrait" />
@@ -206,7 +205,8 @@
         <activity
             android:name=".login.ChangePwdActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".login.LoadingActivity"
+        <activity
+            android:name=".login.LoadingActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -214,6 +214,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".dynamic.PublishActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".dynamic.MyDynamicActivity"
+            android:screenOrientation="portrait"></activity>
     </application>
 
 </manifest>

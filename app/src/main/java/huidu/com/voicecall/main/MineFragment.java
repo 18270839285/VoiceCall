@@ -25,6 +25,7 @@ import huidu.com.voicecall.authentication.FaceRecognitionActivity;
 import huidu.com.voicecall.authentication.IDCardAuthenticationActivity;
 import huidu.com.voicecall.base.WebActivity;
 import huidu.com.voicecall.bean.UserInfo;
+import huidu.com.voicecall.dynamic.MyDynamicActivity;
 import huidu.com.voicecall.http.API;
 import huidu.com.voicecall.http.BaseModel;
 import huidu.com.voicecall.http.OkHttpUtils;
@@ -87,7 +88,8 @@ public class MineFragment extends BaseFragment implements RequestFinish{
     }
 
     @OnClick({R.id.iv_setting, R.id.rl_personal, R.id.ll_recharge, R.id.ll_income,R.id.ll_anchor,
-            R.id.ll_idCard, R.id.ll_about_us,R.id.ll_customer,R.id.ll_follow,R.id.ll_fans,R.id.ll_order})
+            R.id.ll_idCard, R.id.ll_about_us,R.id.ll_customer,R.id.ll_follow,R.id.ll_fans,R.id.ll_order,
+            R.id.ll_dynamic})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.iv_setting:
@@ -117,6 +119,10 @@ public class MineFragment extends BaseFragment implements RequestFinish{
             case R.id.ll_income:
                 //收入
                 jump(MyWealthActivity.class);
+                break;
+            case R.id.ll_dynamic:
+                //我的动态
+                jump(MyDynamicActivity.class);
                 break;
             case R.id.ll_anchor:
                 //主播认证

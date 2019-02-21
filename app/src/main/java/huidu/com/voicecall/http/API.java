@@ -15,11 +15,11 @@ public interface API {
     /**
      * 正式地址
      */
-    String BASE_URL = "http://voice.baggen.cn/api/";
+//    String BASE_URL = "http://voice.baggen.cn/api/";
     /**
      * 测试地址
      */
-//    String BASE_URL = "http://voice.51qdd.net/api/";
+    String BASE_URL = "http://voice.51qdd.net/api/";
 //    String TOKEN_TEST = "L2uk5tVN4CUQQb0P6n650BRTVLc4q0tV7K050Bdd0u0N7TKP";
 //    String TOKEN_TEST = "UfCQ19B0Y9XQX1Q0m8nDxbCyx1w0XnY000BY1cy013eCC3tq";
 //    String USERID = "1";
@@ -101,6 +101,16 @@ public interface API {
     String AUTH_FACE = "auth/face";//身份证认证
     String AUTH_ANCHOR = "auth/anchor";//主播认证
     String AUTH_ANCHOR_TYPE = "auth/anchor/type";//主播类型
+
+    /**
+     * 动态
+     */
+    String DYNAMIC_INDEX = "dynamic/index";//所有动态/我的动态接口
+    String DYNAMIC_PUBLISH = "dynamic/publish";//发布动态接口
+    String DYNAMIC_LIKE = "dynamic/like";//动态点赞/取消接口
+    String DYNAMIC_DEL= "dynamic/del";//动态删除
+    String DYNAMIC_MY_LIKE= "dynamic/my/like";//我的赞接口
+
     /**
      * Returns 参数返回列表
      */

@@ -50,6 +50,18 @@
             android:textSize="@dimen/sp10" />
 
         <RadioButton
+            android:id="@+id/rb_dynamic"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:button="@null"
+            android:drawableTop="@drawable/selector_tab_dynamic"
+            android:gravity="center"
+            android:paddingTop="@dimen/dp5"
+            android:text="动态"
+            android:textSize="@dimen/sp10" />
+
+        <RadioButton
             android:id="@+id/rb_mine"
             android:layout_width="0dp"
             android:layout_height="match_parent"

@@ -32,6 +32,8 @@ public class MainActivity extends BaseActivity implements ChangeFragmentListener
     RadioGroup mainActivityRg;
     @BindView(R.id.rb_message)
     RadioButton rb_message;
+    @BindView(R.id.rb_dynamic)
+    RadioButton rb_dynamic;
     @BindView(R.id.rb_main)
     RadioButton rb_main;
     private List<Fragment> mList;
@@ -52,6 +54,7 @@ public class MainActivity extends BaseActivity implements ChangeFragmentListener
         mList = new ArrayList<>();
         mList.add(new MainFragment());//主页
         mList.add(new MessageFragment());//消息
+        mList.add(new DynamicFragment());//动态
         mList.add(new MineFragment());//我的
         setTabView(0);
         mainActivityRg.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
@@ -64,8 +67,11 @@ public class MainActivity extends BaseActivity implements ChangeFragmentListener
                     case R.id.rb_message:
                         setTabView(1);
                         break;
-                    case R.id.rb_mine:
+                    case R.id.rb_dynamic:
                         setTabView(2);
+                        break;
+                    case R.id.rb_mine:
+                        setTabView(3);
                         break;
                 }
             }
@@ -87,26 +93,42 @@ public class MainActivity extends BaseActivity implements ChangeFragmentListener
             case 0:
                 rb_main.setChecked(true);
                 rb_message.setChecked(false);
+                rb_dynamic.setChecked(false);
                 rb_mine.setChecked(false);
                 rb_main.setTextColor(getResources().getColor(R.color.textSelectColor));
                 rb_message.setTextColor(getResources().getColor(R.color.textColor2));
+                rb_dynamic.setTextColor(getResources().getColor(R.color.textColor2));
                 rb_mine.setTextColor(getResources().getColor(R.color.textColor2));
                 break;
             case 1:
                 rb_main.setChecked(false);
                 rb_message.setChecked(true);
+                rb_dynamic.setChecked(false);
                 rb_mine.setChecked(false);
                 rb_main.setTextColor(getResources().getColor(R.color.textColor2));
                 rb_message.setTextColor(getResources().getColor(R.color.textSelectColor));
+                rb_dynamic.setTextColor(getResources().getColor(R.color.textColor2));
                 rb_mine.setTextColor(getResources().getColor(R.color.textColor2));
                 break;
             case 2:
                 rb_main.setChecked(false);
                 rb_message.setChecked(false);
+                rb_dynamic.setChecked(true);
+                rb_mine.setChecked(false);
+                rb_main.setTextColor(getResources().getColor(R.color.textColor2));
+                rb_dynamic.setTextColor(getResources().getColor(R.color.textSelectColor));
+                rb_message.setTextColor(getResources().getColor(R.color.textColor2));
+                rb_mine.setTextColor(getResources().getColor(R.color.textColor2));
+                break;
+            case 3:
+                rb_main.setChecked(false);
+                rb_message.setChecked(false);
+                rb_dynamic.setChecked(false);
                 rb_mine.setChecked(true);
                 rb_main.setTextColor(getResources().getColor(R.color.textColor2));
-                rb_mine.setTextColor(getResources().getColor(R.color.textSelectColor));
                 rb_message.setTextColor(getResources().getColor(R.color.textColor2));
+                rb_dynamic.setTextColor(getResources().getColor(R.color.textColor2));
+                rb_mine.setTextColor(getResources().getColor(R.color.textSelectColor));
                 break;
         }
     }
