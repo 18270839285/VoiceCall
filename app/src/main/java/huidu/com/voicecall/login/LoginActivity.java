@@ -51,7 +51,6 @@ public class LoginActivity extends BaseActivity implements RequestFinish {
     private boolean isCheck = true;
     private String telephone;
     private String password;
-    private Loading mLoading;
     @Override
     protected int getLayoutId() {
         return R.layout.activity_login;
@@ -60,7 +59,6 @@ public class LoginActivity extends BaseActivity implements RequestFinish {
 
     @Override
     protected void initView() {
-        mLoading = new Loading(this);
         if (getIntent() != null) {
             telephone = getIntent().getStringExtra("telephone");
             password = getIntent().getStringExtra("password");
@@ -103,8 +101,7 @@ public class LoginActivity extends BaseActivity implements RequestFinish {
 
     @Override
     public void onError(String result) {
-        if (mLoading!=null&&mLoading.isShowing())
-            mLoading.dismiss();
+        finishLoad();
         ToastUtil.toastShow(result);
     }
 
@@ -115,7 +112,7 @@ public class LoginActivity extends BaseActivity implements RequestFinish {
                 new RequestCallback<LoginInfo>() {
                     @Override
                     public void onSuccess(LoginInfo param) {
-                        mLoading.dismiss();
+                        finishLoad();
                         ToastUtil.toastShow("登录成功");
                         jumpTo(MainActivity.class);
                         // 可以在此保存LoginInfo到本地，下次启动APP做自动登录用
@@ -124,13 +121,14 @@ public class LoginActivity extends BaseActivity implements RequestFinish {
 
                     @Override
                     public void onFailed(int code) {
-                        mLoading.dismiss();
+//                        mLoading.dismiss();
+                        finishLoad();
                         Log.e("RequestCallback", "onFailed: code = " + code);
                     }
 
                     @Override
                     public void onException(Throwable exception) {
-                        mLoading.dismiss();
+                        finishLoad();
                         Log.e("RequestCallback", "onException: " + exception);
                     }
 

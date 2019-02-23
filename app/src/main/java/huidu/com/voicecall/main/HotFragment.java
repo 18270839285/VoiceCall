@@ -76,10 +76,8 @@ public class HotFragment extends BaseFragment implements RequestFinish {
         return R.layout.fragment_hot;
     }
 
-    Loading mLoading;
     @Override
     protected void initView(View view) {
-        mLoading = new Loading(getActivity());
         glManager = new CustomGLManager(getActivity(),2);
 //        String string = getArguments().getString("type_name");
         type_id = getArguments().getString("type_id") + "";
@@ -274,16 +272,12 @@ public class HotFragment extends BaseFragment implements RequestFinish {
     }
 
     private void loadStart() {
-//        if (mLoading != null)
-//            mLoading.show();
         if (refreshLayout!=null){
             refreshLayout.setRefreshing(true);
         }
     }
 
     private void loadCancel() {
-//        if (mLoading != null && mLoading.isShowing())
-//            mLoading.dismiss();
         if (refreshLayout!=null){
             refreshLayout.setRefreshing(false);
         }

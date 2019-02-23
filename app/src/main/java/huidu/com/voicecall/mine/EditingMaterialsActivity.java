@@ -51,7 +51,6 @@ import huidu.com.voicecall.http.RequestFinish;
 import huidu.com.voicecall.utils.AddressInitTask;
 import huidu.com.voicecall.utils.DialogUtil;
 import huidu.com.voicecall.utils.FileUtils;
-import huidu.com.voicecall.utils.Loading;
 import huidu.com.voicecall.utils.SPUtils;
 import huidu.com.voicecall.utils.ToastUtil;
 
@@ -93,8 +92,6 @@ public class EditingMaterialsActivity extends BaseActivity implements RequestFin
     private String introduce = "";
     private String address = "";
 
-    Loading loading;
-
     private TakePhoto takePhoto;
     private InvokeParam invokeParam;
     private File newFile;
@@ -123,7 +120,6 @@ public class EditingMaterialsActivity extends BaseActivity implements RequestFin
         zodiacs.add("摩羯座");
         zodiacs.add("水瓶座");
         zodiacs.add("双鱼座");
-        loading = new Loading(this);
     }
 
     @Override
@@ -197,7 +193,7 @@ public class EditingMaterialsActivity extends BaseActivity implements RequestFin
                 finish();
                 break;
             case API.COMMON_IMAGE_UPLOAD:
-                loading.dismiss();
+                finishLoad();
                 SpareBean spareBean = (SpareBean) result.getData();
                 head_image = spareBean.getImage_url();
                 Glide.with(this).load(head_image).apply(new RequestOptions().error(R.mipmap.wd_tx_nor)).into(iv_head);
@@ -207,7 +203,7 @@ public class EditingMaterialsActivity extends BaseActivity implements RequestFin
 
     @Override
     public void onError(String result) {
-        loading.dismiss();
+        finishLoad();
         ToastUtil.toastShow(result);
     }
 
@@ -430,7 +426,7 @@ public class EditingMaterialsActivity extends BaseActivity implements RequestFin
     @Override
     public void takeSuccess(TResult result) {
         newFile = new File(result.getImage().getCompressPath());
-        loading.show();
+        mLoading.show();
         OkHttpUtils.getInstance().common_image_upload(FileUtils.fileToBase64(newFile), this);
     }
 

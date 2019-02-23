@@ -33,7 +33,6 @@ public class RegisterActivity extends BaseActivity implements RequestFinish {
     TextView tv_getCode;
 
     private TimeCountUtil mTimeCount;
-    Loading loading;
     @Override
     protected int getLayoutId() {
         return R.layout.activity_register;
@@ -41,7 +40,6 @@ public class RegisterActivity extends BaseActivity implements RequestFinish {
 
     @Override
     protected void initView() {
-        loading = new Loading(this);
         mTimeCount = new TimeCountUtil(60000, 1000, tv_getCode);
     }
 
@@ -58,7 +56,7 @@ public class RegisterActivity extends BaseActivity implements RequestFinish {
             ToastUtil.toastShow("验证码不能为空");
             return;
         }
-        loading.show();
+        mLoading.show();
         OkHttpUtils.getInstance().sign_verify_code(et_account.getText().toString(),et_password.getText().toString(),0,this);
 
     }
@@ -72,7 +70,7 @@ public class RegisterActivity extends BaseActivity implements RequestFinish {
                     ToastUtil.toastShow("请输入正确的手机号码");
                     return;
                 }
-                loading.show();
+                mLoading.show();
                 OkHttpUtils.getInstance().sign_get_verify(et_account.getText().toString(),0,this);
                 break;
             case R.id.tv_next:
@@ -88,7 +86,7 @@ public class RegisterActivity extends BaseActivity implements RequestFinish {
 
     @Override
     public void onSuccess(BaseModel result, String params) {
-        loading.dismiss();
+        finishLoad();
         switch (params){
             case API.SIGN_GET_VERIFY:
                 //获取验证码
@@ -108,7 +106,7 @@ public class RegisterActivity extends BaseActivity implements RequestFinish {
     @Override
     public void onError(String result) {
         ToastUtil.toastShow(result);
-        loading.dismiss();
+        finishLoad();
     }
 
     @Override

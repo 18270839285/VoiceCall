@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import huidu.com.voicecall.utils.Loading;
 
 /**
  * Created by jason on 2017/3/15.
@@ -26,12 +27,14 @@ public abstract class BaseFragment extends Fragment {
     public Context mContext;
     //进度条
     private Dialog mDialog;
+    public Loading mLoading;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.e(TAG, "onCreate: " + TAG);
         mContext = getActivity();
+        mLoading = new Loading(mContext);
     }
 
     @Nullable
@@ -94,6 +97,12 @@ public abstract class BaseFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+    }
+
+    public void finishLoad(){
+        if (mLoading!=null&&mLoading.isShowing()){
+            mLoading.dismiss();
+        }
     }
 
 }

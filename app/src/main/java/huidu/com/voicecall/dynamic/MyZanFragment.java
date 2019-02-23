@@ -57,7 +57,6 @@ public class MyZanFragment extends BaseFragment implements RequestFinish {
 
 //    int mPage = 1;
 
-    private Loading mLoad;
     CustomLLManager llManager;
     @Override
     protected int getLayoutId() {
@@ -66,7 +65,6 @@ public class MyZanFragment extends BaseFragment implements RequestFinish {
 
     @Override
     protected void initView(View view) {
-        mLoad = new Loading(getActivity());
         llManager = new CustomLLManager(getActivity());
         OkHttpUtils.getInstance().dynamic_my_like(SPUtils.getValue("token"), this);
 
@@ -158,11 +156,11 @@ public class MyZanFragment extends BaseFragment implements RequestFinish {
                 iv_zan.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        mLoad.show();
+                        mLoading.show();
                         OkHttpUtils.getInstance().dynamic_like(SPUtils.getValue("token"), item.getDynamic_id(), new RequestFinish() {
                             @Override
                             public void onSuccess(BaseModel result, String params) {
-                                mLoad.dismiss();
+                                finishLoad();
                                 if (item.getIs_my().equals("1")){
                                     ToastUtil.toastShow("取消点赞成功");
                                     item.setIs_my("2");
@@ -182,7 +180,7 @@ public class MyZanFragment extends BaseFragment implements RequestFinish {
 
                             @Override
                             public void onError(String result) {
-                                mLoad.dismiss();
+                                finishLoad();
                             }
                         });
                     }

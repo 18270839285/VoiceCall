@@ -35,7 +35,6 @@ public class ForgetPwdActivity extends BaseActivity implements RequestFinish {
     TextView tv_title;
 
     private TimeCountUtil mTimeCount;
-    Loading loading;
     @Override
     protected int getLayoutId() {
         return R.layout.activity_forget_pwd;
@@ -44,7 +43,7 @@ public class ForgetPwdActivity extends BaseActivity implements RequestFinish {
     @Override
     protected void initView() {
         tv_title.setText("找回密码");
-        loading = new Loading(this);
+//        loading = new Loading(this);
         mTimeCount = new TimeCountUtil(60000, 1000, tv_getCode);
     }
 
@@ -55,7 +54,7 @@ public class ForgetPwdActivity extends BaseActivity implements RequestFinish {
 
     @Override
     public void onSuccess(BaseModel result, String params) {
-        loading.dismiss();
+        finishLoad();
         switch (params){
             case API.SIGN_GET_VERIFY:
                 //获取验证码
@@ -74,7 +73,7 @@ public class ForgetPwdActivity extends BaseActivity implements RequestFinish {
 
     @Override
     public void onError(String result) {
-        loading.dismiss();
+        finishLoad();
         ToastUtil.toastShow(result);
     }
     private void checkNext(){
@@ -86,7 +85,7 @@ public class ForgetPwdActivity extends BaseActivity implements RequestFinish {
             ToastUtil.toastShow("验证码不能为空");
             return;
         }
-        loading.show();
+        mLoading.show();
         OkHttpUtils.getInstance().sign_verify_code(et_account.getText().toString(),et_password.getText().toString(),1,this);
 
     }
@@ -103,7 +102,7 @@ public class ForgetPwdActivity extends BaseActivity implements RequestFinish {
                     ToastUtil.toastShow("请输入正确的手机号码");
                     return;
                 }
-                loading.show();
+                mLoading.show();
                 OkHttpUtils.getInstance().sign_get_verify(et_account.getText().toString(),1,this);
                 break;
             case R.id.tv_next:

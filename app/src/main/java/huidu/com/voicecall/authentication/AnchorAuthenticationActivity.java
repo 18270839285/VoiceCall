@@ -49,7 +49,6 @@ import huidu.com.voicecall.http.OkHttpUtils;
 import huidu.com.voicecall.http.RequestFinish;
 import huidu.com.voicecall.utils.DialogUtil;
 import huidu.com.voicecall.utils.FileUtils;
-import huidu.com.voicecall.utils.Loading;
 import huidu.com.voicecall.utils.SPUtils;
 import huidu.com.voicecall.utils.ToastUtil;
 
@@ -79,8 +78,6 @@ public class AnchorAuthenticationActivity extends BaseActivity implements Reques
     private String AudioUrl = "";
     private String CoverUrl = "";
     private List<AnchorType> typeList = new ArrayList<>();
-
-    Loading loading;
 
     private CountDownTimer timer;
     private boolean isSelfCancel = false;
@@ -135,7 +132,6 @@ public class AnchorAuthenticationActivity extends BaseActivity implements Reques
 
             }
         });
-        loading = new Loading(this);
     }
 
     @Override
@@ -147,13 +143,13 @@ public class AnchorAuthenticationActivity extends BaseActivity implements Reques
     public void onSuccess(BaseModel result, String params) {
         switch (params) {
             case API.COMMON_IMAGE_UPLOAD:
-                loading.dismiss();
+                finishLoad();
                 SpareBean spareBean = (SpareBean) result.getData();
                 CoverUrl = spareBean.getImage_url();
                 Glide.with(this).load(CoverUrl).apply(new RequestOptions().error(R.mipmap.wd_tx_nor)).into(iv_cover);
                 break;
             case API.COMMON_AUDIO:
-                loading.dismiss();
+                finishLoad();
                 SpareBean spareBean1 = (SpareBean) result.getData();
                 AudioUrl = spareBean1.getAudioUrl();
                 startAudio(AudioUrl);
@@ -164,7 +160,7 @@ public class AnchorAuthenticationActivity extends BaseActivity implements Reques
                     tv_anchor_type.setText(typeList.get(0).getType_name());
                 break;
             case API.AUTH_ANCHOR:
-                loading.dismiss();
+                finishLoad();
                 finish();
                 break;
         }
@@ -172,9 +168,7 @@ public class AnchorAuthenticationActivity extends BaseActivity implements Reques
 
     @Override
     public void onError(String result) {
-        if (loading != null && loading.isShowing()) {
-            loading.dismiss();
-        }
+        finishLoad();
         ToastUtil.toastShow(result);
     }
 
@@ -228,7 +222,7 @@ public class AnchorAuthenticationActivity extends BaseActivity implements Reques
                         break;
                     case AUDIO_STATE3:
                         if (AudioUrl.isEmpty()) {
-                            loading.show();
+                            mLoading.show();
                             OkHttpUtils.getInstance().common_audio(SPUtils.getValue("audio_path"), this);
                         } else {
                             startAudio(AudioUrl);
@@ -263,7 +257,7 @@ public class AnchorAuthenticationActivity extends BaseActivity implements Reques
             ToastUtil.toastShow("技能说明不能为空");
             return;
         }
-        loading.show();
+        mLoading.show();
         String type = "";
         for (int i = 0; i < typeList.size(); i++) {
             if (typeList.get(i).getType_name().equals(tv_anchor_type.getText().toString())) {
@@ -325,7 +319,7 @@ public class AnchorAuthenticationActivity extends BaseActivity implements Reques
     @Override
     public void takeSuccess(TResult result) {
         newFile = new File(result.getImage().getCompressPath());
-        loading.show();
+        mLoading.show();
         OkHttpUtils.getInstance().common_image_upload(FileUtils.fileToBase64(newFile), this);
     }
 

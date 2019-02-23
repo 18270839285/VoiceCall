@@ -28,7 +28,6 @@ import huidu.com.voicecall.http.BaseModel;
 import huidu.com.voicecall.http.OkHttpUtils;
 import huidu.com.voicecall.http.RequestFinish;
 import huidu.com.voicecall.utils.FileUtils;
-import huidu.com.voicecall.utils.Loading;
 import huidu.com.voicecall.utils.SPUtils;
 import huidu.com.voicecall.utils.ToastUtil;
 
@@ -53,7 +52,6 @@ public class IDCardAuthenticationActivity extends BaseActivity implements Reques
     String id_card = "";
     String FACE_IMGBASE64 = "";
     String BACK_IMGBASE64 = "";
-    Loading loading;
 
     int IMG_TYPE = 1;
     private File newFile;
@@ -66,7 +64,6 @@ public class IDCardAuthenticationActivity extends BaseActivity implements Reques
     @Override
     protected void initView() {
         tv_title.setText("身份证认证");
-        loading = new Loading(this);
     }
 
     @Override
@@ -76,7 +73,7 @@ public class IDCardAuthenticationActivity extends BaseActivity implements Reques
 
     @Override
     public void onSuccess(BaseModel result, String params) {
-        loading.dismiss();
+        finishLoad();
         switch (params) {
             case API.AUTH_IDENTITY:
                 jumpTo(FaceRecognitionActivity.class);
@@ -86,7 +83,7 @@ public class IDCardAuthenticationActivity extends BaseActivity implements Reques
 
     @Override
     public void onError(String result) {
-        loading.dismiss();
+        finishLoad();
         ToastUtil.toastShow(result);
     }
 
@@ -109,7 +106,7 @@ public class IDCardAuthenticationActivity extends BaseActivity implements Reques
             ToastUtil.toastShow("请输入身份证号");
             return;
         }
-        loading.show();
+        mLoading.show();
         OkHttpUtils.getInstance().auth_identity(SPUtils.getValue("token"), FACE_IMGBASE64, BACK_IMGBASE64, realname, id_card, this);
     }
 

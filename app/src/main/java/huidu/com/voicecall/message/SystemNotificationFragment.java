@@ -30,6 +30,7 @@ import huidu.com.voicecall.utils.CustomLLManager;
 import huidu.com.voicecall.utils.DateUtil;
 import huidu.com.voicecall.utils.EmptyViewUtil;
 import huidu.com.voicecall.utils.LLManager;
+import huidu.com.voicecall.utils.Loading;
 import huidu.com.voicecall.utils.SPUtils;
 import huidu.com.voicecall.utils.ToastUtil;
 
@@ -59,6 +60,7 @@ public class SystemNotificationFragment extends BaseFragment implements RequestF
     @Override
     protected void initView(View view) {
         llManager = new CustomLLManager(getActivity());
+        mLoading.show();
         OkHttpUtils.getInstance().notice_system(SPUtils.getValue("token"), mPage + "", this);
 
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -93,15 +95,16 @@ public class SystemNotificationFragment extends BaseFragment implements RequestF
     @Override
     public void onSuccess(BaseModel result, String params) {
         refreshLayout.setRefreshing(false);
+        finishLoad();
         SystemNotice orderList = (SystemNotice) result.getData();
         mList = orderList.getNotice();
         mAdapter.setNewData(mList);
-
     }
 
     @Override
     public void onError(String result) {
         refreshLayout.setRefreshing(false);
+        finishLoad();
         ToastUtil.toastShow(result);
     }
 

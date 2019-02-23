@@ -1,11 +1,9 @@
 package huidu.com.voicecall.mine;
 
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -26,20 +24,18 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import huidu.com.voicecall.R;
 import huidu.com.voicecall.base.BaseActivity;
 import huidu.com.voicecall.bean.UserAttention;
-import huidu.com.voicecall.bean.UserFans;
 import huidu.com.voicecall.http.API;
 import huidu.com.voicecall.http.BaseModel;
 import huidu.com.voicecall.http.OkHttpUtils;
 import huidu.com.voicecall.http.RequestFinish;
 import huidu.com.voicecall.utils.EmptyViewUtil;
-import huidu.com.voicecall.utils.Loading;
 import huidu.com.voicecall.utils.SPUtils;
 import huidu.com.voicecall.utils.ToastUtil;
 
 /**
  * 我的关注
  */
-public class MyAttentionActivity extends BaseActivity implements RequestFinish{
+public class MyAttentionActivity extends BaseActivity implements RequestFinish {
     @BindView(R.id.tv_title)
     TextView tv_title;
     @BindView(R.id.recycleView)
@@ -49,7 +45,7 @@ public class MyAttentionActivity extends BaseActivity implements RequestFinish{
 
     BaseQuickAdapter mAdapter;
     List<UserAttention> mList = new ArrayList<>();
-    Loading mLoadind;
+
     @Override
     protected int getLayoutId() {
         return R.layout.activity_my_attention;
@@ -58,33 +54,32 @@ public class MyAttentionActivity extends BaseActivity implements RequestFinish{
     @Override
     protected void initView() {
         tv_title.setText("我的关注");
-        mLoadind = new Loading(this);
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                OkHttpUtils.getInstance().user_attention_list(SPUtils.getValue("token"),MyAttentionActivity.this);
+                OkHttpUtils.getInstance().user_attention_list(SPUtils.getValue("token"), MyAttentionActivity.this);
             }
         });
     }
 
     @Override
     protected void initData() {
-        OkHttpUtils.getInstance().user_attention_list(SPUtils.getValue("token"),this);
+        OkHttpUtils.getInstance().user_attention_list(SPUtils.getValue("token"), this);
         recycleView.setLayoutManager(new LinearLayoutManager(this));
         recycleView.setHasFixedSize(true);
-        mAdapter = new BaseQuickAdapter<UserAttention,BaseViewHolder>(R.layout.item_attention,mList) {
+        mAdapter = new BaseQuickAdapter<UserAttention, BaseViewHolder>(R.layout.item_attention, mList) {
             @Override
-            protected void convert(BaseViewHolder helper,final UserAttention item) {
+            protected void convert(BaseViewHolder helper, final UserAttention item) {
                 CircleImageView iv_head = helper.getView(R.id.iv_head);
                 ImageView iv_sex = helper.getView(R.id.iv_sex);
                 TextView tv_attention = helper.getView(R.id.tv_attention);
                 LinearLayout ll_sex_age = helper.getView(R.id.ll_sex_age);
-                helper.setText(R.id.tv_userId,item.getNickname());
-                helper.setText(R.id.tv_age,item.getAge());
-                if (item.getSex().equals("1")){
+                helper.setText(R.id.tv_userId, item.getNickname());
+                helper.setText(R.id.tv_age, item.getAge());
+                if (item.getSex().equals("1")) {
                     ll_sex_age.setBackgroundResource(R.drawable.shape_corner5_boy);
                     iv_sex.setImageResource(R.mipmap.boy);
-                }else if (item.getSex().equals("2")){
+                } else if (item.getSex().equals("2")) {
                     ll_sex_age.setBackgroundResource(R.drawable.shape_corner5_red);
                     iv_sex.setImageResource(R.mipmap.girl);
                 }
@@ -92,28 +87,28 @@ public class MyAttentionActivity extends BaseActivity implements RequestFinish{
                 tv_attention.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        mLoadind.show();
-                        OkHttpUtils.getInstance().user_attention_cancel(SPUtils.getValue("token"),item.getUser_id()+"",MyAttentionActivity.this);
+                        mLoading.show();
+                        OkHttpUtils.getInstance().user_attention_cancel(SPUtils.getValue("token"), item.getUser_id() + "", MyAttentionActivity.this);
                     }
                 });
             }
         };
-        mAdapter.setEmptyView(EmptyViewUtil.getEmptyView(this,4));
+        mAdapter.setEmptyView(EmptyViewUtil.getEmptyView(this, 4));
         recycleView.setAdapter(mAdapter);
     }
 
     @Override
     public void onSuccess(BaseModel result, String params) {
-        switch (params){
+        switch (params) {
             case API.USER_ATTENTION_LIST:
                 refreshLayout.setRefreshing(false);
-                mList = (List<UserAttention>)result.getData();
+                mList = (List<UserAttention>) result.getData();
                 mAdapter.setNewData(mList);
                 break;
             case API.USER_ATTENTION_CANCEL:
-                mLoadind.dismiss();
+                finishLoad();
                 ToastUtil.toastShow("取消关注成功");
-                OkHttpUtils.getInstance().user_attention_list(SPUtils.getValue("token"),this);
+                OkHttpUtils.getInstance().user_attention_list(SPUtils.getValue("token"), this);
                 break;
         }
     }
@@ -121,9 +116,7 @@ public class MyAttentionActivity extends BaseActivity implements RequestFinish{
     @Override
     public void onError(String result) {
         refreshLayout.setRefreshing(false);
-        if (mLoadind!=null&&mLoadind.isShowing()){
-            mLoadind.dismiss();
-        }
+        finishLoad();
         ToastUtil.toastShow(result);
     }
 
@@ -135,6 +128,7 @@ public class MyAttentionActivity extends BaseActivity implements RequestFinish{
                 break;
         }
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

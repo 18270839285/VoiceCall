@@ -59,7 +59,6 @@ public class DynamicFragment extends BaseFragment implements RequestFinish {
 
     int mPage = 1;
 
-    private Loading mLoad;
 
     public static boolean isRefresh = false;
 
@@ -72,9 +71,9 @@ public class DynamicFragment extends BaseFragment implements RequestFinish {
 
     @Override
     protected void initView(View view) {
-        mLoad = new Loading(getActivity());
         mList = new ArrayList<>();
         llManager = new CustomLLManager(getActivity());
+        mLoading.show();
         OkHttpUtils.getInstance().dynamic_index(SPUtils.getValue("token"), mPage + "", "", this);
 
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -162,11 +161,13 @@ public class DynamicFragment extends BaseFragment implements RequestFinish {
                 iv_zan.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        mLoad.show();
+//                        mLoad.show();
+                        mLoading.show();
                         OkHttpUtils.getInstance().dynamic_like(SPUtils.getValue("token"), item.getDynamic_id(), new RequestFinish() {
                             @Override
                             public void onSuccess(BaseModel result, String params) {
-                                mLoad.dismiss();
+//                                mLoad.dismiss();
+                                finishLoad();
                                 if (item.getIs_my().equals("1")) {
                                     ToastUtil.toastShow("取消点赞成功");
                                     item.setIs_my("2");
@@ -183,7 +184,8 @@ public class DynamicFragment extends BaseFragment implements RequestFinish {
 
                             @Override
                             public void onError(String result) {
-                                mLoad.dismiss();
+//                                mLoad.dismiss();
+                                finishLoad();
                             }
                         });
                     }
@@ -270,8 +272,7 @@ public class DynamicFragment extends BaseFragment implements RequestFinish {
     public void onSuccess(BaseModel result, String params) {
         if (refreshLayout != null && refreshLayout.isRefreshing())
             refreshLayout.setRefreshing(false);
-        if (mLoad != null && mLoad.isShowing())
-            mLoad.dismiss();
+        finishLoad();
         mPage++;
         DynamicData orderList = (DynamicData) result.getData();
         if (mPage == 2) {
@@ -287,8 +288,7 @@ public class DynamicFragment extends BaseFragment implements RequestFinish {
     public void onError(String result) {
         if (refreshLayout != null && refreshLayout.isRefreshing())
             refreshLayout.setRefreshing(false);
-        if (mLoad != null && mLoad.isShowing())
-            mLoad.dismiss();
+        finishLoad();
         ToastUtil.toastShow(result);
         mAdapter.loadMoreComplete();
     }
@@ -308,7 +308,7 @@ public class DynamicFragment extends BaseFragment implements RequestFinish {
         super.onResume();
         if (isRefresh) {
             mPage = 1;
-            mLoad.show();
+            mLoading.show();
             OkHttpUtils.getInstance().dynamic_index(SPUtils.getValue("token"), mPage + "", "", this);
             isRefresh = !isRefresh;
         }

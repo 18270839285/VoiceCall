@@ -80,8 +80,6 @@ public class AnchorsSkillsActivity extends BaseActivity implements RequestFinish
     private String anchor_id;
     private String anchor_type_id;
 
-    private Loading mLoading;
-
     private MediaPlayer mediaPlayer;
     private String audioUrl = "";
     private boolean isRobot = false;
@@ -94,7 +92,6 @@ public class AnchorsSkillsActivity extends BaseActivity implements RequestFinish
 
     @Override
     protected void initView() {
-        mLoading = new Loading(this);
         anchor_id = getIntent().getStringExtra("anchor_id");
         anchor_type_id = getIntent().getStringExtra("anchor_type_id");
         isRobot = getIntent().getBooleanExtra("isRobot",false);
@@ -156,7 +153,7 @@ public class AnchorsSkillsActivity extends BaseActivity implements RequestFinish
         refresh.setRefreshing(false);
         switch (params) {
             case API.ANCHOR_INFO:
-                mLoading.dismiss();
+                finishLoad();
                 anchorInfo = (AnchorInfo) result.getData();
                 Glide.with(this).load(anchorInfo.getHead_image()).into(iv_head);
                 if (anchorInfo.getCover().size() > 0) {
@@ -192,12 +189,12 @@ public class AnchorsSkillsActivity extends BaseActivity implements RequestFinish
 //                jumpTo(OrderDetailActivity.class);
                 break;
             case API.USER_ATTENTION:
-                mLoading.dismiss();
+                finishLoad();
                 ToastUtil.toastBottom(this,"关注成功");
                 setAttention();
                 break;
             case API.USER_ATTENTION_CANCEL:
-                mLoading.dismiss();
+                finishLoad();
                 ToastUtil.toastBottom(this,"取消关注成功");
                 setAttention();
                 break;
@@ -223,9 +220,7 @@ public class AnchorsSkillsActivity extends BaseActivity implements RequestFinish
         if (refresh!=null&&refresh.isRefreshing()){
             refresh.setRefreshing(false);
         }
-        if (mLoading!=null&&mLoading.isShowing()){
-            mLoading.dismiss();
-        }
+        finishLoad();
         ToastUtil.toastShow(result);
     }
 

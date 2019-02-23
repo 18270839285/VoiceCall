@@ -35,7 +35,6 @@ public class ChangePwdActivity extends BaseActivity implements RequestFinish {
     @BindView(R.id.et_password3)
     EditText et_password3;
 
-    Loading mLoading;
     @Override
     protected int getLayoutId() {
         return R.layout.activity_change_pwd;
@@ -44,7 +43,6 @@ public class ChangePwdActivity extends BaseActivity implements RequestFinish {
     @Override
     protected void initView() {
         tv_title.setText("修改密码");
-        mLoading = new Loading(this);
     }
 
     @Override
@@ -56,7 +54,7 @@ public class ChangePwdActivity extends BaseActivity implements RequestFinish {
 
     @Override
     public void onSuccess(BaseModel result, String params) {
-        mLoading.dismiss();
+        finishLoad();
         ToastUtil.toastShow("密码修改成功，请重新登录");
         Intent intent = new Intent(this,LoginActivity.class);
 //        intent.putExtra("telephone",telephone);
@@ -68,7 +66,7 @@ public class ChangePwdActivity extends BaseActivity implements RequestFinish {
 
     @Override
     public void onError(String result) {
-        mLoading.dismiss();
+        finishLoad();
         ToastUtil.toastShow(result);
     }
 

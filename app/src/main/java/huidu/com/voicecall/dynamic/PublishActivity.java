@@ -44,7 +44,6 @@ import huidu.com.voicecall.http.RequestFinish;
 import huidu.com.voicecall.main.DynamicFragment;
 import huidu.com.voicecall.utils.DialogUtil;
 import huidu.com.voicecall.utils.FileUtils;
-import huidu.com.voicecall.utils.Loading;
 import huidu.com.voicecall.utils.SPUtils;
 import huidu.com.voicecall.utils.ToastUtil;
 
@@ -65,7 +64,6 @@ public class PublishActivity extends BaseActivity implements RequestFinish, Take
     BaseQuickAdapter mAdapter;
     List<String> imageList;
 
-    Loading loading;
     private TakePhoto takePhoto;
     private InvokeParam invokeParam;
 
@@ -83,7 +81,7 @@ public class PublishActivity extends BaseActivity implements RequestFinish, Take
         tv_right.setText("发表");
         imageList = new ArrayList<>();
         imageList.add("add");
-        loading = new Loading(this);
+
     }
 
     @Override
@@ -135,8 +133,7 @@ public class PublishActivity extends BaseActivity implements RequestFinish, Take
 
     @Override
     public void onSuccess(BaseModel result, String params) {
-        if (loading!=null&&loading.isShowing())
-            loading.dismiss();
+        finishLoad();
         DynamicFragment.isRefresh = true;
         ToastUtil.toastShow("发布成功");
         finish();
@@ -144,8 +141,7 @@ public class PublishActivity extends BaseActivity implements RequestFinish, Take
 
     @Override
     public void onError(String result) {
-        if (loading!=null&&loading.isShowing())
-            loading.dismiss();
+        finishLoad();
         ToastUtil.toastShow(result);
     }
 
@@ -162,14 +158,19 @@ public class PublishActivity extends BaseActivity implements RequestFinish, Take
                     return;
                 }
                 if (imageList.size()>=2){
-                    loading.show();
-                    StringBuilder base64 = new StringBuilder();
-                    for (int i = 0;i<imageList.size()-1;i++){
-                        File f = new File(imageList.get(i));
-                        base64.append(FileUtils.fileToBase64(f)+",");
-                    }
-                    base64.delete(base64.length()-1,base64.length());
-                    OkHttpUtils.getInstance().dynamic_publish(SPUtils.getValue("token"),base64.toString(),et_content.getText().toString(),this);
+                    mLoading.show();
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            StringBuilder base64 = new StringBuilder();
+                            for (int i = 0;i<imageList.size()-1;i++){
+                                File f = new File(imageList.get(i));
+                                base64.append(FileUtils.fileToBase64(f)+",");
+                            }
+                            base64.delete(base64.length()-1,base64.length());
+                            OkHttpUtils.getInstance().dynamic_publish(SPUtils.getValue("token"),base64.toString(),et_content.getText().toString(),PublishActivity.this);
+                        }
+                    }).start();
                 }else {
                     ToastUtil.toastShow("至少上传一张照片");
                 }
@@ -217,13 +218,10 @@ public class PublishActivity extends BaseActivity implements RequestFinish, Take
             imageList.add(imageList.size() - 1, result.getImage().getCompressPath());
         }else {
             for (int i = 0; i < result.getImages().size(); i++) {
-                Log.e(TAG, "takeSuccess: " + result.getImages().get(i).getCompressPath());
                 imageList.add(imageList.size() - 1, result.getImages().get(i).getCompressPath());
             }
         }
         mAdapter.notifyDataSetChanged();
-//        newFile = new File(result.getImage().getCompressPath());
-//        OkHttpUtils.getInstance().common_image_upload(FileUtils.fileToBase64(newFile), this);
     }
 
     @Override
@@ -233,7 +231,6 @@ public class PublishActivity extends BaseActivity implements RequestFinish, Take
 
     @Override
     public void takeCancel() {
-
     }
 
     @Override

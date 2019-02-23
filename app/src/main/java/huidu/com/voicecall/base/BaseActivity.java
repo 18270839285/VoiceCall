@@ -3,7 +3,6 @@ package huidu.com.voicecall.base;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Build;
@@ -20,6 +19,7 @@ import java.util.ArrayList;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import huidu.com.voicecall.utils.AtyContainer;
+import huidu.com.voicecall.utils.Loading;
 
 public abstract class BaseActivity extends AppCompatActivity {
 
@@ -27,6 +27,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     Unbinder bind;
     private String permissionInfo;
     private final int SDK_PERMISSION_REQUEST = 127;
+    public Loading mLoading;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +38,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         Log.e(TAG, "onCreate: this:" + TAG);
         bind = ButterKnife.bind(this);
         AtyContainer.getInstance().addActivity(this);
+        mLoading = new Loading(this);
         initView();
         initData();
         getPermissions();
@@ -234,4 +236,9 @@ public abstract class BaseActivity extends AppCompatActivity {
         bind.unbind();
     }
 
+    public void finishLoad() {
+        if (mLoading != null && mLoading.isShowing()) {
+            mLoading.dismiss();
+        }
+    }
 }
