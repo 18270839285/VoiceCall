@@ -41,6 +41,7 @@ import huidu.com.voicecall.http.BaseModel;
 import huidu.com.voicecall.http.OkHttpUtils;
 import huidu.com.voicecall.http.RequestFinish;
 import huidu.com.voicecall.main.OrderDetailActivity;
+import huidu.com.voicecall.utils.CustomLLManager;
 import huidu.com.voicecall.utils.EmptyViewUtil;
 import huidu.com.voicecall.utils.GlideImageLoader;
 import huidu.com.voicecall.utils.SPUtils;
@@ -64,6 +65,7 @@ public class MyOrderFragment extends BaseFragment implements RequestFinish{
 
     String type_id = "";
     int mPage = 1;
+    CustomLLManager llManager;
     @Override
     protected int getLayoutId() {
         return R.layout.fragment_my_order;
@@ -72,17 +74,19 @@ public class MyOrderFragment extends BaseFragment implements RequestFinish{
     @Override
     protected void initView(View view) {
         type_id = getArguments().getString("is_receive")+"";
-
+        llManager = new CustomLLManager(getActivity());
         OkHttpUtils.getInstance().order_list(SPUtils.getValue("token"),type_id,mPage,this);
 
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                llManager.setScrollEnabled(false);
                 mPage = 1;
                 mList.clear();
                 OkHttpUtils.getInstance().order_list(SPUtils.getValue("token"), type_id,mPage, new RequestFinish() {
                     @Override
                     public void onSuccess(BaseModel result, String params) {
+                        llManager.setScrollEnabled(true);
                         mPage ++;
                         refreshLayout.setRefreshing(false);
                         OrderList orderList = (OrderList)result.getData();
@@ -92,6 +96,7 @@ public class MyOrderFragment extends BaseFragment implements RequestFinish{
 
                     @Override
                     public void onError(String result) {
+                        llManager.setScrollEnabled(true);
                         refreshLayout.setRefreshing(false);
                         ToastUtil.toastShow(result);
                     }
@@ -134,7 +139,7 @@ public class MyOrderFragment extends BaseFragment implements RequestFinish{
 
     @Override
     protected void initData() {
-        recycleView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recycleView.setLayoutManager(llManager);
         recycleView.setHasFixedSize(true);
         mAdapter = new BaseQuickAdapter<OrderList.ListBean,BaseViewHolder>(R.layout.item_order_list,mList) {
             @Override

@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -28,7 +29,9 @@ import org.devio.takephoto.permission.TakePhotoInvocationHandler;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -118,6 +121,12 @@ public class PublishActivity extends BaseActivity implements RequestFinish, Take
                             mAdapter.notifyDataSetChanged();
                         }
                     });
+                    iv_photo.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+
+                        }
+                    });
                 }
             }
         };
@@ -148,22 +157,19 @@ public class PublishActivity extends BaseActivity implements RequestFinish, Take
                 break;
             case R.id.tv_right:
                 //发表
+                if (TextUtils.isEmpty(et_content.getText().toString())){
+                    ToastUtil.toastShow("内容不能为空");
+                    return;
+                }
                 if (imageList.size()>=2){
                     loading.show();
-                    StringBuffer base64 = new StringBuffer();
-                    base64.append("[");
-//                    String[] strings = new String[imageList.size()-1];
+                    StringBuilder base64 = new StringBuilder();
                     for (int i = 0;i<imageList.size()-1;i++){
                         File f = new File(imageList.get(i));
-//                        base64.append(FileUtils.fileToBase64(f)+",");
-                        base64.append(imageList.get(i)+",");
-//                        base64.append("\""+FileUtils.fileToBase64(f)+"\",");
-//                        strings[i] = FileUtils.fileToBase64(f);
+                        base64.append(FileUtils.fileToBase64(f)+",");
                     }
                     base64.delete(base64.length()-1,base64.length());
-                    base64.append("]");
-                    Log.e(TAG, "onViewClicked: "+base64.toString() );
-//                    OkHttpUtils.getInstance().dynamic_publish(SPUtils.getValue("token"),base64.toString(),et_content.getText().toString(),this);
+                    OkHttpUtils.getInstance().dynamic_publish(SPUtils.getValue("token"),base64.toString(),et_content.getText().toString(),this);
                 }else {
                     ToastUtil.toastShow("至少上传一张照片");
                 }
@@ -176,10 +182,10 @@ public class PublishActivity extends BaseActivity implements RequestFinish, Take
         DialogUtil.showTakePhoto(this, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                File file = new File(getExternalCacheDir(), System.currentTimeMillis() + ".png");
-//                final Uri imageUri = Uri.fromFile(file);
+                File file = new File(getExternalCacheDir(), System.currentTimeMillis() + ".png");
+                final Uri imageUri = Uri.fromFile(file);
                 photoType = 1;
-                takePhoto.onPickFromGallery();
+                takePhoto.onPickFromCapture(imageUri);
 //                takePhoto.onPickFromCaptureWithCrop(imageUri, cropOptions);
             }
         }, new View.OnClickListener() {

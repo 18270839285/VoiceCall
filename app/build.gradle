@@ -36,6 +36,12 @@ android {
         }
     }
 
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['libs']
+        }
+    }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -67,7 +73,8 @@ dependencies {
     implementation 'com.android.support:design:27.1.1'
     implementation 'com.youth.banner:banner:1.4.10'
     implementation 'de.hdodenhof:circleimageview:3.0.0'
-    compile('com.github.gzu-liyujiang.AndroidPicker:WheelPicker:latest.release') {//latest.release
+    compile('com.github.gzu-liyujiang.AndroidPicker:WheelPicker:latest.release') {
+//latest.release
         exclude group: 'com.android.support'
     }
     // 网易云信 添加依赖。注意，版本号必须一致。
@@ -84,4 +91,5 @@ dependencies {
     implementation files('libs/ocr-sdk.jar')
     implementation project(':faceplatform-ui')
     implementation 'org.devio.takephoto:takephoto_library:4.1.0'
+    implementation 'com.github.chrisbanes:PhotoView:2.0.0'
 }

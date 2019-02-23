@@ -40,6 +40,7 @@ public class MyOrderActivity extends BaseActivity implements RequestFinish{
 
     List<String> typeList;
     List<Fragment> fragmentList = new ArrayList<>();
+    int JPushType;
     @Override
     protected int getLayoutId() {
         return R.layout.activity_my_order;
@@ -52,6 +53,7 @@ public class MyOrderActivity extends BaseActivity implements RequestFinish{
         typeList.add("已下单");
         typeList.add("已接单");
 
+        JPushType = getIntent().getIntExtra("JPushType",0);
 
     }
 
@@ -61,6 +63,7 @@ public class MyOrderActivity extends BaseActivity implements RequestFinish{
             fragmentList.add(fragment1);
             MyOrderFragment fragment2 = MyOrderFragment.newInstance((1+""));
             fragmentList.add(fragment2);
+
 
         FragmentPagerAdapter mAdapter = new FragmentPagerAdapter(getSupportFragmentManager()) {
             @Override
@@ -82,6 +85,7 @@ public class MyOrderActivity extends BaseActivity implements RequestFinish{
         viewPager.setAdapter(mAdapter);
         tabLayout.setupWithViewPager(viewPager);
         tabLayout.setTabsFromPagerAdapter(mAdapter);//给Tabs设置适配器
+        viewPager.setCurrentItem(JPushType);
     }
 
     @Override

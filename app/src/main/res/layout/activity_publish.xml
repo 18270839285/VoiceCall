@@ -5,14 +5,15 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     android:orientation="vertical"
+    android:background="@color/white"
     tools:context=".dynamic.PublishActivity">
 
     <include layout="@layout/title_common" />
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp1"
-        android:background="@color/line" />
+        android:layout_height="@dimen/dp0.5"
+        android:background="@color/line2" />
 
     <EditText
         android:padding="@dimen/dp15"

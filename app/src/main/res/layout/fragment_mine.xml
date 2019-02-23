@@ -304,7 +304,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/dp15"
                     android:layout_weight="1"
-                    android:drawableLeft="@mipmap/wd_sfrz"
+                    android:drawableLeft="@mipmap/wd_dt"
                     android:drawablePadding="@dimen/dp15"
                     android:gravity="center_vertical"
                     android:text="我的动态"

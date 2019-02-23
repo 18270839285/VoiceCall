@@ -38,6 +38,7 @@ import huidu.com.voicecall.http.BaseModel;
 import huidu.com.voicecall.http.OkHttpUtils;
 import huidu.com.voicecall.http.RequestFinish;
 import huidu.com.voicecall.mine.AnchorsSkillsActivity;
+import huidu.com.voicecall.utils.CustomGLManager;
 import huidu.com.voicecall.utils.GlideImageLoader;
 import huidu.com.voicecall.utils.Loading;
 import huidu.com.voicecall.utils.SPUtils;
@@ -68,6 +69,8 @@ public class HotFragment extends BaseFragment implements RequestFinish {
     private String type_id;
     private int mPage = 1;
 
+    CustomGLManager glManager;
+
     @Override
     protected int getLayoutId() {
         return R.layout.fragment_hot;
@@ -77,6 +80,7 @@ public class HotFragment extends BaseFragment implements RequestFinish {
     @Override
     protected void initView(View view) {
         mLoading = new Loading(getActivity());
+        glManager = new CustomGLManager(getActivity(),2);
 //        String string = getArguments().getString("type_name");
         type_id = getArguments().getString("type_id") + "";
 //        tv_title.setText(string);
@@ -87,6 +91,7 @@ public class HotFragment extends BaseFragment implements RequestFinish {
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                glManager.setScrollEnabled(false);
                 mPage = 1;
                 mList.clear();
                 OkHttpUtils.getInstance().home(SPUtils.getValue("token"), type_id, mPage + "", new RequestFinish() {
@@ -94,6 +99,7 @@ public class HotFragment extends BaseFragment implements RequestFinish {
                     public void onSuccess(BaseModel result, String params) {
                         mPage++;
                         refreshLayout.setRefreshing(false);
+                        glManager.setScrollEnabled(true);
                         Home home = (Home) result.getData();
                         List<Home.Banner> banners = home.getBanner();
 
@@ -113,6 +119,7 @@ public class HotFragment extends BaseFragment implements RequestFinish {
                     @Override
                     public void onError(String result) {
                         refreshLayout.setRefreshing(false);
+                        glManager.setScrollEnabled(true);
                         ToastUtil.toastShow(result);
                     }
                 });
@@ -139,7 +146,8 @@ public class HotFragment extends BaseFragment implements RequestFinish {
             initBanner(banners, typeImg.getType_img());
         }
 
-        if (mPage==1){
+        if (mPage==2){
+//            mList.clear();
             mList = home.getAnchor();
             mAdapter.setNewData(mList);
         }else {
@@ -172,9 +180,9 @@ public class HotFragment extends BaseFragment implements RequestFinish {
 
     @Override
     protected void initData() {
-        GridLayoutManager layoutManager = new GridLayoutManager(getActivity(), 2);
+//        GridLayoutManager layoutManager = new GridLayoutManager(getActivity(), 2);
 //        layoutManager.setSmoothScrollbarEnabled(true);
-        recycleView.setLayoutManager(layoutManager);
+        recycleView.setLayoutManager(glManager);
         recycleView.setHasFixedSize(true);
         recycleView.setNestedScrollingEnabled(false);
         mAdapter = new BaseQuickAdapter<Home.Anchor, BaseViewHolder>(R.layout.item_author, mList) {
@@ -266,13 +274,19 @@ public class HotFragment extends BaseFragment implements RequestFinish {
     }
 
     private void loadStart() {
-        if (mLoading != null)
-            mLoading.show();
+//        if (mLoading != null)
+//            mLoading.show();
+        if (refreshLayout!=null){
+            refreshLayout.setRefreshing(true);
+        }
     }
 
     private void loadCancel() {
-        if (mLoading != null && mLoading.isShowing())
-            mLoading.dismiss();
+//        if (mLoading != null && mLoading.isShowing())
+//            mLoading.dismiss();
+        if (refreshLayout!=null){
+            refreshLayout.setRefreshing(false);
+        }
     }
 
     Banner banner;
@@ -343,6 +357,7 @@ public class HotFragment extends BaseFragment implements RequestFinish {
         //结束轮播
         banner.stopAutoPlay();
         Log.e(TAG, "onStop: " + type_id);
+        mPage = 1;
     }
 
     @Nullable

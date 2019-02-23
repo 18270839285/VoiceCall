@@ -18,6 +18,7 @@ import com.netease.nimlib.sdk.auth.LoginInfo;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import cn.jpush.android.api.JPushInterface;
 import huidu.com.voicecall.R;
 import huidu.com.voicecall.base.BaseActivity;
 import huidu.com.voicecall.base.WebActivity;
@@ -88,6 +89,7 @@ public class LoginActivity extends BaseActivity implements RequestFinish {
                 String user_id = signBean.getUser_id();
                 SPUtils.putValue("token", token);
                 SPUtils.putValue("user_id", user_id);
+                JPushInterface.setAlias(getApplicationContext(), 1, user_id);
                 OkHttpUtils.getInstance().sign_im_info(token, this);
                 break;
             case API.SIGN_IM_INFO:

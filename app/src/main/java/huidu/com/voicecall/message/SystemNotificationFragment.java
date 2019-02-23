@@ -26,8 +26,10 @@ import huidu.com.voicecall.http.API;
 import huidu.com.voicecall.http.BaseModel;
 import huidu.com.voicecall.http.OkHttpUtils;
 import huidu.com.voicecall.http.RequestFinish;
+import huidu.com.voicecall.utils.CustomLLManager;
 import huidu.com.voicecall.utils.DateUtil;
 import huidu.com.voicecall.utils.EmptyViewUtil;
+import huidu.com.voicecall.utils.LLManager;
 import huidu.com.voicecall.utils.SPUtils;
 import huidu.com.voicecall.utils.ToastUtil;
 
@@ -48,7 +50,7 @@ public class SystemNotificationFragment extends BaseFragment implements RequestF
     List<SystemNotice.Notice> mList = new ArrayList<>();
 
     int mPage = 1;
-
+    CustomLLManager llManager;
     @Override
     protected int getLayoutId() {
         return R.layout.fragment_my_order;
@@ -56,18 +58,20 @@ public class SystemNotificationFragment extends BaseFragment implements RequestF
 
     @Override
     protected void initView(View view) {
-
+        llManager = new CustomLLManager(getActivity());
         OkHttpUtils.getInstance().notice_system(SPUtils.getValue("token"), mPage + "", this);
 
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                llManager.setScrollEnabled(false);
                 mPage = 1;
                 mList.clear();
                 OkHttpUtils.getInstance().notice_system(SPUtils.getValue("token"), mPage+"", new RequestFinish() {
                     @Override
                     public void onSuccess(BaseModel result, String params) {
                         refreshLayout.setRefreshing(false);
+                        llManager.setScrollEnabled(true);
                         mPage++;
                         SystemNotice orderList = (SystemNotice) result.getData();
                         mList = orderList.getNotice();
@@ -77,6 +81,7 @@ public class SystemNotificationFragment extends BaseFragment implements RequestF
                     @Override
                     public void onError(String result) {
                         refreshLayout.setRefreshing(false);
+                        llManager.setScrollEnabled(true);
                         ToastUtil.toastShow(result);
                     }
                 });
@@ -102,7 +107,7 @@ public class SystemNotificationFragment extends BaseFragment implements RequestF
 
     @Override
     protected void initData() {
-        recycleView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recycleView.setLayoutManager(llManager);
         recycleView.setHasFixedSize(true);
         mAdapter = new BaseQuickAdapter<SystemNotice.Notice, BaseViewHolder>(R.layout.item_system_notice, mList) {
             @Override

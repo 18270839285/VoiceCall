@@ -23,6 +23,7 @@ import com.netease.nimlib.service.NimService;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.jpush.android.api.JPushInterface;
 import huidu.com.voicecall.test.PhoneCallStateObserver;
 import huidu.com.voicecall.utils.SPUtils;
 import huidu.com.voicecall.voice.ChattingRoomActivity;
@@ -39,6 +40,9 @@ public class VoiceApp extends MultiDexApplication {
     public static List<LivenessTypeEnum> livenessList = new ArrayList<LivenessTypeEnum>();
     public static boolean isLivenessRandom = false;
 
+    public static boolean needRefresh1 = false;
+    public static boolean needRefresh2 = false;
+
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
     @Override
     public void onCreate() {
@@ -51,6 +55,7 @@ public class VoiceApp extends MultiDexApplication {
         options.appKey = "f0c2e363ab9ac4693c0994fd2e3bceaa";
         NIMClient.init(this, loginInfo(), options);
         enableAVChat();
+        JPushInterface.init(this);
     }
 
     private LoginInfo loginInfo() {
