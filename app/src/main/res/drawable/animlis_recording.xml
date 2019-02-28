@@ -14,5 +14,4 @@
         android:drawable="@mipmap/zbrz_ly3"
         android:duration="280" />
 
-
 </animation-list>

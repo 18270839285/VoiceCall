@@ -32,6 +32,24 @@ public class DynamicData implements Serializable {
         String like_count;
         String is_my;
         String sex;
+        String audio;
+        String audio_time;
+
+        public String getAudio_time() {
+            return audio_time;
+        }
+
+        public void setAudio_time(String audio_time) {
+            this.audio_time = audio_time;
+        }
+
+        public String getAudio() {
+            return audio;
+        }
+
+        public void setAudio(String audio) {
+            this.audio = audio;
+        }
 
         public String getSex() {
             return sex;

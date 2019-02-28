@@ -21,6 +21,7 @@ import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -161,9 +162,14 @@ public class MyDynamicFragment extends BaseFragment implements RequestFinish {
                 tv_del.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        DialogUtil.showDialogConfim(getActivity(), "", "确认删除此动态?", new DialogInterface.OnClickListener() {
+                        DialogUtil.showDialogConfirm1(getActivity(), "确认删除此动态?", "取消", new View.OnClickListener() {
                             @Override
-                            public void onClick(DialogInterface dialog, int which) {
+                            public void onClick(View v) {
+
+                            }
+                        }, "确定", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
                                 mLoading.show();
                                 OkHttpUtils.getInstance().dynamic_del(SPUtils.getValue("token"), item.getDynamic_id(), new RequestFinish() {
                                     @Override
@@ -181,7 +187,7 @@ public class MyDynamicFragment extends BaseFragment implements RequestFinish {
                                     }
                                 });
                             }
-                        });
+                        }, View.VISIBLE).show();
 
                     }
                 });
@@ -220,10 +226,10 @@ public class MyDynamicFragment extends BaseFragment implements RequestFinish {
                 RecyclerView item_recycleView = helper.getView(R.id.item_recycleView);
                 item_recycleView.setLayoutManager(new GridLayoutManager(getActivity(),3));
                 item_recycleView.setHasFixedSize(true);
-                List<String> imageList = item.getImage();
+                final List<String> imageList = item.getImage();
                 BaseQuickAdapter adapter = new BaseQuickAdapter<String ,BaseViewHolder>(R.layout.item_dynamic_photo,imageList) {
                     @Override
-                    protected void convert(BaseViewHolder helper, final String item) {
+                    protected void convert(final BaseViewHolder helper, final String item) {
                         final ImageView imageView = helper.getView(R.id.iv_photo);
                         Glide.with(getActivity()).load(item).into(imageView);
 
@@ -231,8 +237,11 @@ public class MyDynamicFragment extends BaseFragment implements RequestFinish {
                             @Override
                             public void onClick(View v) {
                                 if (Build.VERSION.SDK_INT >= 21) {
-                                    Intent intent = new Intent(getActivity(), PictureActivity.class);
-                                    intent.putExtra("imageUrl",item);
+                                    Intent intent = new Intent(getActivity(), PhotoViewActivity.class);
+//                                    Intent intent = new Intent(getActivity(), PictureActivity.class);
+                                    intent.putExtra("imgUrlList", (Serializable) imageList);
+                                    intent.putExtra("position", helper.getAdapterPosition());
+                                    intent.putExtra("imageUrl", item);
                                     ActivityOptionsCompat options = ActivityOptionsCompat.
                                             makeSceneTransitionAnimation(getActivity(), imageView, "voicecall");
                                     startActivity(intent, options.toBundle());

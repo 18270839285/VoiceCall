@@ -315,6 +315,76 @@ public class DialogUtil {
         return dialog;
     }
 
+    /**
+     * 动态弹框
+     * @param context
+     * @param attentionListener 关注
+     * @param shieldListener 屏蔽
+     * @param reportListener 举报
+     * @return
+     */
+    public static Dialog showDialogDynamic(Context context, final View.OnClickListener attentionListener,
+                                           final View.OnClickListener shieldListener,final View.OnClickListener reportListener,
+                                           String isAttention) {
+        View dialogView = View.inflate(context, R.layout.dialog_dynamic, null);
+        final Dialog dialog = new Dialog(context, R.style.dialog1);
+        dialog.setContentView(dialogView);
+        TextView tv_attention = (TextView) dialogView.findViewById(R.id.tv_attention);
+        TextView tv_cancel = (TextView) dialogView.findViewById(R.id.tv_cancel);
+        TextView tv_report = (TextView) dialogView.findViewById(R.id.tv_report);
+        TextView tv_shield = (TextView) dialogView.findViewById(R.id.tv_shield);
+        View view_line = dialogView.findViewById(R.id.view_line);
+        if (isAttention.equals("1")){
+            tv_attention.setVisibility(View.GONE);
+            view_line.setVisibility(View.GONE);
+        }else {
+            tv_attention.setVisibility(View.VISIBLE);
+            view_line.setVisibility(View.VISIBLE);
+        }
+        tv_attention.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                if (attentionListener != null) {
+                    attentionListener.onClick(v);
+                }
+            }
+        });
+        tv_shield.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                if (shieldListener != null) {
+                    shieldListener.onClick(v);
+                }
+            }
+        });
+        tv_report.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                if (reportListener != null) {
+                    reportListener.onClick(v);
+                }
+            }
+        });
+        tv_cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        Window dialogWindow = dialog.getWindow();
+//        WindowManager.LayoutParams lp = dialogWindow.getAttributes();
+        dialogWindow.setGravity(Gravity.BOTTOM);
+        dialogWindow.setWindowAnimations(R.style.dialog_up_down_animation);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            dialog.create();
+        }
+        dialog.setCanceledOnTouchOutside(true);
+        return dialog;
+    }
+
 //    /**
 //     * 主界面弹窗图片
 //     * @param context

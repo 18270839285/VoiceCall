@@ -1,6 +1,5 @@
 package huidu.com.voicecall.http;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -601,14 +600,19 @@ public class OkHttpUtils {
     /**
      * 发布动态接口
      */
-    public void dynamic_publish(String token,String img,String content, RequestFinish protocol) {
+    public void dynamic_publish(String token,String img,String audio,String audio_time,String content, RequestFinish protocol) {
         RequestConfig config = new RequestConfig();
         config.setCls(Object.class);
         config.setRequestCode(API.DYNAMIC_PUBLISH);
         Map<String, String> data = new HashMap<String, String>();
         data.put("token", token);
         data.put("content", content);
-        data.put("img", img);
+        if (!img.isEmpty())
+            data.put("img", img);
+        if (!audio.isEmpty()){
+            data.put("audio", audio);
+            data.put("audio_time", audio_time);
+        }
         okManager.postRequest(config, API.BASE_URL + API.DYNAMIC_PUBLISH, data, protocol);
     }
     /**

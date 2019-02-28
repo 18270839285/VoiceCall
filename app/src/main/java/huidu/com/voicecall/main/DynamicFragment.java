@@ -1,6 +1,7 @@
 package huidu.com.voicecall.main;
 
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -8,16 +9,19 @@ import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,15 +35,15 @@ import huidu.com.voicecall.R;
 import huidu.com.voicecall.base.BaseFragment;
 import huidu.com.voicecall.bean.DynamicData;
 import huidu.com.voicecall.dynamic.PhotoViewActivity;
-import huidu.com.voicecall.dynamic.PictureActivity;
 import huidu.com.voicecall.dynamic.PublishActivity;
 import huidu.com.voicecall.http.BaseModel;
 import huidu.com.voicecall.http.OkHttpUtils;
 import huidu.com.voicecall.http.RequestFinish;
 import huidu.com.voicecall.utils.CustomLLManager;
+import huidu.com.voicecall.utils.DialogUtil;
 import huidu.com.voicecall.utils.EmptyViewUtil;
-import huidu.com.voicecall.utils.Loading;
 import huidu.com.voicecall.utils.SPUtils;
+import huidu.com.voicecall.utils.TimeCountUtil2;
 import huidu.com.voicecall.utils.ToastUtil;
 
 /**
@@ -53,6 +57,14 @@ public class DynamicFragment extends BaseFragment implements RequestFinish {
     RecyclerView recycleView;
     @BindView(R.id.refreshLayout)
     SwipeRefreshLayout refreshLayout;
+    @BindView(R.id.ll_voice)
+    LinearLayout ll_voice;
+    @BindView(R.id.tv_name)
+    TextView tv_name;
+    @BindView(R.id.iv_sex)
+    ImageView iv_sex;
+    @BindView(R.id.iv_pause)
+    ImageView iv_pause;
     Unbinder unbinder;
     BaseQuickAdapter mAdapter;
     List<DynamicData.DynamicList> mList;
@@ -63,6 +75,11 @@ public class DynamicFragment extends BaseFragment implements RequestFinish {
     public static boolean isRefresh = false;
 
     CustomLLManager llManager;
+
+    private MediaPlayer mediaPlayer;
+    private TimeCountUtil2 mTimeCount;
+
+    int ITEM_POSITION = -1;
 
     @Override
     protected int getLayoutId() {
@@ -111,12 +128,123 @@ public class DynamicFragment extends BaseFragment implements RequestFinish {
         recycleView.setHasFixedSize(true);
         mAdapter = new BaseQuickAdapter<DynamicData.DynamicList, BaseViewHolder>(R.layout.item_dynamic, mList) {
             @Override
-            protected void convert(BaseViewHolder helper, final DynamicData.DynamicList item) {
+            protected void convert(final BaseViewHolder helper, final DynamicData.DynamicList item) {
                 CircleImageView iv_head = helper.getView(R.id.iv_head);
                 final ImageView iv_zan = helper.getView(R.id.iv_zan);
+                final ImageView iv_dialog = helper.getView(R.id.iv_dialog);
                 final TextView tv_num = helper.getView(R.id.tv_num);
                 final TextView tv_content = helper.getView(R.id.tv_content);
                 final TextView tv_more = helper.getView(R.id.tv_more);
+                final ImageView iv_image_gif = helper.getView(R.id.iv_image_gif);
+                final TextView tv_music_time = helper.getView(R.id.tv_music_time);
+                RecyclerView item_recycleView = helper.getView(R.id.item_recycleView);
+                final LinearLayout ll_voice = helper.getView(R.id.ll_voice);
+//                final TimeCountUtil2 mTimeCount = new TimeCountUtil2(Integer.parseInt(item.getAudio().isEmpty()?"0":item.getAudio_time()) + 500, 1000, tv_music_time);
+
+                if (item.getAudio() == null || item.getAudio().isEmpty()) {
+                    ll_voice.setVisibility(View.GONE);
+                    item_recycleView.setVisibility(View.VISIBLE);
+                } else {
+                    ll_voice.setVisibility(View.VISIBLE);
+                    if (item.getAudio_time() != null && !item.getAudio_time().isEmpty()) {
+                        if (mediaPlayer!=null&&helper.getAdapterPosition()==ITEM_POSITION){
+                            int time = mediaPlayer.getDuration() - mediaPlayer.getCurrentPosition();
+                            if (time>0&&time<mediaPlayer.getDuration()){
+                                tv_music_time.setText((time + 500) / 1000 + "s");
+                            }else {
+                                tv_music_time.setText((Integer.parseInt(item.getAudio_time()) + 500) / 1000 + "s");
+                            }
+                        }else {
+                            tv_music_time.setText((Integer.parseInt(item.getAudio_time()) + 500) / 1000 + "s");
+                        }
+                    }
+                    item_recycleView.setVisibility(View.GONE);
+                    if (helper.getAdapterPosition() == ITEM_POSITION) {
+                        if (mediaPlayer != null && mediaPlayer.isPlaying()) {
+                            Glide.with(getActivity()).load(R.mipmap.bofangdh).into(iv_image_gif);
+                        } else {
+                            Glide.with(getActivity()).load(R.mipmap.yystop).into(iv_image_gif);
+
+                        }
+                    } else {
+                        Glide.with(getActivity()).load(R.mipmap.yystop).into(iv_image_gif);
+                    }
+                }
+
+                iv_dialog.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        //弹窗选择关注，屏蔽，举报
+                        DialogUtil.showDialogDynamic(getActivity(), new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+
+                            }
+                        }, new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+
+                            }
+                        }, new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+
+                            }
+                        }, "0").show();
+                    }
+                });
+//                Glide.with(getActivity()).load(R.mipmap.yystop).into(iv_image_gif);
+                ll_voice.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (ITEM_POSITION == helper.getAdapterPosition()) {
+                            if (mediaPlayer != null && mediaPlayer.isPlaying()) {
+                                if (mTimeCount != null) {
+                                    mTimeCount.cancel();
+                                    mTimeCount = null;
+                                }
+                                mediaPlayer.pause();
+                            } else {
+                                if (mediaPlayer!=null){
+                                    if (mTimeCount != null) {
+                                        mTimeCount.cancel();
+                                        mTimeCount = null;
+                                    }
+                                    int time = mediaPlayer.getDuration() - mediaPlayer.getCurrentPosition();
+                                    if (time>0){
+                                        mTimeCount = new TimeCountUtil2(time+500, 1000, tv_music_time);
+                                    }else {
+                                        play(iv_image_gif, tv_music_time, item.getAudio());
+                                        mTimeCount = new TimeCountUtil2(Integer.parseInt(item.getAudio().isEmpty() ? "0" : item.getAudio_time()) + 500, 1000, tv_music_time);
+                                    }
+                                    mediaPlayer.start();
+                                    mTimeCount.start();
+                                }else {
+                                    play(iv_image_gif, tv_music_time, item.getAudio());
+                                    if (mTimeCount != null) {
+                                        mTimeCount.cancel();
+                                        mTimeCount = null;
+                                    }
+                                    mTimeCount = new TimeCountUtil2(Integer.parseInt(item.getAudio().isEmpty() ? "0" : item.getAudio_time()) + 500, 1000, tv_music_time);
+                                    mTimeCount.start();
+                                    mediaPlayer.start();
+                                }
+                            }
+                        } else {
+                            play(iv_image_gif, tv_music_time, item.getAudio());
+                            if (mTimeCount != null) {
+                                mTimeCount.cancel();
+                                mTimeCount = null;
+                            }
+                            mTimeCount = new TimeCountUtil2(Integer.parseInt(item.getAudio().isEmpty() ? "0" : item.getAudio_time()) + 500, 1000, tv_music_time);
+                            mTimeCount.start();
+                            mediaPlayer.start();
+                        }
+                        ITEM_POSITION = helper.getAdapterPosition();
+                        notifyDataSetChanged();
+
+                    }
+                });
                 ImageView iv_sex = helper.getView(R.id.iv_sex);
                 helper.setText(R.id.tv_nickName, item.getNickname());
                 helper.setText(R.id.tv_time, item.getCreated_at());
@@ -191,7 +319,7 @@ public class DynamicFragment extends BaseFragment implements RequestFinish {
                     }
                 });
 
-                RecyclerView item_recycleView = helper.getView(R.id.item_recycleView);
+
                 item_recycleView.setLayoutManager(new GridLayoutManager(getActivity(), 3));
                 item_recycleView.setHasFixedSize(true);
                 final List<String> imageList = item.getImage();
@@ -268,6 +396,37 @@ public class DynamicFragment extends BaseFragment implements RequestFinish {
         });
     }
 
+    boolean isPlay = false;
+
+    private void play(final ImageView imageView, TextView time, String audioUrl) {
+        try {
+            if (mediaPlayer != null) {
+                mediaPlayer.reset();
+            } else {
+                mediaPlayer = new MediaPlayer();
+            }
+            // 设置音乐播放源
+            mediaPlayer.setDataSource(audioUrl);
+            // 准备
+            mediaPlayer.prepare();
+            mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                @Override
+                public void onCompletion(MediaPlayer media) {
+                    mediaPlayer.stop();
+//                    mTimeCount.cancel();
+                    mTimeCount.onFinish();
+                    Glide.with(getActivity()).load(R.mipmap.yystop).into(imageView);
+//                    isPlay = false;
+                }
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            time.setVisibility(View.VISIBLE);
+            time.setText((mediaPlayer.getDuration() + 500) / 1000 + "s");
+        }
+    }
+
     @Override
     public void onSuccess(BaseModel result, String params) {
         if (refreshLayout != null && refreshLayout.isRefreshing())
@@ -293,10 +452,22 @@ public class DynamicFragment extends BaseFragment implements RequestFinish {
         mAdapter.loadMoreComplete();
     }
 
-    @OnClick({R.id.tv_release})
+    @OnClick({R.id.tv_release, R.id.iv_next, R.id.iv_pause, R.id.iv_close})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.tv_release:
+                //发布
+                jump(PublishActivity.class);
+                break;
+            case R.id.iv_next:
+                //发布
+                jump(PublishActivity.class);
+                break;
+            case R.id.iv_pause:
+                //发布
+                jump(PublishActivity.class);
+                break;
+            case R.id.iv_close:
                 //发布
                 jump(PublishActivity.class);
                 break;
