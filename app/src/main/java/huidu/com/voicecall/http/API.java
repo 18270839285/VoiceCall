@@ -19,7 +19,8 @@ public interface API {
     /**
      * 测试地址
      */
-    String BASE_URL = "http://voice.51qdd.net/api/";
+//    String BASE_URL = "http://voice.51qdd.net/api/";
+    String BASE_URL = "http://voicetest.baggen.cn/api/";
 //    String TOKEN_TEST = "L2uk5tVN4CUQQb0P6n650BRTVLc4q0tV7K050Bdd0u0N7TKP";
 //    String TOKEN_TEST = "UfCQ19B0Y9XQX1Q0m8nDxbCyx1w0XnY000BY1cy013eCC3tq";
 //    String USERID = "1";
@@ -110,6 +111,9 @@ public interface API {
     String DYNAMIC_LIKE = "dynamic/like";//动态点赞/取消接口
     String DYNAMIC_DEL= "dynamic/del";//动态删除
     String DYNAMIC_MY_LIKE= "dynamic/my/like";//我的赞接口
+
+    String VIOLATION_TYPE = "violation/type";//违规类型接口
+    String INFORM_SEND = "inform/send";//违规举报
 
     /**
      * Returns 参数返回列表

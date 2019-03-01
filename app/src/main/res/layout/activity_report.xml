@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical"
+    tools:context=".dynamic.ReportActivity">
+
+    <include layout="@layout/title_common" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp0.5"
+        android:background="@color/line2" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/ll_report_type"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp50"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dp15"
+                    android:text="举报类型"
+                    android:textColor="@color/textColor"
+                    android:textSize="@dimen/sp16" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dp3"
+                    android:layout_weight="1"
+                    android:text="必选"
+                    android:textColor="@color/textSelectColor"
+                    android:textSize="@dimen/sp12" />
+
+                <ImageView
+                    android:id="@+id/iv_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="@dimen/dp15"
+                    android:src="@mipmap/jb_zk" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp1"
+                android:background="@color/line" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recycleView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"></android.support.v7.widget.RecyclerView>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp10"
+                android:background="#f1f1f1" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/dp50"
+                android:layout_marginLeft="@dimen/dp15"
+                android:gravity="center"
+                android:text="补充说明"
+                android:textColor="@color/textColor" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp1"
+                android:background="@color/line" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="150dp">
+
+                <EditText
+                    android:id="@+id/et_reason"
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    android:background="@null"
+                    android:gravity="start"
+                    android:hint="请输入举报原因"
+                    android:maxLength="100"
+                    android:padding="@dimen/dp15"
+                    android:textColorHint="@color/textColorHint"
+                    android:textSize="@dimen/sp14" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentRight="true"
+                    android:orientation="horizontal"
+                    android:padding="@dimen/dp15">
+
+                    <TextView
+                        android:id="@+id/tv_text_num"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0"
+                        android:textColor="@color/textColor2"
+                        android:textSize="@dimen/sp12" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="/100"
+                        android:textColor="@color/textColor2"
+                        android:textSize="@dimen/sp12" />
+                </LinearLayout>
+            </RelativeLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp10"
+                android:background="#f1f1f1" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/dp50"
+                android:layout_marginLeft="@dimen/dp15"
+                android:gravity="center"
+                android:text="添加图片"
+                android:textColor="@color/textColor" />
+
+            <android.support.v7.widget.RecyclerView
+                android:layout_marginLeft="@dimen/dp10"
+                android:id="@+id/recycleView_photo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"></android.support.v7.widget.RecyclerView>
+
+            <RelativeLayout
+                android:layout_marginTop="@dimen/dp10"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:background="#f1f1f1"
+                android:paddingBottom="@dimen/dp30"
+                android:paddingLeft="@dimen/dp15"
+                android:paddingRight="@dimen/dp15"
+                android:paddingTop="@dimen/dp15">
+
+                <TextView
+                    android:id="@+id/tv_xing"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="*"
+                    android:textColor="@color/textSelectColor"
+                    android:textSize="@dimen/sp15" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toEndOf="@+id/tv_xing"
+                    android:text="补充原因和添加图片，至少上传其中一项"
+                    android:textColor="@color/textColor2"
+                    android:textSize="@dimen/sp12" />
+
+                <TextView
+                    android:id="@+id/tv_commit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginLeft="@dimen/dp25"
+                    android:layout_marginRight="@dimen/dp25"
+                    android:layout_marginTop="@dimen/dp100"
+                    android:layout_marginBottom="@dimen/dp30"
+                    android:background="@mipmap/zc_button"
+                    android:gravity="center"
+                    android:text="提交"
+                    android:textColor="@color/textSelectColor"
+                    android:textSize="@dimen/sp15" />
+            </RelativeLayout>
+        </LinearLayout>
+    </ScrollView>
+
+
+</LinearLayout>

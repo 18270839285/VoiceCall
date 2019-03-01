@@ -34,6 +34,15 @@ public class DynamicData implements Serializable {
         String sex;
         String audio;
         String audio_time;
+        String is_attention;
+
+        public String getIs_attention() {
+            return is_attention;
+        }
+
+        public void setIs_attention(String is_attention) {
+            this.is_attention = is_attention;
+        }
 
         public String getAudio_time() {
             return audio_time;

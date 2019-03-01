@@ -26,6 +26,14 @@
                 android:layout_marginTop="30dp"
                 android:padding="@dimen/dp15"
                 android:src="@mipmap/bjzl_fh" />
+            <ImageView
+                android:id="@+id/iv_more2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:layout_alignParentRight="true"
+                android:padding="@dimen/dp15"
+                android:src="@mipmap/more2" />
         </RelativeLayout>
 
         <LinearLayout

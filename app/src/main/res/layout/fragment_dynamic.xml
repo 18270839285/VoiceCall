@@ -49,20 +49,23 @@
     </android.support.v4.widget.SwipeRefreshLayout>
 
     <LinearLayout
-        android:id="@+id/ll_voice"
+        android:id="@+id/ll_voice_show"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp50"
         android:layout_below="@+id/rl_title"
         android:background="#EAEDF0"
         android:gravity="center_vertical"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:visibility="gone">
 
         <TextView
             android:id="@+id/tv_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp15"
-            android:text="明明白白" />
+            android:text=""
+            android:textColor="@color/textColor"
+            android:textSize="@dimen/sp16" />
 
         <ImageView
             android:id="@+id/iv_sex"

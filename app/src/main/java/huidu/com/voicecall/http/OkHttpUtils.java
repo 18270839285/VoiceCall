@@ -23,6 +23,7 @@ import huidu.com.voicecall.bean.UserAttention;
 import huidu.com.voicecall.bean.UserFans;
 import huidu.com.voicecall.bean.UserInfo;
 import huidu.com.voicecall.bean.UserMyAccount2;
+import huidu.com.voicecall.bean.ViolationType;
 import huidu.com.voicecall.bean.WithdrawalLog;
 
 /**
@@ -649,6 +650,34 @@ public class OkHttpUtils {
         Map<String, String> data = new HashMap<String, String>();
         data.put("token", token);
         okManager.postRequest(config, API.BASE_URL + API.DYNAMIC_MY_LIKE, data, protocol);
+    }
+    /**
+     * 违规类型接口
+     */
+    public void violation_type(String token, RequestFinish protocol) {
+        RequestConfig config = new RequestConfig();
+        config.setElement(ViolationType.class);
+        config.setRequestCode(API.VIOLATION_TYPE);
+        Map<String, String> data = new HashMap<String, String>();
+        data.put("token", token);
+        okManager.postRequest(config, API.BASE_URL + API.VIOLATION_TYPE, data, protocol);
+    }
+    /**
+     * 违规举报
+     */
+    public void inform_send(String token,String img,String user_id,String violation_id,String content, RequestFinish protocol) {
+        RequestConfig config = new RequestConfig();
+        config.setCls(Object.class);
+        config.setRequestCode(API.INFORM_SEND);
+        Map<String, String> data = new HashMap<String, String>();
+        data.put("token", token);
+        if (!img.isEmpty())
+            data.put("img", img);
+        data.put("user_id", user_id);
+        data.put("violation_id", violation_id);
+        if (!content.isEmpty())
+            data.put("content", content);
+        okManager.postRequest(config, API.BASE_URL + API.INFORM_SEND, data, protocol);
     }
 
 

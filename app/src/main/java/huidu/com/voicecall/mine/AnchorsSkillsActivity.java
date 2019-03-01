@@ -33,6 +33,7 @@ import huidu.com.voicecall.base.BaseActivity;
 import huidu.com.voicecall.bean.AnchorInfo;
 import huidu.com.voicecall.bean.AnchorPrice;
 import huidu.com.voicecall.bean.SpareBean;
+import huidu.com.voicecall.dynamic.ReportActivity;
 import huidu.com.voicecall.http.API;
 import huidu.com.voicecall.http.BaseModel;
 import huidu.com.voicecall.http.OkHttpUtils;
@@ -85,6 +86,9 @@ public class AnchorsSkillsActivity extends BaseActivity implements RequestFinish
     private boolean isRobot = false;
     private boolean isAttention = false;
 
+    AnchorPrice anchorPrice;
+    AnchorInfo anchorInfo;
+
     @Override
     protected int getLayoutId() {
         return R.layout.activity_anchors_skills;
@@ -110,7 +114,7 @@ public class AnchorsSkillsActivity extends BaseActivity implements RequestFinish
         OkHttpUtils.getInstance().anchor_price(SPUtils.getValue("token"), anchor_id, anchor_type_id, isRobot, this);
     }
 
-    @OnClick({R.id.iv_back, R.id.iv_audio, R.id.ll_attention, R.id.ll_chat})
+    @OnClick({R.id.iv_back, R.id.iv_audio, R.id.ll_attention, R.id.ll_chat,R.id.iv_more2})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.iv_back:
@@ -142,11 +146,39 @@ public class AnchorsSkillsActivity extends BaseActivity implements RequestFinish
                 //约聊
                 goChat(anchorPrice.getInfo());
                 break;
+            case R.id.iv_more2:
+                //弹窗选择关注，屏蔽，举报
+                DialogUtil.showDialogDynamic(this, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        OkHttpUtils.getInstance().user_attention(SPUtils.getValue("token"), anchorInfo.getAnchor_id(), "", new RequestFinish() {
+                            @Override
+                            public void onSuccess(BaseModel result, String params) {
+                                ToastUtil.toastShow("关注成功");
+                                isAttention = !isAttention;
+                                setAttention();
+                            }
+
+                            @Override
+                            public void onError(String result) {
+                                ToastUtil.toastShow(result);
+                            }
+                        });
+                    }
+                }, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                    }
+                }, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        startActivity(new Intent(AnchorsSkillsActivity.this,ReportActivity.class).putExtra("userId",anchorInfo.getAnchor_id()));
+                    }
+                }, isAttention?"1":"2").show();
+                break;
         }
     }
-
-    AnchorPrice anchorPrice;
-    AnchorInfo anchorInfo;
 
     @Override
     public void onSuccess(BaseModel result, String params) {
