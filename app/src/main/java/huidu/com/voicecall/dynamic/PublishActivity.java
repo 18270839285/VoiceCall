@@ -126,13 +126,15 @@ public class PublishActivity extends BaseActivity implements RequestFinish, Take
     private MediaPlayer mediaPlayer;//确定后的播放器
     private MediaPlayer mediaPlayer2;//录制时的播放器
 
-    private TimeCountUtil2 mTimeCount;
-    private TimeCountUtil3 mTimeCount3;
+    private TimeCountUtil2 mTimeCount;//确认后播放计时器
+    private TimeCountUtil2 mTimeCount2;//试听计时器
+    private TimeCountUtil3 mTimeCount3;//录音计时器
     boolean isPlay = false;
 
     AnimationDrawable animationDrawable;
 
-    String audio_time = "";
+    String audio_time = "";//实际音乐时长和上传时间
+    String record_time = "0s";//录音时间+ "s"
 
     @Override
     protected int getLayoutId() {
@@ -156,6 +158,10 @@ public class PublishActivity extends BaseActivity implements RequestFinish, Take
                     ll_record.setVisibility(View.GONE);
                     iv_add_voice.setImageResource(R.mipmap.fdt_yy);
                     touch_flag = 0;
+                    if (!AudioUrl.isEmpty()){
+                        ll_voice.setVisibility(View.VISIBLE);
+                        recycleView.setVisibility(View.GONE);
+                    }
                 }
                 return false;
             }
@@ -237,6 +243,17 @@ public class PublishActivity extends BaseActivity implements RequestFinish, Take
                 break;
             case R.id.iv_add_voice:
                 //添加音频
+                Glide.with(this).load(R.mipmap.yystop).into(iv_image_gif);
+                if (mTimeCount != null) {
+                    mTimeCount.cancel();
+                    mTimeCount.onFinish();
+                }
+                if (mediaPlayer!=null&&mediaPlayer.isPlaying()){
+                    mediaPlayer.stop();
+                }
+
+                ll_voice.setVisibility(View.GONE);
+                recycleView.setVisibility(View.VISIBLE);
                 ll_record.setVisibility(View.VISIBLE);
                 iv_add_voice.setImageResource(R.mipmap.yy_pre);
                 if (imageList.size() >= 1) {
@@ -278,11 +295,10 @@ public class PublishActivity extends BaseActivity implements RequestFinish, Take
                             iv_icon.setImageResource(R.drawable.animlis_record);
                             animationDrawable = (AnimationDrawable) iv_icon.getDrawable();
                             animationDrawable.start();
-                            mTimeCount3 = new TimeCountUtil3(1800 * 1000, 1000, tv_time_task, new TimeCountUtil3.OnFinish() {
+                            mTimeCount3 = new TimeCountUtil3(18 * 1000, 1000, tv_time_task, new TimeCountUtil3.OnFinish() {
                                 @Override
                                 public void finish() {
-                                    recordingFinish();
-                                    rl_recording.setVisibility(View.GONE);
+                                    onRecord(false);
                                     animationDrawable.stop();
                                     mTimeCount3 = null;
                                 }
@@ -296,11 +312,11 @@ public class PublishActivity extends BaseActivity implements RequestFinish, Take
                     case AUDIO_STATE2:
                         animationDrawable.stop();
                         rl_recording.setVisibility(View.GONE);
+                        onRecord(false);
                         mTimeCount3.cancel();
                         mTimeCount3.onFinish();
                         mTimeCount3 = null;
 //                        ToastUtil.toastShow("暂停录音");
-                        onRecord(false);
                         break;
                     case AUDIO_STATE3:
 //                        ToastUtil.toastShow("播放录音");
@@ -312,7 +328,9 @@ public class PublishActivity extends BaseActivity implements RequestFinish, Take
                         iv_start_record.setImageResource(R.mipmap.zt);
                         audioState = AUDIO_STATE3;
                         if (mediaPlayer2.isPlaying()) {
-                            mediaPlayer2.pause();
+                            tv_record_state.setText("试听");
+                            finishTimeCount2();
+                            mediaPlayer2.stop();
                         }
                         break;
                 }
@@ -327,13 +345,18 @@ public class PublishActivity extends BaseActivity implements RequestFinish, Take
                 //确认获取语音后，照相功能禁止使用
                 iv_add_pics.setImageResource(R.mipmap.to_nor);
                 iv_add_pics.setEnabled(false);
-
+                iv_start_record.setImageResource(R.mipmap.zt);
+                audioState = AUDIO_STATE3;
+                tv_record_state.setText("试听");
+                finishTimeCount2();
+                if (mediaPlayer2 != null&&mediaPlayer2.isPlaying()) {
+                    mediaPlayer2.stop();
+                }
                 ll_record.setVisibility(View.GONE);
                 iv_add_voice.setImageResource(R.mipmap.fdt_yy);
                 recycleView.setVisibility(View.GONE);
                 ll_voice.setVisibility(View.VISIBLE);
-                if (mediaPlayer2 != null && mediaPlayer2.isPlaying())
-                    mediaPlayer2.pause();
+
                 isPlay = false;
                 play();
                 break;
@@ -362,7 +385,7 @@ public class PublishActivity extends BaseActivity implements RequestFinish, Take
                 } else {
                     Glide.with(this).load(R.mipmap.bofangdh).into(iv_image_gif);
                     play();
-                    mTimeCount = new TimeCountUtil2(mediaPlayer.getDuration() + 500, 1000, tv_music_time);
+                    mTimeCount = new TimeCountUtil2(mediaPlayer.getDuration(), 1000, tv_music_time);
                     mTimeCount.start();
                     mediaPlayer.start();
                 }
@@ -374,11 +397,17 @@ public class PublishActivity extends BaseActivity implements RequestFinish, Take
     //撤回
     private void withdraw() {
         tv_record_state.setText("开始录音");
+        if (mediaPlayer2!=null&&mediaPlayer2.isPlaying()){
+            mediaPlayer2.stop();
+        }
+        finishTimeCount2();
         iv_withdraw.setVisibility(View.GONE);
         iv_sure.setVisibility(View.GONE);
         tv_record_time.setVisibility(View.GONE);
+        iv_start_record.setImageResource(R.mipmap.zt);
         AudioUrl = "";
         audioState = AUDIO_STATE1;
+        record_time = "0s";
     }
 
     /**
@@ -386,10 +415,13 @@ public class PublishActivity extends BaseActivity implements RequestFinish, Take
      */
     private void recordingFinish() {
         tv_record_state.setText("试听");
+        rl_recording.setVisibility(View.GONE);
         iv_withdraw.setVisibility(View.VISIBLE);
         iv_sure.setVisibility(View.VISIBLE);
         audioState = AUDIO_STATE3;
         iv_start_record.setImageResource(R.mipmap.zt);
+        tv_record_time.setVisibility(View.VISIBLE);
+        tv_record_time.setText(record_time);
     }
 
     private void play() {
@@ -411,13 +443,15 @@ public class PublishActivity extends BaseActivity implements RequestFinish, Take
                     isPlay = false;
                 }
             });
+
             tv_record_time.setVisibility(View.VISIBLE);
             audio_time = mediaPlayer.getDuration()+"";
-            tv_record_time.setText((mediaPlayer.getDuration() + 500) / 1000 + "s");
+            tv_record_time.setText((mediaPlayer.getDuration()) / 1000 + "s");
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+            tv_music_time.setText((mediaPlayer.getDuration()) / 1000 + "s");
         }
-        tv_music_time.setText((mediaPlayer.getDuration() + 500) / 1000 + "s");
     }
 
     //时间转换类，将得到的音乐时间毫秒转换为时分秒格式
@@ -439,9 +473,6 @@ public class PublishActivity extends BaseActivity implements RequestFinish, Take
             AudioUrl = "";
             tv_record_state.setText("停止录音");
             audioState = AUDIO_STATE2;
-//            tv_record_state.setImageResource(R.drawable.animlis_recording);
-//            animation = (AnimationDrawable) tv_record_state.getDrawable();
-//            animation.start();
             File folder = new File(Environment.getExternalStorageDirectory() + "/SoundRecorder");
             if (!folder.exists()) {
                 folder.mkdir();
@@ -450,7 +481,14 @@ public class PublishActivity extends BaseActivity implements RequestFinish, Take
         } else {
             stopService(intent);
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-            recordingFinish();
+            record_time = tv_time_task.getText().toString();
+            String time = tv_time_task.getText().toString().replace("s","");
+            if (Integer.parseInt(time)>=5){
+                recordingFinish();
+            }else {
+                ToastUtil.toastShow("录音时长不能少于5s");
+                withdraw();
+            }
         }
     }
 
@@ -474,6 +512,7 @@ public class PublishActivity extends BaseActivity implements RequestFinish, Take
                 public void onCompletion(MediaPlayer media) {
                     audioState = AUDIO_STATE3;
                     mediaPlayer2.stop();
+                    finishTimeCount2();
                     iv_start_record.setImageResource(R.mipmap.zt);
                 }
             });
@@ -482,7 +521,13 @@ public class PublishActivity extends BaseActivity implements RequestFinish, Take
         } finally {
             mediaPlayer2.start();
             tv_record_time.setVisibility(View.VISIBLE);
-            tv_record_time.setText(formatTime(mediaPlayer2.getDuration()));
+            tv_record_time.setText(record_time);
+            String time = record_time.replace("s","");
+//            tv_record_time.setText(mediaPlayer2.getDuration()/1000+"s");
+            tv_record_state.setText("试听中");
+            mTimeCount2 = new TimeCountUtil2(Integer.parseInt(time)*1000+900,1000,tv_record_time);
+            mTimeCount2.start();
+//            tv_record_time.setText(formatTime(mediaPlayer2.getDuration()));
         }
     }
 
@@ -579,6 +624,13 @@ public class PublishActivity extends BaseActivity implements RequestFinish, Take
         ButterKnife.bind(this);
     }
 
+    private void finishTimeCount2(){
+        if (mTimeCount2!=null){
+            mTimeCount2.cancel();
+            mTimeCount2.onFinish();
+            mTimeCount2 = null;
+        }
+    }
     @Override
     protected void onDestroy() {
         super.onDestroy();

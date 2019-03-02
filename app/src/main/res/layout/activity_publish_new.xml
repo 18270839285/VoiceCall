@@ -170,7 +170,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="@dimen/dp5"
-                android:text="11s"
+                android:text="0s"
                 android:visibility="gone" />
 
         </LinearLayout>

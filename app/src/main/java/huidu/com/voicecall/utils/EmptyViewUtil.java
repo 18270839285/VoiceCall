@@ -53,6 +53,10 @@ public class EmptyViewUtil {
                 Glide.with(context).load(R.mipmap.wdgz).into(iv_empty);
                 tv_msg.setText("还没有关注别人哦~");
                 break;
+            case 5://动态
+                Glide.with(context).load(R.mipmap.zwdt).into(iv_empty);
+                tv_msg.setText("这里什么也没有呢~");
+                break;
         }
         return inflate;
     }

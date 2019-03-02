@@ -1,6 +1,7 @@
 package huidu.com.voicecall.dynamic;
 
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -14,18 +15,21 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import butterknife.Unbinder;
 import de.hdodenhof.circleimageview.CircleImageView;
 import huidu.com.voicecall.R;
@@ -39,6 +43,7 @@ import huidu.com.voicecall.utils.CustomLLManager;
 import huidu.com.voicecall.utils.EmptyViewUtil;
 import huidu.com.voicecall.utils.Loading;
 import huidu.com.voicecall.utils.SPUtils;
+import huidu.com.voicecall.utils.TimeCountUtil4;
 import huidu.com.voicecall.utils.ToastUtil;
 
 /**
@@ -52,6 +57,15 @@ public class MyZanFragment extends BaseFragment implements RequestFinish {
     @BindView(R.id.refreshLayout)
     SwipeRefreshLayout refreshLayout;
 
+    @BindView(R.id.ll_voice_show)
+    LinearLayout ll_voice_show;
+    @BindView(R.id.tv_name)
+    TextView tv_name;
+    @BindView(R.id.iv_sex)
+    ImageView iv_sex;
+    @BindView(R.id.iv_pause)
+    ImageView iv_pause;
+
     Unbinder unbinder;
     BaseQuickAdapter mAdapter;
     List<DynamicData.DynamicList> mList = new ArrayList<>();
@@ -59,6 +73,15 @@ public class MyZanFragment extends BaseFragment implements RequestFinish {
 //    int mPage = 1;
 
     CustomLLManager llManager;
+
+    private MediaPlayer mediaPlayer;
+    private TimeCountUtil4 mTimeCount;
+
+    private int ITEM_POSITION = -1;
+    private int PLAY_POSITION = -1;
+
+    boolean isPause = false;
+    boolean isPlay = false;
     @Override
     protected int getLayoutId() {
         return R.layout.fragment_my_dynamic;
@@ -80,6 +103,7 @@ public class MyZanFragment extends BaseFragment implements RequestFinish {
     private void refresh(){
         llManager.setScrollEnabled(false);
 //        mPage = 1;
+        stopPlay();
         mList.clear();
         OkHttpUtils.getInstance().dynamic_my_like(SPUtils.getValue("token"), new RequestFinish() {
             @Override
@@ -113,10 +137,58 @@ public class MyZanFragment extends BaseFragment implements RequestFinish {
                 final TextView tv_content = helper.getView(R.id.tv_content);
                 final TextView tv_more = helper.getView(R.id.tv_more);
                 ImageView iv_sex = helper.getView(R.id.iv_sex);
+                final LinearLayout ll_voice = helper.getView(R.id.ll_voice);
+                final ImageView iv_image_gif = helper.getView(R.id.iv_image_gif);
+                final TextView tv_music_time = helper.getView(R.id.tv_music_time);
+                RecyclerView item_recycleView = helper.getView(R.id.item_recycleView);
                 helper.setText(R.id.tv_nickName, item.getNickname());
                 helper.setText(R.id.tv_time, item.getCreated_at());
+                final ImageView iv_dialog = helper.getView(R.id.iv_dialog);
+                iv_dialog.setVisibility(View.GONE);
                 tv_content.setText(item.getContent());
                 tv_num.setText(item.getLike_count()+"");
+
+                if (item.getAudio() == null || item.getAudio().isEmpty()) {
+                    ll_voice.setVisibility(View.GONE);
+                    item_recycleView.setVisibility(View.VISIBLE);
+                } else {
+                    ll_voice.setVisibility(View.VISIBLE);
+                    if (item.getAudio_time() != null && !item.getAudio_time().isEmpty()) {
+                        tv_music_time.setText((Integer.parseInt(item.getAudio_time()) ) / 1000 + "s");
+                    }
+                    item_recycleView.setVisibility(View.GONE);
+                    if (helper.getAdapterPosition() == ITEM_POSITION) {
+                        if (mediaPlayer != null && mediaPlayer.isPlaying()) {
+                            Glide.with(getActivity()).load(R.mipmap.bofangdh).into(iv_image_gif);
+                            if (isPause){
+                                isPause = false;
+                                mTimeCount = new TimeCountUtil4(Integer.parseInt(item.getAudio_time()) , 1000, tv_music_time);
+                                mTimeCount.start();
+                            }
+                        } else {
+                            Glide.with(getActivity()).load(R.mipmap.yystop).into(iv_image_gif);
+
+                        }
+                    } else {
+                        Glide.with(getActivity()).load(R.mipmap.yystop).into(iv_image_gif);
+                    }
+
+                    if (isPlay&&PLAY_POSITION == helper.getAdapterPosition()){
+                        isPlay = false;
+                        Glide.with(getActivity()).load(R.mipmap.bofangdh).into(iv_image_gif);
+                        mTimeCount = new TimeCountUtil4(Integer.parseInt(item.getAudio_time()) , 1000, tv_music_time);
+                        mTimeCount.start();
+                    }else if(PLAY_POSITION != helper.getAdapterPosition()){
+                        Glide.with(getActivity()).load(R.mipmap.yystop).into(iv_image_gif);
+                        tv_music_time.setText((Integer.parseInt(item.getAudio_time()) ) / 1000 + "s");
+                    }
+                    if (isStop&&PLAY_POSITION == helper.getAdapterPosition()){
+                        isStop = false;
+                        Glide.with(getActivity()).load(R.mipmap.yystop).into(iv_image_gif);
+                        tv_music_time.setText((Integer.parseInt(item.getAudio_time())) / 1000 + "s");
+                    }
+                }
+
                 if (item.getIs_my().equals("1")){
                     iv_zan.setImageResource(R.mipmap.zan_pre);
                 }else {
@@ -186,8 +258,62 @@ public class MyZanFragment extends BaseFragment implements RequestFinish {
                         });
                     }
                 });
+                ll_voice.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (ITEM_POSITION == helper.getAdapterPosition()) {
+                            if (mediaPlayer != null && mediaPlayer.isPlaying()) {
+                                if (mTimeCount != null) {
+                                    mTimeCount.cancel();
+                                    mTimeCount = null;
+                                }
+                                iv_pause.setImageResource(R.mipmap.dt_zt);
+                                mediaPlayer.pause();
+                            } else {
+                                if (mediaPlayer != null) {
+                                    if (mTimeCount != null) {
+                                        mTimeCount.cancel();
+                                        mTimeCount = null;
+                                    }
+                                    showHead(helper.getAdapterPosition());
+                                    play(item.getAudio());
+                                    mTimeCount = new TimeCountUtil4(Integer.parseInt(item.getAudio().isEmpty() ? "0" : item.getAudio_time()) , 1000, tv_music_time);
+//                                    }
+                                    iv_pause.setImageResource(R.mipmap.dt_bf);
+                                    mediaPlayer.start();
+                                    mTimeCount.start();
+                                } else {
+                                    showHead(helper.getAdapterPosition());
+                                    play(item.getAudio());
+                                    if (mTimeCount != null) {
+                                        mTimeCount.cancel();
+                                        mTimeCount = null;
+                                    }
+                                    mTimeCount = new TimeCountUtil4(Integer.parseInt(item.getAudio().isEmpty() ? "0" : item.getAudio_time()) , 1000, tv_music_time);
+                                    iv_pause.setImageResource(R.mipmap.dt_bf);
+                                    mTimeCount.start();
+                                    mediaPlayer.start();
+                                }
+                            }
+                        } else {
+                            showHead(helper.getAdapterPosition());
+                            play(item.getAudio());
+                            if (mTimeCount != null) {
+                                mTimeCount.cancel();
+                                mTimeCount = null;
+                            }
+                            mTimeCount = new TimeCountUtil4(Integer.parseInt(item.getAudio().isEmpty() ? "0" : item.getAudio_time()) , 1000, tv_music_time);
+                            iv_pause.setImageResource(R.mipmap.dt_bf);
+                            mTimeCount.start();
+                            mediaPlayer.start();
+                        }
+                        ITEM_POSITION = helper.getAdapterPosition();
+                        PLAY_POSITION = ITEM_POSITION;
+                        notifyDataSetChanged();
 
-                RecyclerView item_recycleView = helper.getView(R.id.item_recycleView);
+                    }
+                });
+
                 item_recycleView.setLayoutManager(new GridLayoutManager(getActivity(),3));
                 item_recycleView.setHasFixedSize(true);
                 final List<String> imageList = item.getImage();
@@ -217,7 +343,7 @@ public class MyZanFragment extends BaseFragment implements RequestFinish {
                 item_recycleView.setAdapter(adapter);
             }
         };
-        mAdapter.setEmptyView(EmptyViewUtil.getEmptyView(getActivity(), 1));
+        mAdapter.setEmptyView(EmptyViewUtil.getEmptyView(getActivity(), 5));
         recycleView.setAdapter(mAdapter);
     }
 
@@ -261,6 +387,133 @@ public class MyZanFragment extends BaseFragment implements RequestFinish {
                 refresh();
                 VoiceApp.needRefresh2 = false;
             }
+        }
+    }
+
+    @OnClick({R.id.iv_next, R.id.iv_pause, R.id.iv_close})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.iv_next:
+                //下一曲
+                nextPlay();
+                break;
+            case R.id.iv_pause:
+                //暂停
+                pausePlay();
+                break;
+            case R.id.iv_close:
+                //关闭播放
+                stopPlay();
+                break;
+        }
+    }
+
+    boolean isStop = false;
+
+    /**
+     * 判断是否有下一首
+     * @param position
+     * @return
+     */
+    private int nextVoice(int position) {
+        for (int i = position + 1; i < mList.size(); i++) {
+            if (!mList.get(i).getAudio().isEmpty()) {
+                return i;
+            }
+        }
+        return PLAY_POSITION;
+    }
+
+    /**
+     * 下一首
+     */
+    private void nextPlay(){
+        PLAY_POSITION = nextVoice(ITEM_POSITION);
+        if (PLAY_POSITION!=ITEM_POSITION){
+            showHead(PLAY_POSITION);
+            isPause = true;
+            play(mList.get(PLAY_POSITION).getAudio());
+            ITEM_POSITION = PLAY_POSITION;
+            if (mTimeCount != null) {
+                mTimeCount.cancel();
+                mTimeCount = null;
+            }
+
+            mediaPlayer.start();
+            mAdapter.notifyDataSetChanged();
+        }else {
+            ToastUtil.toastShow("已经是最后一首了!");
+        }
+    }
+    /**
+     * 停止播放
+     */
+    private void pausePlay() {
+        if (mTimeCount != null) {
+            mTimeCount.cancel();
+            mTimeCount = null;
+        }
+        if(mediaPlayer!=null&&mediaPlayer.isPlaying()){
+            iv_pause.setImageResource(R.mipmap.dt_zt);
+            mediaPlayer.stop();
+        }else {
+            isPlay = true;
+            iv_pause.setImageResource(R.mipmap.dt_bf);
+            play(mList.get(ITEM_POSITION).getAudio());
+            mediaPlayer.start();
+        }
+        mAdapter.notifyDataSetChanged();
+    }
+
+    /**
+     * 停止播放所有
+     */
+    private void stopPlay() {
+        ll_voice_show.setVisibility(View.GONE);
+        if(mediaPlayer!=null){
+            mediaPlayer.reset();
+        }
+        if (mTimeCount != null) {
+            mTimeCount.cancel();
+            mTimeCount = null;
+        }
+        isStop = true;
+        mAdapter.notifyDataSetChanged();
+    }
+
+    private void play(String audioUrl) {
+        try {
+            if (mediaPlayer != null) {
+                mediaPlayer.reset();
+            } else {
+                mediaPlayer = new MediaPlayer();
+            }
+            // 设置音乐播放源
+            mediaPlayer.setDataSource(audioUrl);
+            // 准备
+            mediaPlayer.prepare();
+            mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                @Override
+                public void onCompletion(MediaPlayer media) {
+                    mediaPlayer.stop();
+                    iv_pause.setImageResource(R.mipmap.dt_zt);
+                    mAdapter.notifyDataSetChanged();
+                }
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+        }
+    }
+
+    private void showHead(int position){
+        ll_voice_show.setVisibility(View.VISIBLE);
+        tv_name.setText(mList.get(position).getNickname());
+        String sex = mList.get(position).getSex();
+        if (sex.equals("1")){
+            iv_sex.setImageResource(R.mipmap.dt_boy);
+        }else {
+            iv_sex.setImageResource(R.mipmap.girl1);
         }
     }
 }

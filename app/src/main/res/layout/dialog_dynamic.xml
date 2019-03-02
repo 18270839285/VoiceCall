@@ -29,6 +29,7 @@
             android:background="@color/line" />
 
         <TextView
+            android:visibility="gone"
             android:id="@+id/tv_shield"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -39,6 +40,7 @@
             android:textSize="17sp" />
 
         <View
+            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp1"
             android:background="@color/line" />

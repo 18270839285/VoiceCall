@@ -3,8 +3,6 @@ package huidu.com.voicecall.utils;
 import android.os.CountDownTimer;
 import android.widget.TextView;
 
-import java.text.SimpleDateFormat;
-
 /* 定义一个倒计时的内部类 */
 public class TimeCountUtil2 extends CountDownTimer {
     TextView tv;
@@ -26,4 +24,5 @@ public class TimeCountUtil2 extends CountDownTimer {
     public void onTick(long millisUntilFinished) {// 计时过程显示
         tv.setText(millisUntilFinished / 1000 + "s");
     }
+
 }

@@ -28,6 +28,7 @@ import huidu.com.voicecall.http.API;
 import huidu.com.voicecall.http.BaseModel;
 import huidu.com.voicecall.http.OkHttpUtils;
 import huidu.com.voicecall.http.RequestFinish;
+import huidu.com.voicecall.main.DynamicFragment;
 import huidu.com.voicecall.utils.EmptyViewUtil;
 import huidu.com.voicecall.utils.SPUtils;
 import huidu.com.voicecall.utils.ToastUtil;
@@ -108,6 +109,7 @@ public class MyAttentionActivity extends BaseActivity implements RequestFinish {
             case API.USER_ATTENTION_CANCEL:
                 finishLoad();
                 ToastUtil.toastShow("取消关注成功");
+                DynamicFragment.isRefresh = true;
                 OkHttpUtils.getInstance().user_attention_list(SPUtils.getValue("token"), this);
                 break;
         }

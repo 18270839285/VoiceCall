@@ -31,6 +31,7 @@ import huidu.com.voicecall.http.API;
 import huidu.com.voicecall.http.BaseModel;
 import huidu.com.voicecall.http.OkHttpUtils;
 import huidu.com.voicecall.http.RequestFinish;
+import huidu.com.voicecall.main.DynamicFragment;
 import huidu.com.voicecall.utils.EmptyViewUtil;
 import huidu.com.voicecall.utils.Loading;
 import huidu.com.voicecall.utils.SPUtils;
@@ -124,11 +125,13 @@ public class MyFansActivity extends BaseActivity implements RequestFinish {
                 break;
             case API.USER_ATTENTION:
                 finishLoad();
+                DynamicFragment.isRefresh = true;
                 ToastUtil.toastShow("关注成功");
                 OkHttpUtils.getInstance().user_fans_list(SPUtils.getValue("token"),this);
                 break;
             case API.USER_ATTENTION_CANCEL:
                 finishLoad();
+                DynamicFragment.isRefresh = true;
                 ToastUtil.toastShow("取消关注成功");
                 OkHttpUtils.getInstance().user_fans_list(SPUtils.getValue("token"),this);
                 break;
