@@ -308,6 +308,7 @@ public class MyDynamicFragment extends BaseFragment implements RequestFinish {
         finishLoad();
         DynamicData orderList = (DynamicData) result.getData();
         mList = orderList.getList();
+        mPage++;
         mAdapter.setNewData(mList);
     }
 

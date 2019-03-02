@@ -103,6 +103,7 @@ public class DynamicFragment extends BaseFragment implements RequestFinish {
             @Override
             public void onRefresh() {
                 llManager.setScrollEnabled(false);
+                stopPlay();
                 mPage = 1;
                 if (!mList.isEmpty())
                     mList.clear();
@@ -153,16 +154,17 @@ public class DynamicFragment extends BaseFragment implements RequestFinish {
                 } else {
                     ll_voice.setVisibility(View.VISIBLE);
                     if (item.getAudio_time() != null && !item.getAudio_time().isEmpty()) {
-                        if (mediaPlayer != null && helper.getAdapterPosition() == ITEM_POSITION) {
-                            int time = mediaPlayer.getDuration() - mediaPlayer.getCurrentPosition();
-                            if (time > 0 && time < mediaPlayer.getDuration()) {
-                                tv_music_time.setText((time + 500) / 1000 + "s");
-                            } else {
-                                tv_music_time.setText((Integer.parseInt(item.getAudio_time()) + 500) / 1000 + "s");
-                            }
-                        } else {
-                            tv_music_time.setText((Integer.parseInt(item.getAudio_time()) + 500) / 1000 + "s");
-                        }
+                        tv_music_time.setText((Integer.parseInt(item.getAudio_time()) + 500) / 1000 + "s");
+//                        if (mediaPlayer != null && helper.getAdapterPosition() == ITEM_POSITION) {
+//                            int time = mediaPlayer.getDuration() - mediaPlayer.getCurrentPosition();
+//                            if (time > 0 && time < mediaPlayer.getDuration()) {
+//                                tv_music_time.setText((time + 500) / 1000 + "s");
+//                            } else {
+//                                tv_music_time.setText((Integer.parseInt(item.getAudio_time()) + 500) / 1000 + "s");
+//                            }
+//                        } else {
+//                            tv_music_time.setText((Integer.parseInt(item.getAudio_time()) + 500) / 1000 + "s");
+//                        }
                     }
                     item_recycleView.setVisibility(View.GONE);
                     if (helper.getAdapterPosition() == ITEM_POSITION) {
@@ -180,20 +182,16 @@ public class DynamicFragment extends BaseFragment implements RequestFinish {
                     } else {
                         Glide.with(getActivity()).load(R.mipmap.yystop).into(iv_image_gif);
                     }
+
+
                     if (isPlay&&PLAY_POSITION == helper.getAdapterPosition()){
                         isPlay = false;
                         Glide.with(getActivity()).load(R.mipmap.bofangdh).into(iv_image_gif);
                         mTimeCount = new TimeCountUtil4(Integer.parseInt(item.getAudio_time()) + 500, 1000, tv_music_time);
                         mTimeCount.start();
-                    }else {
-                        if (mediaPlayer!=null&&mediaPlayer.isPlaying()&&PLAY_POSITION == helper.getAdapterPosition()){
-                            Glide.with(getActivity()).load(R.mipmap.bofangdh).into(iv_image_gif);
-                            mTimeCount = new TimeCountUtil4(Integer.parseInt(item.getAudio_time()) + 500, 1000, tv_music_time);
-                            mTimeCount.start();
-                        }else {
-                            Glide.with(getActivity()).load(R.mipmap.yystop).into(iv_image_gif);
-                            tv_music_time.setText((Integer.parseInt(item.getAudio_time()) + 500) / 1000 + "s");
-                        }
+                    }else if(PLAY_POSITION != helper.getAdapterPosition()){
+                        Glide.with(getActivity()).load(R.mipmap.yystop).into(iv_image_gif);
+                        tv_music_time.setText((Integer.parseInt(item.getAudio_time()) + 500) / 1000 + "s");
                     }
                     if (isStop){
                         isStop = false;
@@ -213,6 +211,7 @@ public class DynamicFragment extends BaseFragment implements RequestFinish {
                                     @Override
                                     public void onSuccess(BaseModel result, String params) {
                                         ToastUtil.toastShow("关注成功");
+                                        item.setIs_attention("1");
                                         notifyDataSetChanged();
                                     }
 
@@ -246,6 +245,7 @@ public class DynamicFragment extends BaseFragment implements RequestFinish {
                                     mTimeCount.cancel();
                                     mTimeCount = null;
                                 }
+                                iv_pause.setImageResource(R.mipmap.dt_zt);
                                 mediaPlayer.pause();
                             } else {
                                 if (mediaPlayer != null) {
@@ -253,14 +253,11 @@ public class DynamicFragment extends BaseFragment implements RequestFinish {
                                         mTimeCount.cancel();
                                         mTimeCount = null;
                                     }
-                                    int time = mediaPlayer.getDuration() - mediaPlayer.getCurrentPosition();
-                                    if (time > 0) {
-                                        mTimeCount = new TimeCountUtil4(time + 500, 1000, tv_music_time);
-                                    } else {
                                         showHead(helper.getAdapterPosition());
                                         play(iv_image_gif, item.getAudio());
                                         mTimeCount = new TimeCountUtil4(Integer.parseInt(item.getAudio().isEmpty() ? "0" : item.getAudio_time()) + 500, 1000, tv_music_time);
-                                    }
+//                                    }
+                                    iv_pause.setImageResource(R.mipmap.dt_bf);
                                     mediaPlayer.start();
                                     mTimeCount.start();
                                 } else {
@@ -271,6 +268,7 @@ public class DynamicFragment extends BaseFragment implements RequestFinish {
                                         mTimeCount = null;
                                     }
                                     mTimeCount = new TimeCountUtil4(Integer.parseInt(item.getAudio().isEmpty() ? "0" : item.getAudio_time()) + 500, 1000, tv_music_time);
+                                    iv_pause.setImageResource(R.mipmap.dt_bf);
                                     mTimeCount.start();
                                     mediaPlayer.start();
                                 }
@@ -283,10 +281,12 @@ public class DynamicFragment extends BaseFragment implements RequestFinish {
                                 mTimeCount = null;
                             }
                             mTimeCount = new TimeCountUtil4(Integer.parseInt(item.getAudio().isEmpty() ? "0" : item.getAudio_time()) + 500, 1000, tv_music_time);
+                            iv_pause.setImageResource(R.mipmap.dt_bf);
                             mTimeCount.start();
                             mediaPlayer.start();
                         }
                         ITEM_POSITION = helper.getAdapterPosition();
+                        PLAY_POSITION = ITEM_POSITION;
                         notifyDataSetChanged();
 
                     }
@@ -335,12 +335,10 @@ public class DynamicFragment extends BaseFragment implements RequestFinish {
                 iv_zan.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-//                        mLoad.show();
                         mLoading.show();
                         OkHttpUtils.getInstance().dynamic_like(SPUtils.getValue("token"), item.getDynamic_id(), new RequestFinish() {
                             @Override
                             public void onSuccess(BaseModel result, String params) {
-//                                mLoad.dismiss();
                                 finishLoad();
                                 if (item.getIs_my().equals("1")) {
                                     ToastUtil.toastShow("取消点赞成功");
@@ -358,7 +356,6 @@ public class DynamicFragment extends BaseFragment implements RequestFinish {
 
                             @Override
                             public void onError(String result) {
-//                                mLoad.dismiss();
                                 finishLoad();
                             }
                         });
@@ -393,18 +390,6 @@ public class DynamicFragment extends BaseFragment implements RequestFinish {
                 };
                 item_recycleView.setAdapter(adapter);
 
-//                if (PLAY_POSITION>0){
-//                    play(iv_image_gif, item.getAudio());
-//                    ITEM_POSITION = PLAY_POSITION;
-//                    if (mTimeCount != null) {
-//                        mTimeCount.cancel();
-//                        mTimeCount = null;
-//                    }
-//                    mTimeCount = new TimeCountUtil4(Integer.parseInt(item.getAudio().isEmpty() ? "0" : item.getAudio_time()) + 500, 1000, tv_music_time);
-//                    mTimeCount.start();
-//                    mediaPlayer.start();
-//                    PLAY_POSITION = -1;
-//                }
             }
         };
         mAdapter.setEmptyView(EmptyViewUtil.getEmptyView(getActivity(), 1));
@@ -473,15 +458,11 @@ public class DynamicFragment extends BaseFragment implements RequestFinish {
                 public void onCompletion(MediaPlayer media) {
                     mediaPlayer.stop();
                     mAdapter.notifyDataSetChanged();
-//                    Glide.with(getActivity()).load(R.mipmap.yystop).into(imageView);
-//                    isPlay = false;
                 }
             });
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
-//            time.setVisibility(View.VISIBLE);
-//            time.setText((mediaPlayer.getDuration() + 500) / 1000 + "s");
         }
     }
 
@@ -530,84 +511,90 @@ public class DynamicFragment extends BaseFragment implements RequestFinish {
                 break;
             case R.id.iv_next:
                 //下一曲
-                PLAY_POSITION = nextVoice(ITEM_POSITION);
-                ITEM_POSITION = PLAY_POSITION;
-//                if (PLAY_POSITION > 0) {
-//                    mAdapter.notifyDataSetChanged();
-//                }
-                if (PLAY_POSITION>0){
-                    showHead(PLAY_POSITION);
-                    isPause = true;
-                    play(null, mList.get(ITEM_POSITION).getAudio());
-                    if (mTimeCount != null) {
-                        mTimeCount.cancel();
-                        mTimeCount = null;
-                    }
-                    mediaPlayer.start();
-                    mAdapter.notifyDataSetChanged();
-                }else {
-                    ToastUtil.toastShow("已经是最后一首了!");
-                }
+                nextPlay();
                 break;
             case R.id.iv_pause:
                 //暂停
-//                pausePlay();
-                if (mTimeCount != null) {
-                    mTimeCount.cancel();
-                    mTimeCount = null;
-                }
-                if(mediaPlayer!=null&&mediaPlayer.isPlaying()){
-                    iv_pause.setImageResource(R.mipmap.dt_zt);
-                    mediaPlayer.stop();
-                }else {
-                    isPlay = true;
-                    iv_pause.setImageResource(R.mipmap.dt_bf);
-                    play(null, mList.get(ITEM_POSITION).getAudio());
-                    mediaPlayer.start();
-                }
-                mAdapter.notifyDataSetChanged();
+                pausePlay();
                 break;
             case R.id.iv_close:
                 //关闭播放
-//                stopPlay();
-                ll_voice_show.setVisibility(View.GONE);
-                if(mediaPlayer!=null){
-                    mediaPlayer.reset();
-                }
-                if (mTimeCount != null) {
-                    mTimeCount.cancel();
-                    mTimeCount = null;
-                }
-                isStop = true;
-                mAdapter.notifyDataSetChanged();
+                stopPlay();
                 break;
         }
     }
 
     boolean isStop = false;
 
+    /**
+     * 判断是否有下一首
+     * @param position
+     * @return
+     */
     private int nextVoice(int position) {
         for (int i = position + 1; i < mList.size(); i++) {
             if (!mList.get(i).getAudio().isEmpty()) {
                 return i;
             }
         }
-        return -1;
+        return PLAY_POSITION;
     }
 
-    private void pausePlay() {
-        if (mediaPlayer!=null&&mediaPlayer.isPlaying()){
-            mediaPlayer.pause();
-        }else {
+    /**
+     * 下一首
+     */
+    private void nextPlay(){
+        PLAY_POSITION = nextVoice(ITEM_POSITION);
+        if (PLAY_POSITION!=ITEM_POSITION){
+            showHead(PLAY_POSITION);
+            isPause = true;
+            play(null, mList.get(PLAY_POSITION).getAudio());
+            ITEM_POSITION = PLAY_POSITION;
+            if (mTimeCount != null) {
+                mTimeCount.cancel();
+                mTimeCount = null;
+            }
+
             mediaPlayer.start();
+            mAdapter.notifyDataSetChanged();
+        }else {
+            ToastUtil.toastShow("已经是最后一首了!");
         }
     }
-
-    private void stopPlay() {
-        mediaPlayer.stop();
+    /**
+     * 停止播放
+     */
+    private void pausePlay() {
+        if (mTimeCount != null) {
+            mTimeCount.cancel();
+            mTimeCount = null;
+        }
+        if(mediaPlayer!=null&&mediaPlayer.isPlaying()){
+            iv_pause.setImageResource(R.mipmap.dt_zt);
+            mediaPlayer.stop();
+        }else {
+            isPlay = true;
+            iv_pause.setImageResource(R.mipmap.dt_bf);
+            play(null, mList.get(ITEM_POSITION).getAudio());
+            mediaPlayer.start();
+        }
         mAdapter.notifyDataSetChanged();
-        ITEM_POSITION = -1;
-        PLAY_POSITION = -1;
+    }
+
+    /**
+     * 停止播放所有
+     */
+    private void stopPlay() {
+        ll_voice_show.setVisibility(View.GONE);
+        if(mediaPlayer!=null){
+            mediaPlayer.reset();
+        }
+        if (mTimeCount != null) {
+            mTimeCount.cancel();
+            mTimeCount = null;
+        }
+        isStop = true;
+        mAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -635,41 +622,4 @@ public class DynamicFragment extends BaseFragment implements RequestFinish {
         super.onDestroyView();
         unbinder.unbind();
     }
-
-//    private void palyAndShow(int position,DynamicData.DynamicList item){
-//        if (mediaPlayer != null && mediaPlayer.isPlaying()) {
-//            if (mTimeCount != null) {
-//                mTimeCount.cancel();
-//                mTimeCount = null;
-//            }
-//            mediaPlayer.pause();
-//        } else {
-//            if (mediaPlayer != null) {
-//                if (mTimeCount != null) {
-//                    mTimeCount.cancel();
-//                    mTimeCount = null;
-//                }
-//                int time = mediaPlayer.getDuration() - mediaPlayer.getCurrentPosition();
-//                if (time > 0) {
-//                    mTimeCount = new TimeCountUtil4(time + 500, 1000, tv_music_time);
-//                } else {
-//                    showHead(position);
-//                    play(null,item.getAudio());
-//                    mTimeCount = new TimeCountUtil4(Integer.parseInt(item.getAudio().isEmpty() ? "0" : item.getAudio_time()) + 500, 1000, tv_music_time);
-//                }
-//                mediaPlayer.start();
-//                mTimeCount.start();
-//            } else {
-//                showHead(position);
-//                play(null,item.getAudio());
-//                if (mTimeCount != null) {
-//                    mTimeCount.cancel();
-//                    mTimeCount = null;
-//                }
-//                mTimeCount = new TimeCountUtil4(Integer.parseInt(item.getAudio().isEmpty() ? "0" : item.getAudio_time()) + 500, 1000, tv_music_time);
-//                mTimeCount.start();
-//                mediaPlayer.start();
-//            }
-//        }
-//    }
 }
