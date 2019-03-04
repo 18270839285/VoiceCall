@@ -343,9 +343,12 @@
         <activity
             android:name=".dynamic.PhotoViewActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".dynamic.ReportActivity"
+        <activity
+            android:name=".dynamic.ReportActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden|adjustResize"></activity>
+            android:windowSoftInputMode="stateHidden|adjustResize" />
+        <activity android:name=".mine.BlackActivity"
+            android:screenOrientation="portrait"></activity>
     </application>
 
 </manifest>

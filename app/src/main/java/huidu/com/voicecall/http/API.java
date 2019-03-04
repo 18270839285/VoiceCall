@@ -114,6 +114,9 @@ public interface API {
 
     String VIOLATION_TYPE = "violation/type";//违规类型接口
     String INFORM_SEND = "inform/send";//违规举报
+    String USER_BLACK = "user/black";//拉黑/屏蔽
+    String USER_MY_BLACK = "user/my/black";//我的黑名单
+    String USER_REMOVE_BLACK = "user/remove/black";//移出黑名单
 
     /**
      * Returns 参数返回列表

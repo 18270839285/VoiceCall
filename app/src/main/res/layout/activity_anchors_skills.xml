@@ -52,7 +52,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="@dimen/dp5"
-                android:text="会飞的鱼"
+                android:text=""
                 android:textColor="@color/textColor" />
 
             <TextView
@@ -61,8 +61,9 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="@dimen/dp5"
-                android:text="线上歌手 | 22岁 女"
+                android:text=""
                 android:textColor="@color/textColor2" />
+            <!--线上歌手 | 22岁 女-->
 
             <ImageView
                 android:id="@+id/iv_audio"
@@ -84,7 +85,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/dp30"
-                    android:text="55"
+                    android:text=""
                     android:textColor="@color/colorAccent"
                     android:textSize="@dimen/sp20"
                     android:textStyle="bold" />

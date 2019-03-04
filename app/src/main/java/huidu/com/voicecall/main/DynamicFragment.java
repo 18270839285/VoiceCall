@@ -32,6 +32,7 @@ import butterknife.OnClick;
 import butterknife.Unbinder;
 import de.hdodenhof.circleimageview.CircleImageView;
 import huidu.com.voicecall.R;
+import huidu.com.voicecall.VoiceApp;
 import huidu.com.voicecall.base.BaseFragment;
 import huidu.com.voicecall.bean.DynamicData;
 import huidu.com.voicecall.dynamic.PhotoViewActivity;
@@ -99,6 +100,8 @@ public class DynamicFragment extends BaseFragment implements RequestFinish {
         mLoading.show();
         OkHttpUtils.getInstance().dynamic_index(SPUtils.getValue("token"), mPage + "", "", this);
 
+        refreshLayout.setColorSchemeColors(getResources().getColor(R.color.white));
+        refreshLayout.setProgressBackgroundColorSchemeColor(getResources().getColor(R.color.colorAccent));
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -206,8 +209,31 @@ public class DynamicFragment extends BaseFragment implements RequestFinish {
                 iv_dialog.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        if (SPUtils.getValue("user_id").equals(item.getUser_id())){
+                             DialogUtil.showMineDynamic(getActivity(), new View.OnClickListener() {
+                                 @Override
+                                 public void onClick(View v) {
+                                     mLoading.show();
+                                     OkHttpUtils.getInstance().dynamic_del(SPUtils.getValue("token"), item.getDynamic_id(), new RequestFinish() {
+                                         @Override
+                                         public void onSuccess(BaseModel result, String params) {
+                                             finishLoad();
+                                             ToastUtil.toastShow("刪除成功");
+                                             mList.remove(helper.getAdapterPosition());
+                                             notifyDataSetChanged();
+                                         }
+
+                                         @Override
+                                         public void onError(String result) {
+                                             finishLoad();
+                                             ToastUtil.toastShow(result);
+                                         }
+                                     });
+                                 }
+                             }).show();
+                        }else {
                         //弹窗选择关注，屏蔽，举报
-                        DialogUtil.showDialogDynamic(getActivity(), new View.OnClickListener() {
+                            DialogUtil.showDialogDynamic(getActivity(), new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
                                 OkHttpUtils.getInstance().user_attention(SPUtils.getValue("token"), item.getUser_id(), "", new RequestFinish() {
@@ -216,10 +242,10 @@ public class DynamicFragment extends BaseFragment implements RequestFinish {
                                         ToastUtil.toastShow("关注成功");
                                         item.setIs_attention("1");
 
-                                        for (int i = 0;i<mList.size();i++){//DynamicData.DynamicList list:mList){
-                                           if (mList.get(i).getUser_id().equals(item.getUser_id())){
-                                               mList.get(i).setIs_attention("1");
-                                           }
+                                        for (int i = 0; i < mList.size(); i++) {//DynamicData.DynamicList list:mList){
+                                            if (mList.get(i).getUser_id().equals(item.getUser_id())) {
+                                                mList.get(i).setIs_attention("1");
+                                            }
                                         }
                                         notifyDataSetChanged();
                                     }
@@ -233,14 +259,68 @@ public class DynamicFragment extends BaseFragment implements RequestFinish {
                         }, new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
+                                DialogUtil.showDialogConfirm1(getActivity(), "屏蔽后，将会在24小时内，看不到Ta的相关信息，是否继续？", "取消", new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
 
+                                    }
+                                }, "屏蔽", new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        mLoading.show();
+                                        OkHttpUtils.getInstance().user_black(SPUtils.getValue("token"), item.getUser_id(), "2", new RequestFinish() {
+                                            @Override
+                                            public void onSuccess(BaseModel result, String params) {
+                                                finishLoad();
+                                                mList.remove(helper.getAdapterPosition());
+                                                notifyDataSetChanged();
+                                            }
+
+                                            @Override
+                                            public void onError(String result) {
+                                                finishLoad();
+                                                ToastUtil.toastShow(result);
+                                            }
+                                        });
+                                    }
+                                }, View.VISIBLE).show();
                             }
                         }, new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                startActivity(new Intent(getActivity(),ReportActivity.class).putExtra("userId",item.getUser_id()));
+                                startActivity(new Intent(getActivity(), ReportActivity.class).putExtra("userId", item.getUser_id()));
                             }
-                        }, item.getIs_attention()+"").show();
+                        }, new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                DialogUtil.showDialogConfirm1(getActivity(), "确定要将Ta拉入黑名单吗？", "取消", new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+
+                                    }
+                                }, "拉黑", new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        mLoading.show();
+                                        OkHttpUtils.getInstance().user_black(SPUtils.getValue("token"), item.getUser_id(), "1", new RequestFinish() {
+                                            @Override
+                                            public void onSuccess(BaseModel result, String params) {
+                                                finishLoad();
+                                                mList.remove(helper.getAdapterPosition());
+                                                notifyDataSetChanged();
+                                            }
+
+                                            @Override
+                                            public void onError(String result) {
+                                                finishLoad();
+                                                ToastUtil.toastShow(result);
+                                            }
+                                        });
+                                    }
+                                }, View.VISIBLE).show();
+                            }
+                        }, item.getIs_attention() + "").show();
+                    }
                     }
                 });
 //                Glide.with(getActivity()).load(R.mipmap.yystop).into(iv_image_gif);
@@ -261,9 +341,9 @@ public class DynamicFragment extends BaseFragment implements RequestFinish {
                                         mTimeCount.cancel();
                                         mTimeCount = null;
                                     }
-                                        showHead(helper.getAdapterPosition());
-                                        play(item.getAudio());
-                                        mTimeCount = new TimeCountUtil4(Integer.parseInt(item.getAudio().isEmpty() ? "0" : item.getAudio_time()), 1000, tv_music_time);
+                                    showHead(helper.getAdapterPosition());
+                                    play(item.getAudio());
+                                    mTimeCount = new TimeCountUtil4(Integer.parseInt(item.getAudio().isEmpty() ? "0" : item.getAudio_time()), 1000, tv_music_time);
 //                                    }
                                     iv_pause.setImageResource(R.mipmap.dt_bf);
                                     mediaPlayer.start();

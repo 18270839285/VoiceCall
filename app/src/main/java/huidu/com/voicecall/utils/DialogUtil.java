@@ -9,6 +9,7 @@ import android.os.Build;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -26,6 +27,7 @@ import com.chad.library.adapter.base.BaseViewHolder;
 import java.util.List;
 
 import huidu.com.voicecall.R;
+import huidu.com.voicecall.VoiceApp;
 import huidu.com.voicecall.bean.AnchorType;
 import huidu.com.voicecall.bean.Home;
 
@@ -325,7 +327,7 @@ public class DialogUtil {
      */
     public static Dialog showDialogDynamic(Context context, final View.OnClickListener attentionListener,
                                            final View.OnClickListener shieldListener,final View.OnClickListener reportListener,
-                                           String isAttention) {
+                                           final View.OnClickListener blackListener,String isAttention) {
         View dialogView = View.inflate(context, R.layout.dialog_dynamic, null);
         final Dialog dialog = new Dialog(context, R.style.dialog1);
         dialog.setContentView(dialogView);
@@ -333,6 +335,7 @@ public class DialogUtil {
         TextView tv_cancel = (TextView) dialogView.findViewById(R.id.tv_cancel);
         TextView tv_report = (TextView) dialogView.findViewById(R.id.tv_report);
         TextView tv_shield = (TextView) dialogView.findViewById(R.id.tv_shield);
+        TextView tv_black = (TextView) dialogView.findViewById(R.id.tv_black);
         View view_line = dialogView.findViewById(R.id.view_line);
         if (isAttention.equals("1")){
             tv_attention.setVisibility(View.GONE);
@@ -368,6 +371,15 @@ public class DialogUtil {
                 }
             }
         });
+        tv_black.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                if (blackListener != null) {
+                    blackListener.onClick(v);
+                }
+            }
+        });
         tv_cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -375,7 +387,62 @@ public class DialogUtil {
             }
         });
         Window dialogWindow = dialog.getWindow();
-//        WindowManager.LayoutParams lp = dialogWindow.getAttributes();
+        WindowManager.LayoutParams lp = dialogWindow.getAttributes();
+        int width = VoiceApp.width-60;
+        lp.width = width;
+//        lp.width = DensityUtils.dip2px(context, 300);
+        dialogWindow.setGravity(Gravity.BOTTOM);
+        dialogWindow.setWindowAnimations(R.style.dialog_up_down_animation);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            dialog.create();
+        }
+        dialog.setCanceledOnTouchOutside(true);
+        return dialog;
+    }
+    /**
+     * 动态弹框
+     * @param context
+     * @return
+     */
+    public static Dialog showMineDynamic(Context context, final View.OnClickListener blackListener) {
+        View dialogView = View.inflate(context, R.layout.dialog_dynamic, null);
+        final Dialog dialog = new Dialog(context, R.style.dialog1);
+        dialog.setContentView(dialogView);
+        TextView tv_attention = (TextView) dialogView.findViewById(R.id.tv_attention);
+        TextView tv_cancel = (TextView) dialogView.findViewById(R.id.tv_cancel);
+        TextView tv_report = (TextView) dialogView.findViewById(R.id.tv_report);
+        TextView tv_shield = (TextView) dialogView.findViewById(R.id.tv_shield);
+        TextView tv_black = (TextView) dialogView.findViewById(R.id.tv_black);
+        View view_line = dialogView.findViewById(R.id.view_line);
+        View view_line2 = dialogView.findViewById(R.id.view_line2);
+        View view_line3 = dialogView.findViewById(R.id.view_line3);
+        tv_attention.setVisibility(View.GONE);
+        tv_report.setVisibility(View.GONE);
+        tv_shield.setVisibility(View.GONE);
+        view_line.setVisibility(View.GONE);
+        view_line2.setVisibility(View.GONE);
+        view_line3.setVisibility(View.GONE);
+        tv_black.setText("刪除");
+        tv_black.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                if (blackListener != null) {
+                    blackListener.onClick(v);
+                }
+            }
+        });
+        tv_cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        Window dialogWindow = dialog.getWindow();
+        WindowManager.LayoutParams lp = dialogWindow.getAttributes();
+        int width = VoiceApp.width-60;
+        lp.width = width;
+//        lp.width = DensityUtils.dip2px(context, 300);
         dialogWindow.setGravity(Gravity.BOTTOM);
         dialogWindow.setWindowAnimations(R.style.dialog_up_down_animation);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {

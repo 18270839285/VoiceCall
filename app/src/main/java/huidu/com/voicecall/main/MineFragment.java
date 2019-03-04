@@ -34,6 +34,7 @@ import huidu.com.voicecall.http.BaseModel;
 import huidu.com.voicecall.http.OkHttpUtils;
 import huidu.com.voicecall.http.RequestFinish;
 import huidu.com.voicecall.login.LoginActivity;
+import huidu.com.voicecall.mine.BlackActivity;
 import huidu.com.voicecall.mine.MyAccountActivity;
 import huidu.com.voicecall.mine.MyAttentionActivity;
 import huidu.com.voicecall.mine.MyFansActivity;
@@ -92,9 +93,13 @@ public class MineFragment extends BaseFragment implements RequestFinish{
 
     @OnClick({R.id.iv_setting, R.id.rl_personal, R.id.ll_recharge, R.id.ll_income,R.id.ll_anchor,
             R.id.ll_idCard, R.id.ll_about_us,R.id.ll_customer,R.id.ll_follow,R.id.ll_fans,R.id.ll_order,
-            R.id.ll_dynamic})
+            R.id.ll_dynamic,R.id.ll_black})
     public void onViewClicked(View view) {
         switch (view.getId()) {
+            case R.id.ll_black:
+                //黑名單
+                jump(BlackActivity.class);
+                break;
             case R.id.iv_setting:
                 //设置
                 jump(SettingActivity.class);

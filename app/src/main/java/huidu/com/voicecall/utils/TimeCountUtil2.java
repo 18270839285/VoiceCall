@@ -1,6 +1,7 @@
 package huidu.com.voicecall.utils;
 
 import android.os.CountDownTimer;
+import android.util.Log;
 import android.widget.TextView;
 
 /* 定义一个倒计时的内部类 */
@@ -22,6 +23,7 @@ public class TimeCountUtil2 extends CountDownTimer {
 
     @Override
     public void onTick(long millisUntilFinished) {// 计时过程显示
+        Log.e("TimeCountUtil2", "onTick: "+millisUntilFinished );
         tv.setText(millisUntilFinished / 1000 + "s");
     }
 

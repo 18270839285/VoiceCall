@@ -20,6 +20,7 @@ import huidu.com.voicecall.bean.SpareBean;
 import huidu.com.voicecall.bean.SystemNotice;
 import huidu.com.voicecall.bean.UserAccount;
 import huidu.com.voicecall.bean.UserAttention;
+import huidu.com.voicecall.bean.UserBlack;
 import huidu.com.voicecall.bean.UserFans;
 import huidu.com.voicecall.bean.UserInfo;
 import huidu.com.voicecall.bean.UserMyAccount2;
@@ -678,6 +679,43 @@ public class OkHttpUtils {
         if (!content.isEmpty())
             data.put("content", content);
         okManager.postRequest(config, API.BASE_URL + API.INFORM_SEND, data, protocol);
+    }
+    /**
+     * 违规举报
+     */
+    public void user_black(String token,String user_id,String type,RequestFinish protocol) {
+        RequestConfig config = new RequestConfig();
+        config.setCls(Object.class);
+        config.setRequestCode(API.USER_BLACK);
+        Map<String, String> data = new HashMap<String, String>();
+        data.put("token", token);
+        data.put("user_id", user_id);
+        data.put("type", type);// 1拉黑 2屏蔽
+        okManager.postRequest(config, API.BASE_URL + API.USER_BLACK, data, protocol);
+    }
+    /**
+     * 我的黑名单
+     */
+    public void user_my_black(String token,String page,RequestFinish protocol) {
+        RequestConfig config = new RequestConfig();
+        config.setCls(UserBlack.class);
+        config.setRequestCode(API.USER_MY_BLACK);
+        Map<String, String> data = new HashMap<String, String>();
+        data.put("token", token);
+        data.put("page", page);
+        okManager.postRequest(config, API.BASE_URL + API.USER_MY_BLACK, data, protocol);
+    }
+    /**
+     * 移出黑名单
+     */
+    public void user_remove_black(String token,String black_id,RequestFinish protocol) {
+        RequestConfig config = new RequestConfig();
+        config.setCls(Object.class);
+        config.setRequestCode(API.USER_REMOVE_BLACK);
+        Map<String, String> data = new HashMap<String, String>();
+        data.put("token", token);
+        data.put("black_id", black_id);
+        okManager.postRequest(config, API.BASE_URL + API.USER_REMOVE_BLACK, data, protocol);
     }
 
 

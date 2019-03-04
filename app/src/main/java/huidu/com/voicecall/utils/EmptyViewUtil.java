@@ -57,6 +57,10 @@ public class EmptyViewUtil {
                 Glide.with(context).load(R.mipmap.zwdt).into(iv_empty);
                 tv_msg.setText("这里什么也没有呢~");
                 break;
+            case 6://消息
+                Glide.with(context).load(R.mipmap.zwxx).into(iv_empty);
+                tv_msg.setText("还没有消息~");
+                break;
         }
         return inflate;
     }

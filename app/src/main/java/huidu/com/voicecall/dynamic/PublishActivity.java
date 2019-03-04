@@ -18,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseQuickAdapter;
@@ -312,7 +313,7 @@ public class PublishActivity extends BaseActivity implements RequestFinish, Take
                     case AUDIO_STATE2:
                         animationDrawable.stop();
                         rl_recording.setVisibility(View.GONE);
-                        onRecord(false);
+//                        onRecord(false);
                         mTimeCount3.cancel();
                         mTimeCount3.onFinish();
                         mTimeCount3 = null;
@@ -404,7 +405,7 @@ public class PublishActivity extends BaseActivity implements RequestFinish, Take
         iv_withdraw.setVisibility(View.GONE);
         iv_sure.setVisibility(View.GONE);
         tv_record_time.setVisibility(View.GONE);
-        iv_start_record.setImageResource(R.mipmap.zt);
+        iv_start_record.setImageResource(R.mipmap.ly);
         AudioUrl = "";
         audioState = AUDIO_STATE1;
         record_time = "0s";
@@ -486,8 +487,9 @@ public class PublishActivity extends BaseActivity implements RequestFinish, Take
             if (Integer.parseInt(time)>=5){
                 recordingFinish();
             }else {
-                ToastUtil.toastShow("录音时长不能少于5s");
                 withdraw();
+                ToastUtil.toastShow("录音时长不能少于5s");
+//                Toast.makeText(this,"录音时长不能少于5s",Toast.LENGTH_LONG).show();
             }
         }
     }

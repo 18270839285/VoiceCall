@@ -23,6 +23,10 @@ import com.youth.banner.BannerConfig;
 import com.youth.banner.Transformer;
 import com.youth.banner.listener.OnBannerListener;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,6 +34,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import huidu.com.voicecall.R;
+import huidu.com.voicecall.VoiceApp;
 import huidu.com.voicecall.base.BaseFragment;
 import huidu.com.voicecall.base.WebActivity;
 import huidu.com.voicecall.bean.Home;
@@ -41,6 +46,7 @@ import huidu.com.voicecall.mine.AnchorsSkillsActivity;
 import huidu.com.voicecall.utils.CustomGLManager;
 import huidu.com.voicecall.utils.GlideImageLoader;
 import huidu.com.voicecall.utils.Loading;
+import huidu.com.voicecall.utils.RefreshEvent;
 import huidu.com.voicecall.utils.SPUtils;
 import huidu.com.voicecall.utils.ToastUtil;
 
@@ -83,6 +89,7 @@ public class HotFragment extends BaseFragment implements RequestFinish {
         type_id = getArguments().getString("type_id") + "";
 //        tv_title.setText(string);
         mPage = 1;
+        EventBus.getDefault().register(this);
         loadStart();
         OkHttpUtils.getInstance().home(SPUtils.getValue("token"), type_id, mPage + "", this);
 
@@ -350,8 +357,16 @@ public class HotFragment extends BaseFragment implements RequestFinish {
         super.onStop();
         //结束轮播
         banner.stopAutoPlay();
-        Log.e(TAG, "onStop: " + type_id);
         mPage = 1;
+        if(EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().unregister(this);
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onRefreshEvent(RefreshEvent event) {
+        /* Do something */
+        Log.e(TAG, "onRefreshEvent:+"+event.getMessage()+" type = "+type_id );
     }
 
     @Nullable
@@ -362,4 +377,5 @@ public class HotFragment extends BaseFragment implements RequestFinish {
         unbinder = ButterKnife.bind(this, rootView);
         return rootView;
     }
+
 }

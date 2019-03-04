@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
@@ -20,6 +21,8 @@ import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +32,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import de.hdodenhof.circleimageview.CircleImageView;
 import huidu.com.voicecall.R;
+import huidu.com.voicecall.VoiceApp;
 import huidu.com.voicecall.base.BaseActivity;
 import huidu.com.voicecall.bean.AnchorInfo;
 import huidu.com.voicecall.bean.AnchorPrice;
@@ -41,6 +45,7 @@ import huidu.com.voicecall.http.RequestFinish;
 import huidu.com.voicecall.main.OrderDetailActivity;
 import huidu.com.voicecall.utils.DialogUtil;
 import huidu.com.voicecall.utils.Loading;
+import huidu.com.voicecall.utils.RefreshEvent;
 import huidu.com.voicecall.utils.SPUtils;
 import huidu.com.voicecall.utils.ToastUtil;
 
@@ -74,6 +79,8 @@ public class AnchorsSkillsActivity extends BaseActivity implements RequestFinish
     ImageView iv_attention;
     @BindView(R.id.iv_chat)
     ImageView iv_chat;
+    @BindView(R.id.iv_more2)
+    ImageView iv_more2;
     //单价
     @BindView(R.id.tv_price)
     TextView tv_price;
@@ -110,8 +117,7 @@ public class AnchorsSkillsActivity extends BaseActivity implements RequestFinish
 
     @Override
     protected void initData() {
-        OkHttpUtils.getInstance().anchor_info(SPUtils.getValue("token"), anchor_id, anchor_type_id, isRobot, this);
-        OkHttpUtils.getInstance().anchor_price(SPUtils.getValue("token"), anchor_id, anchor_type_id, isRobot, this);
+
     }
 
     @OnClick({R.id.iv_back, R.id.iv_audio, R.id.ll_attention, R.id.ll_chat,R.id.iv_more2})
@@ -147,6 +153,8 @@ public class AnchorsSkillsActivity extends BaseActivity implements RequestFinish
                 goChat(anchorPrice.getInfo());
                 break;
             case R.id.iv_more2:
+                Log.e(TAG, "onViewClicked: "+"onRefreshEvent" );
+                EventBus.getDefault().post(new RefreshEvent("刷新"));
                 //弹窗选择关注，屏蔽，举报
                 DialogUtil.showDialogDynamic(this, new View.OnClickListener() {
                     @Override
@@ -168,14 +176,40 @@ public class AnchorsSkillsActivity extends BaseActivity implements RequestFinish
                 }, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        DialogUtil.showDialogConfirm1(AnchorsSkillsActivity.this, "屏蔽后，将会在24小时内，看不到Ta的相关信息，是否继续？", "取消", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
 
+                            }
+                        }, "屏蔽", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                mLoading.show();
+                               OkHttpUtils.getInstance().user_black(SPUtils.getValue("token"),anchorInfo.getAnchor_id(),"2",AnchorsSkillsActivity.this);
+                            }
+                        }, View.VISIBLE).show();
                     }
                 }, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        startActivity(new Intent(AnchorsSkillsActivity.this,ReportActivity.class).putExtra("userId",anchorInfo.getAnchor_id()));
+                        startActivity(new Intent(AnchorsSkillsActivity.this, ReportActivity.class).putExtra("userId", anchorInfo.getAnchor_id()));
                     }
-                }, isAttention?"1":"2").show();
+                }, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        DialogUtil.showDialogConfirm1(AnchorsSkillsActivity.this, "确定要将Ta拉入黑名单吗？", "取消", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                            }
+                        }, "拉黑", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                mLoading.show();
+                                OkHttpUtils.getInstance().user_black(SPUtils.getValue("token"),anchorInfo.getAnchor_id(),"1",AnchorsSkillsActivity.this);
+                            }
+                        }, View.VISIBLE).show();
+                    }
+                }, isAttention ? "1" : "2").show();
                 break;
         }
     }
@@ -204,6 +238,9 @@ public class AnchorsSkillsActivity extends BaseActivity implements RequestFinish
                 }
                 setAttention();
                 audioUrl = anchorInfo.getVoice();
+                if (SPUtils.getValue("user_id").equals(anchorInfo.getAnchor_id())) {
+                    iv_more2.setVisibility(View.GONE);
+                }
                 break;
             case API.ANCHOR_PRICE:
                 anchorPrice = (AnchorPrice) result.getData();
@@ -229,6 +266,11 @@ public class AnchorsSkillsActivity extends BaseActivity implements RequestFinish
                 finishLoad();
                 ToastUtil.toastBottom(this,"取消关注成功");
                 setAttention();
+                break;
+            case API.USER_BLACK:
+                finishLoad();
+                ToastUtil.toastShow("操作成功");
+                finish();
                 break;
         }
 
@@ -266,7 +308,8 @@ public class AnchorsSkillsActivity extends BaseActivity implements RequestFinish
     protected void onResume() {
         super.onResume();
         mLoading.show();
-        initData();
+        OkHttpUtils.getInstance().anchor_info(SPUtils.getValue("token"), anchor_id, anchor_type_id, isRobot, this);
+        OkHttpUtils.getInstance().anchor_price(SPUtils.getValue("token"), anchor_id, anchor_type_id, isRobot, this);
     }
 
     private void showMessage() {

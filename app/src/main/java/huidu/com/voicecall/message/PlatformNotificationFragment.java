@@ -125,7 +125,7 @@ public class PlatformNotificationFragment extends BaseFragment implements Reques
 //                helper.setText(R.id.tv_time, DateUtil.getTime1(item.getSendTime()));
             }
         };
-        mAdapter.setEmptyView(EmptyViewUtil.getEmptyView(getActivity(),1));
+        mAdapter.setEmptyView(EmptyViewUtil.getEmptyView(getActivity(),6));
         recycleView.setAdapter(mAdapter);
     }
 

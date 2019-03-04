@@ -122,7 +122,7 @@ public class SystemNotificationFragment extends BaseFragment implements RequestF
                 helper.setText(R.id.tv_content, item.getContent());
             }
         };
-        mAdapter.setEmptyView(EmptyViewUtil.getEmptyView(getActivity(), 1));
+        mAdapter.setEmptyView(EmptyViewUtil.getEmptyView(getActivity(), 6));
         recycleView.setAdapter(mAdapter);
     }
 

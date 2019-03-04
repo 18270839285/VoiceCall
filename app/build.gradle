@@ -92,4 +92,5 @@ dependencies {
     implementation project(':faceplatform-ui')
     implementation 'org.devio.takephoto:takephoto_library:4.1.0'
     implementation 'com.github.chrisbanes:PhotoView:2.0.0'
+    implementation 'org.greenrobot:eventbus:3.1.1'
 }

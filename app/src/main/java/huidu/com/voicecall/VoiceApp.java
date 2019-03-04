@@ -8,6 +8,9 @@ import android.os.StrictMode;
 import android.support.annotation.RequiresApi;
 import android.support.multidex.MultiDexApplication;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
+import android.util.Log;
+import android.view.WindowManager;
 
 import com.baidu.idl.face.platform.LivenessTypeEnum;
 import com.netease.nimlib.sdk.NIMClient;
@@ -40,8 +43,12 @@ public class VoiceApp extends MultiDexApplication {
     public static List<LivenessTypeEnum> livenessList = new ArrayList<LivenessTypeEnum>();
     public static boolean isLivenessRandom = false;
 
-    public static boolean needRefresh1 = false;
-    public static boolean needRefresh2 = false;
+    public static boolean needRefresh1 = false;//是否刷新动态页面
+    public static boolean needRefresh2 = false;//是否刷新我的动态我的赞
+
+    public static int width = 1080;
+    public static int height = 1920;
+
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
     @Override
@@ -49,6 +56,7 @@ public class VoiceApp extends MultiDexApplication {
         super.onCreate();
         instance = this;
         mContext = getApplicationContext();
+        initWindowDisPlay();
         initConfig();
         // SDK初始化（启动后台服务，若已经存在用户登录信息， SDK 将完成自动登录）
         SDKOptions options = new SDKOptions();
@@ -58,6 +66,13 @@ public class VoiceApp extends MultiDexApplication {
         JPushInterface.init(this);
     }
 
+    private void initWindowDisPlay(){
+        WindowManager wm = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
+        DisplayMetrics dm = new DisplayMetrics();
+        wm.getDefaultDisplay().getMetrics(dm);
+        width = dm.widthPixels;
+        height = dm.heightPixels;
+    }
     private LoginInfo loginInfo() {
 //         从本地读取上次登录成功时保存的用户登录信息
         String account = SPUtils.getValue("account1");
