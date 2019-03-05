@@ -60,9 +60,13 @@ public class SettingActivity extends BaseActivity {
 
     }
 
-    @OnClick({R.id.iv_back, R.id.rl_pwd, R.id.bt_login,R.id.rl2,R.id.rl3})
+    @OnClick({R.id.iv_back, R.id.rl_pwd, R.id.bt_login,R.id.rl2,R.id.rl3,R.id.rl_black})
     public void onViewClicked(View view) {
         switch (view.getId()) {
+            case R.id.rl_black:
+                //黑名單
+                jumpTo(BlackActivity.class);
+                break;
             case R.id.iv_back:
                 finish();
                 break;

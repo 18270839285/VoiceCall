@@ -317,31 +317,6 @@
                     android:layout_marginRight="@dimen/dp15"
                     android:src="@mipmap/sy_gd" />
             </LinearLayout>
-            <LinearLayout
-                android:id="@+id/ll_black"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dp50"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dp15"
-                    android:layout_weight="1"
-                    android:drawableLeft="@mipmap/wd_dt"
-                    android:drawablePadding="@dimen/dp15"
-                    android:gravity="center_vertical"
-                    android:text="我的黑名單"
-                    android:textColor="@color/textColor"
-                    android:textSize="@dimen/sp15" />
-
-                <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:layout_marginRight="@dimen/dp15"
-                    android:src="@mipmap/sy_gd" />
-            </LinearLayout>
 
             <LinearLayout
                 android:visibility="gone"

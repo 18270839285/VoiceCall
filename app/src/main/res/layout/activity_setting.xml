@@ -66,6 +66,36 @@
         android:background="@color/line" />
 
     <RelativeLayout
+        android:id="@+id/rl_black"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp45"
+        android:background="@color/white"
+        android:paddingLeft="13dp"
+        android:paddingRight="13dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:text="黑名单"
+            android:textColor="@color/textColor"
+            android:textSize="@dimen/sp14" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:src="@mipmap/sy_gd" />
+
+
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp1"
+        android:background="@color/line" />
+
+    <RelativeLayout
         android:id="@+id/rl2"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp45"

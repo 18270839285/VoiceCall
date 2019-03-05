@@ -104,5 +104,12 @@ public abstract class BaseFragment extends Fragment {
             mLoading.dismiss();
         }
     }
-
+    /**
+     * 刷新首页
+     */
+    public void sendRefresh(){
+        Intent intent = new Intent();
+        intent.setAction("HotFragment");
+        getActivity().sendBroadcast(intent);
+    }
 }

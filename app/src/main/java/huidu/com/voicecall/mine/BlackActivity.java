@@ -116,6 +116,7 @@ public class BlackActivity extends BaseActivity implements RequestFinish {
                                 finishLoad();
                                 mList.remove(position);
                                 ToastUtil.toastShow("移出成功");
+                                sendRefresh();
                                 DynamicFragment.isRefresh = true;
                                 mAdapter.notifyDataSetChanged();
                             }
@@ -130,7 +131,7 @@ public class BlackActivity extends BaseActivity implements RequestFinish {
                 return false;
             }
         });
-        mAdapter.setEmptyView(EmptyViewUtil.getEmptyView(this,1));
+        mAdapter.setEmptyView(EmptyViewUtil.getEmptyView(this,7));
         recycleView.setAdapter(mAdapter);
     }
 

@@ -241,4 +241,13 @@ public abstract class BaseActivity extends AppCompatActivity {
             mLoading.dismiss();
         }
     }
+
+    /**
+     * 刷新首页
+     */
+    public void sendRefresh(){
+        Intent intent = new Intent();
+        intent.setAction("HotFragment");
+        sendBroadcast(intent);
+    }
 }

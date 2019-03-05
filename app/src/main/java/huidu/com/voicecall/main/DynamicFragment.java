@@ -274,6 +274,7 @@ public class DynamicFragment extends BaseFragment implements RequestFinish {
                                                 finishLoad();
                                                 mList.remove(helper.getAdapterPosition());
                                                 notifyDataSetChanged();
+                                                sendRefresh();
                                             }
 
                                             @Override
@@ -308,6 +309,7 @@ public class DynamicFragment extends BaseFragment implements RequestFinish {
                                                 finishLoad();
                                                 mList.remove(helper.getAdapterPosition());
                                                 notifyDataSetChanged();
+                                                sendRefresh();
                                             }
 
                                             @Override

@@ -349,6 +349,8 @@
             android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity android:name=".mine.BlackActivity"
             android:screenOrientation="portrait"></activity>
+
+        <receiver android:name=".utils.RefreshReceiver"/>
     </application>
 
 </manifest>

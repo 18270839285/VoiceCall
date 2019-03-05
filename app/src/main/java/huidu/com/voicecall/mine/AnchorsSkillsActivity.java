@@ -21,7 +21,6 @@ import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 
-import org.greenrobot.eventbus.EventBus;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -153,8 +152,6 @@ public class AnchorsSkillsActivity extends BaseActivity implements RequestFinish
                 goChat(anchorPrice.getInfo());
                 break;
             case R.id.iv_more2:
-                Log.e(TAG, "onViewClicked: "+"onRefreshEvent" );
-                EventBus.getDefault().post(new RefreshEvent("刷新"));
                 //弹窗选择关注，屏蔽，举报
                 DialogUtil.showDialogDynamic(this, new View.OnClickListener() {
                     @Override
@@ -270,10 +267,10 @@ public class AnchorsSkillsActivity extends BaseActivity implements RequestFinish
             case API.USER_BLACK:
                 finishLoad();
                 ToastUtil.toastShow("操作成功");
+                sendRefresh();
                 finish();
                 break;
         }
-
     }
 
     private void setAttention(){
