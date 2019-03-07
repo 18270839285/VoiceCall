@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/bg_f6"
+    android:gravity="center_vertical"
+    android:orientation="horizontal">
+
+    <EditText
+        android:background="@color/white"
+        android:id="@+id/et_comment"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:paddingLeft="@dimen/dp5"
+        android:maxLength="30"
+        android:textSize="@dimen/sp14"
+        android:textColorHint="@color/textColorHint"
+        android:textColor="@color/textColor"
+        android:layout_marginLeft="@dimen/dp15"
+        android:layout_height="@dimen/dp35" />
+
+    <TextView
+        android:id="@+id/tv_comment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="@dimen/dp15"
+        android:text="评论"
+        android:textColor="@color/textColor"
+        android:textSize="@dimen/sp15" />
+
+</LinearLayout>

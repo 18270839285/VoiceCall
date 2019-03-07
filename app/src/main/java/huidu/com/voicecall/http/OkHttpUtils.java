@@ -7,6 +7,7 @@ import huidu.com.voicecall.bean.AnchorInfo;
 import huidu.com.voicecall.bean.AnchorPrice;
 import huidu.com.voicecall.bean.AnchorType;
 import huidu.com.voicecall.bean.CoinLog;
+import huidu.com.voicecall.bean.Comment;
 import huidu.com.voicecall.bean.DynamicData;
 import huidu.com.voicecall.bean.Home;
 import huidu.com.voicecall.bean.IDCard;
@@ -716,6 +717,34 @@ public class OkHttpUtils {
         data.put("token", token);
         data.put("black_id", black_id);
         okManager.postRequest(config, API.BASE_URL + API.USER_REMOVE_BLACK, data, protocol);
+    }
+    /**
+     * 评论/回复
+     */
+    public void dynamic_comment(String token,int type,String content,String dynamic_id,String comment_id,RequestFinish protocol) {
+        RequestConfig config = new RequestConfig();
+        config.setCls(Comment.class);
+        config.setRequestCode(API.DYNAMIC_COMMENT);
+        Map<String, String> data = new HashMap<String, String>();
+        data.put("token", token);
+        data.put("type", type+"");
+        data.put("content", content);
+        data.put("dynamic_id", dynamic_id);
+        if (type==2)
+            data.put("comment_id", comment_id);
+        okManager.postRequest(config, API.BASE_URL + API.DYNAMIC_COMMENT, data, protocol);
+    }
+    /**
+     * 评论删除
+     */
+    public void comment_del(String token,String comment_id,RequestFinish protocol) {
+        RequestConfig config = new RequestConfig();
+        config.setCls(Object.class);
+        config.setRequestCode(API.COMMENT_DEL);
+        Map<String, String> data = new HashMap<String, String>();
+        data.put("token", token);
+        data.put("comment_id", comment_id);
+        okManager.postRequest(config, API.BASE_URL + API.COMMENT_DEL, data, protocol);
     }
 
 

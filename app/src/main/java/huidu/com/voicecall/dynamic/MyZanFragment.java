@@ -1,5 +1,7 @@
 package huidu.com.voicecall.dynamic;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Build;
@@ -10,6 +12,9 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,16 +40,21 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import huidu.com.voicecall.R;
 import huidu.com.voicecall.VoiceApp;
 import huidu.com.voicecall.base.BaseFragment;
+import huidu.com.voicecall.bean.Comment;
 import huidu.com.voicecall.bean.DynamicData;
 import huidu.com.voicecall.http.BaseModel;
 import huidu.com.voicecall.http.OkHttpUtils;
 import huidu.com.voicecall.http.RequestFinish;
 import huidu.com.voicecall.utils.CustomLLManager;
+import huidu.com.voicecall.utils.DialogUtil;
 import huidu.com.voicecall.utils.EmptyViewUtil;
+import huidu.com.voicecall.utils.KeyBoardUtil;
 import huidu.com.voicecall.utils.Loading;
 import huidu.com.voicecall.utils.SPUtils;
 import huidu.com.voicecall.utils.TimeCountUtil4;
 import huidu.com.voicecall.utils.ToastUtil;
+
+import static android.content.Context.CLIPBOARD_SERVICE;
 
 /**
  * Description:
@@ -133,6 +143,7 @@ public class MyZanFragment extends BaseFragment implements RequestFinish {
             protected void convert(final BaseViewHolder helper, final DynamicData.DynamicList item) {
                 CircleImageView iv_head = helper.getView(R.id.iv_head);
                 final ImageView iv_zan = helper.getView(R.id.iv_zan);
+                final ImageView iv_pl = helper.getView(R.id.iv_pl);
                 final TextView tv_num = helper.getView(R.id.tv_num);
                 final TextView tv_content = helper.getView(R.id.tv_content);
                 final TextView tv_more = helper.getView(R.id.tv_more);
@@ -141,12 +152,43 @@ public class MyZanFragment extends BaseFragment implements RequestFinish {
                 final ImageView iv_image_gif = helper.getView(R.id.iv_image_gif);
                 final TextView tv_music_time = helper.getView(R.id.tv_music_time);
                 RecyclerView item_recycleView = helper.getView(R.id.item_recycleView);
+                final RecyclerView recycle_comment = helper.getView(R.id.recycle_comment);
+                final LinearLayout ll_comment = helper.getView(R.id.ll_comment);
                 helper.setText(R.id.tv_nickName, item.getNickname());
                 helper.setText(R.id.tv_time, item.getCreated_at());
                 final ImageView iv_dialog = helper.getView(R.id.iv_dialog);
                 iv_dialog.setVisibility(View.GONE);
                 tv_content.setText(item.getContent());
                 tv_num.setText(item.getLike_count()+"");
+
+                //点击评论
+                ll_comment.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        //评论
+                        DialogUtil.showComment(getActivity(), 1,item.getNickname(), new DialogUtil.OnCommentClick() {
+                            @Override
+                            public void onClick(String comment) {
+                                KeyBoardUtil.hindKeyBoard(getActivity());
+                                mLoading.show();
+                                OkHttpUtils.getInstance().dynamic_comment(SPUtils.getValue("token"), 1, comment, item.getDynamic_id(), "", new RequestFinish() {
+                                    @Override
+                                    public void onSuccess(BaseModel result, String params) {
+                                        finishLoad();
+                                        Comment comment1 = (Comment)result.getData();
+                                        item.getComment().add(comment1);
+                                        notifyDataSetChanged();
+                                    }
+                                    @Override
+                                    public void onError(String result) {
+                                        finishLoad();
+                                        ToastUtil.toastShow(result);
+                                    }
+                                });
+                            }
+                        });
+                    }
+                });
 
                 if (item.getAudio() == null || item.getAudio().isEmpty()) {
                     ll_voice.setVisibility(View.GONE);
@@ -341,6 +383,104 @@ public class MyZanFragment extends BaseFragment implements RequestFinish {
                     }
                 };
                 item_recycleView.setAdapter(adapter);
+
+                //评论
+                final List<Comment> commentList = item.getComment();
+                if (commentList.isEmpty()){
+                    iv_pl.setVisibility(View.GONE);
+                    recycle_comment.setVisibility(View.GONE);
+                }else {
+                    iv_pl.setVisibility(View.VISIBLE);
+                    recycle_comment.setVisibility(View.VISIBLE);
+                }
+
+                recycle_comment.setLayoutManager(new LinearLayoutManager(getActivity()));
+                recycle_comment.setHasFixedSize(true);
+                BaseQuickAdapter commentAdapter = new BaseQuickAdapter<Comment, BaseViewHolder>(R.layout.item_dynamic_comment, commentList) {
+                    @Override
+                    protected void convert(final BaseViewHolder helper, final Comment item1) {
+                        final TextView tv_comment = helper.getView(R.id.tv_comment);
+                        if (item1.getType().equals("1")){
+                            //评论
+                            SpannableString ss = new SpannableString(item1.getFrom_user().getNickname()+": "+item1.getContent());
+                            ss.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.colorPurple)),
+                                    0,item1.getFrom_user().getNickname().length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                            tv_comment.setText(ss);
+                        }else {
+                            //回复
+                            SpannableString ss = new SpannableString(item1.getFrom_user().getNickname()+"回复"+item1.getTo_user().getNickname()+": "+item1.getContent());
+                            ss.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.colorPurple)),
+                                    0,item1.getFrom_user().getNickname().length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                            ss.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.colorPurple)),
+                                    item1.getFrom_user().getNickname().length()+2,item1.getFrom_user().getNickname().length()+2+item1.getTo_user().getNickname().length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                            tv_comment.setText(ss);
+                        }
+                        tv_comment.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                if (item1.getCreate_id().equals(SPUtils.getValue("user_id"))){
+                                    //弹出删除或复制
+                                    DialogUtil.showCopyAndDelete(getActivity(), recycle_comment.getChildAt(helper.getAdapterPosition()), new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            ClipboardManager myClipboard = (ClipboardManager)getActivity().getSystemService(CLIPBOARD_SERVICE);
+                                            String text = item1.getContent();
+                                            ClipData myClip = ClipData.newPlainText("text", text);
+                                            myClipboard.setPrimaryClip(myClip);
+                                        }
+                                    }, new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            mLoading.show();
+                                            OkHttpUtils.getInstance().comment_del(SPUtils.getValue("token"), item1.getComment_id(), new RequestFinish() {
+                                                @Override
+                                                public void onSuccess(BaseModel result, String params) {
+                                                    finishLoad();
+                                                    commentList.remove(helper.getAdapterPosition());
+//                                                    item.getComment().remove(helper.getAdapterPosition())
+                                                    notifyDataSetChanged();
+                                                }
+
+                                                @Override
+                                                public void onError(String result) {
+                                                    finishLoad();
+                                                    ToastUtil.toastShow(result);
+                                                }
+                                            });
+                                        }
+                                    });
+                                }else {
+                                    //回复
+                                    DialogUtil.showComment(getActivity(), 2,item1.getFrom_user().getNickname(), new DialogUtil.OnCommentClick() {
+                                        @Override
+                                        public void onClick(String comment) {
+                                            KeyBoardUtil.hindKeyBoard(getActivity());
+                                            mLoading.show();
+                                            OkHttpUtils.getInstance().dynamic_comment(SPUtils.getValue("token"), 2, comment, item1.getDynamic_id(), item1.getComment_id(), new RequestFinish() {
+                                                @Override
+                                                public void onSuccess(BaseModel result, String params) {
+                                                    finishLoad();
+                                                    Comment comment1 = (Comment)result.getData();
+                                                    item.getComment().add(comment1);
+                                                    notifyDataSetChanged();
+                                                }
+
+                                                @Override
+                                                public void onError(String result) {
+                                                    finishLoad();
+                                                    ToastUtil.toastShow(result);
+                                                }
+                                            });
+                                        }
+                                    });
+
+                                }
+                            }
+                        });
+
+                    }
+                };
+                recycle_comment.setAdapter(commentAdapter);
             }
         };
         mAdapter.setEmptyView(EmptyViewUtil.getEmptyView(getActivity(), 5));

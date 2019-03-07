@@ -8,14 +8,14 @@
         android:id="@+id/iv_head"
         android:layout_width="@dimen/dp50"
         android:layout_height="@dimen/dp50"
-        android:layout_marginLeft="@dimen/dp15"
+        android:layout_marginLeft="@dimen/dp10"
         android:layout_marginTop="@dimen/dp20" />
 
     <LinearLayout
         android:id="@+id/ll_nick"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp15"
+        android:layout_marginLeft="@dimen/dp10"
         android:layout_marginTop="@dimen/dp25"
         android:layout_toEndOf="@+id/iv_head"
         android:gravity="center_vertical"
@@ -44,7 +44,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/ll_nick"
-        android:layout_marginLeft="@dimen/dp15"
+        android:layout_marginLeft="@dimen/dp10"
         android:layout_marginRight="@dimen/dp25"
         android:layout_marginTop="@dimen/dp5"
         android:layout_toEndOf="@+id/iv_head"
@@ -57,7 +57,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/tv_content"
-        android:layout_marginLeft="@dimen/dp10"
+        android:layout_marginLeft="@dimen/dp5"
         android:layout_toEndOf="@+id/iv_head"
         android:padding="@dimen/dp5"
         android:text="全文"
@@ -70,7 +70,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/tv_more"
-        android:layout_marginLeft="@dimen/dp15"
+        android:layout_marginLeft="@dimen/dp10"
         android:layout_marginRight="@dimen/dp45"
         android:layout_marginTop="@dimen/dp10"
         android:layout_toEndOf="@+id/iv_head">
@@ -121,11 +121,11 @@
     </RelativeLayout>
 
     <LinearLayout
+        android:id="@+id/ll_ll"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/rl_voice_img"
-        android:layout_marginBottom="@dimen/dp15"
-        android:layout_marginLeft="@dimen/dp15"
+        android:layout_marginLeft="@dimen/dp10"
         android:layout_marginTop="@dimen/dp10"
         android:layout_toEndOf="@+id/iv_head"
         android:gravity="center_vertical"
@@ -142,8 +142,8 @@
 
         <ImageView
             android:id="@+id/iv_zan"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/dp26"
+            android:layout_height="@dimen/dp26"
             android:padding="@dimen/dp5"
             android:src="@mipmap/zan" />
 
@@ -151,27 +151,78 @@
             android:id="@+id/tv_num"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="@dimen/dp45"
-            android:text="26"
+            android:text="0"
             android:textColor="@color/textColor2"
             android:textSize="@dimen/sp12" />
+
+        <LinearLayout
+            android:id="@+id/ll_comment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingLeft="@dimen/dp15"
+            android:paddingRight="@dimen/dp45">
+
+            <ImageView
+                android:layout_width="@dimen/dp16"
+                android:layout_height="@dimen/dp16"
+                android:src="@mipmap/dt_pl" />
+        </LinearLayout>
+
     </LinearLayout>
+
+    <ImageView
+        android:id="@+id/iv_pl"
+        android:layout_width="@dimen/dp12"
+        android:layout_height="5dp"
+        android:layout_below="@+id/ll_ll"
+        android:layout_marginLeft="@dimen/dp25"
+        android:layout_marginTop="@dimen/dp10"
+        android:layout_toEndOf="@+id/iv_head"
+        android:src="@mipmap/pl" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycle_comment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/iv_pl"
+        android:layout_marginLeft="@dimen/dp10"
+        android:layout_marginRight="@dimen/dp45"
+        android:layout_toEndOf="@+id/iv_head"
+        android:background="#f3f3f4"
+        android:padding="@dimen/dp5"></android.support.v7.widget.RecyclerView>
+
+    <TextView
+        android:id="@+id/tv_close"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/recycle_comment"
+        android:layout_marginLeft="@dimen/dp10"
+        android:layout_marginRight="@dimen/dp45"
+        android:layout_toEndOf="@+id/iv_head"
+        android:background="#f3f3f4"
+        android:textSize="@dimen/sp12"
+        android:paddingBottom="@dimen/dp10"
+        android:paddingLeft="@dimen/dp10"
+        android:text="全部"
+        android:visibility="gone" />
 
     <ImageView
         android:id="@+id/iv_dialog"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:paddingTop="30dp"
-        android:paddingRight="@dimen/dp20"
-        android:paddingLeft="@dimen/dp20"
         android:paddingBottom="@dimen/dp20"
+        android:paddingLeft="@dimen/dp20"
+        android:paddingRight="@dimen/dp20"
+        android:paddingTop="30dp"
         android:src="@mipmap/more1" />
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp1"
-        android:layout_alignParentBottom="true"
+        android:layout_height="@dimen/dp10"
+        android:layout_below="@+id/tv_close"
         android:layout_marginTop="@dimen/dp15"
-        android:background="@color/line" />
+        android:background="#f7f7f8" />
 </RelativeLayout>

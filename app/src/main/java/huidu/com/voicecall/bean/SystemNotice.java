@@ -25,6 +25,15 @@ public class SystemNotice implements Serializable {
         String sendTime;
         String title;
         String content;
+        String icon;
+
+        public String getIcon() {
+            return icon;
+        }
+
+        public void setIcon(String icon) {
+            this.icon = icon;
+        }
 
         public String getId() {
             return id;

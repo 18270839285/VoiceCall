@@ -118,6 +118,9 @@ public interface API {
     String USER_MY_BLACK = "user/my/black";//我的黑名单
     String USER_REMOVE_BLACK = "user/remove/black";//移出黑名单
 
+    String DYNAMIC_COMMENT = "dynamic/comment";//动态评论/回复接口
+    String COMMENT_DEL = "comment/del";//评论删除
+
     /**
      * Returns 参数返回列表
      */

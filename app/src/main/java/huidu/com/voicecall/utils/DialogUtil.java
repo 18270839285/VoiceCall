@@ -5,19 +5,21 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
-import android.util.Log;
-import android.view.Display;
 import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.baidu.idl.face.platform.utils.DensityUtils;
@@ -29,7 +31,6 @@ import java.util.List;
 import huidu.com.voicecall.R;
 import huidu.com.voicecall.VoiceApp;
 import huidu.com.voicecall.bean.AnchorType;
-import huidu.com.voicecall.bean.Home;
 
 /**
  * 创    建:  lt  2018/1/8--11:51
@@ -41,9 +42,9 @@ public class DialogUtil {
     /**
      * 确定----取消
      */
-    public static Dialog showTakePhoto(Context context, final View.OnClickListener takeListener,final View.OnClickListener selectListener) {
+    public static Dialog showTakePhoto(Context context, final View.OnClickListener takeListener, final View.OnClickListener selectListener) {
         View dialogView = View.inflate(context, R.layout.dialog_takephoto, null);
-        final Dialog dialog = new Dialog(context,R.style.dialog1);//, R.style.dialog
+        final Dialog dialog = new Dialog(context, R.style.dialog1);//, R.style.dialog
         dialog.setContentView(dialogView);
         TextView tv_take = (TextView) dialogView.findViewById(R.id.tv_take);
         TextView tv_select = (TextView) dialogView.findViewById(R.id.tv_select);
@@ -97,17 +98,18 @@ public class DialogUtil {
         dialog.setCanceledOnTouchOutside(true);
         return dialog;
     }
+
     /**
      * 确定----取消
      */
-    public static Dialog showServiceDialog(Context context,String phone, final View.OnClickListener mListener) {
+    public static Dialog showServiceDialog(Context context, String phone, final View.OnClickListener mListener) {
         View dialogView = View.inflate(context, R.layout.dialog_service, null);
         final Dialog dialog = new Dialog(context, R.style.dialog);
         dialog.setContentView(dialogView);
         TextView tv_call = (TextView) dialogView.findViewById(R.id.tv_call);
         TextView tv_phone = (TextView) dialogView.findViewById(R.id.tv_phone);
         ImageView iv_cancel = (ImageView) dialogView.findViewById(R.id.iv_cancel);
-        tv_phone.setText("客服电话: "+phone);
+        tv_phone.setText("客服电话: " + phone);
         tv_call.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -145,6 +147,7 @@ public class DialogUtil {
         dialog.setCanceledOnTouchOutside(true);
         return dialog;
     }
+
     /**
      * 确定----取消
      */
@@ -206,13 +209,14 @@ public class DialogUtil {
 
     /**
      * 取消订单弹框
+     *
      * @param context
      * @param cancelListener
      * @param closeListener
      * @return
      */
     public static Dialog showOrderCancelDialog(Context context, final View.OnClickListener cancelListener,
-                                             final View.OnClickListener closeListener) {
+                                               final View.OnClickListener closeListener) {
         View dialogView = View.inflate(context, R.layout.dialog_order_cancel, null);
         final Dialog dialog = new Dialog(context, R.style.dialog);
         dialog.setContentView(dialogView);
@@ -319,15 +323,16 @@ public class DialogUtil {
 
     /**
      * 动态弹框
+     *
      * @param context
      * @param attentionListener 关注
-     * @param shieldListener 屏蔽
-     * @param reportListener 举报
+     * @param shieldListener    屏蔽
+     * @param reportListener    举报
      * @return
      */
     public static Dialog showDialogDynamic(Context context, final View.OnClickListener attentionListener,
-                                           final View.OnClickListener shieldListener,final View.OnClickListener reportListener,
-                                           final View.OnClickListener blackListener,String isAttention) {
+                                           final View.OnClickListener shieldListener, final View.OnClickListener reportListener,
+                                           final View.OnClickListener blackListener, String isAttention) {
         View dialogView = View.inflate(context, R.layout.dialog_dynamic, null);
         final Dialog dialog = new Dialog(context, R.style.dialog1);
         dialog.setContentView(dialogView);
@@ -337,10 +342,10 @@ public class DialogUtil {
         TextView tv_shield = (TextView) dialogView.findViewById(R.id.tv_shield);
         TextView tv_black = (TextView) dialogView.findViewById(R.id.tv_black);
         View view_line = dialogView.findViewById(R.id.view_line);
-        if (isAttention.equals("1")){
+        if (isAttention.equals("1")) {
             tv_attention.setVisibility(View.GONE);
             view_line.setVisibility(View.GONE);
-        }else {
+        } else {
             tv_attention.setVisibility(View.VISIBLE);
             view_line.setVisibility(View.VISIBLE);
         }
@@ -388,7 +393,7 @@ public class DialogUtil {
         });
         Window dialogWindow = dialog.getWindow();
         WindowManager.LayoutParams lp = dialogWindow.getAttributes();
-        int width = VoiceApp.width-60;
+        int width = VoiceApp.width - 60;
         lp.width = width;
 //        lp.width = DensityUtils.dip2px(context, 300);
         dialogWindow.setGravity(Gravity.BOTTOM);
@@ -399,8 +404,10 @@ public class DialogUtil {
         dialog.setCanceledOnTouchOutside(true);
         return dialog;
     }
+
     /**
      * 动态弹框
+     *
      * @param context
      * @return
      */
@@ -440,7 +447,7 @@ public class DialogUtil {
         });
         Window dialogWindow = dialog.getWindow();
         WindowManager.LayoutParams lp = dialogWindow.getAttributes();
-        int width = VoiceApp.width-60;
+        int width = VoiceApp.width - 60;
         lp.width = width;
 //        lp.width = DensityUtils.dip2px(context, 300);
         dialogWindow.setGravity(Gravity.BOTTOM);
@@ -575,4 +582,99 @@ public class DialogUtil {
         dialog.show();
     }
 
+    /**
+     * 评论框
+     *
+     * @param context
+     * @param onCommentClick
+     */
+    public static void showComment(final Context context, int type, String userName, final OnCommentClick onCommentClick) {
+        View dialogView = View.inflate(context, R.layout.dialog_comment, null);
+        final Dialog dialog = new Dialog(context, R.style.dialog2);
+        dialog.setContentView(dialogView);
+        TextView tv_comment = dialogView.findViewById(R.id.tv_comment);
+        final EditText et_comment = dialogView.findViewById(R.id.et_comment);
+        if (type == 1) {
+            tv_comment.setText("评论");
+            et_comment.setHint("评论" + userName);
+        } else {
+            tv_comment.setText("回复");
+            et_comment.setHint("回复" + userName);
+        }
+
+        tv_comment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                if (onCommentClick != null) {
+                    onCommentClick.onClick(et_comment.getText().toString() + "");
+                }
+            }
+        });
+        Window dialogWindow = dialog.getWindow();
+        WindowManager.LayoutParams lp = dialogWindow.getAttributes();
+        lp.width = VoiceApp.width;
+        dialogWindow.setGravity(Gravity.BOTTOM);
+        dialogWindow.setWindowAnimations(R.style.dialog_up_down_animation);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            dialog.create();
+        }
+        dialog.setCanceledOnTouchOutside(true);
+        dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                KeyBoardUtil.hindKeyBoard(context);
+            }
+        });
+        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                KeyBoardUtil.hindKeyBoard(context);
+            }
+        });
+        dialog.show();
+        KeyBoardUtil.KeyBoard(context,"open");
+    }
+
+    public interface OnCommentClick {
+        void onClick(String comment);
+    }
+
+    /**
+     * 动态评论复制删除弹窗
+     * @param context
+     * @param view
+     * @param copyListen
+     * @param deleteListener
+     */
+    public static void showCopyAndDelete(Context context, View view, final View.OnClickListener copyListen,final View.OnClickListener deleteListener) {
+        View contentView = LayoutInflater.from(context).inflate(R.layout.item_copy_and_delete, null, false);
+//        final PopupWindow window = new PopupWindow(contentView);
+        final PopupWindow window = new PopupWindow(contentView, 400, 200, true);
+        TextView tv_copy = contentView.findViewById(R.id.tv_copy);
+        TextView tv_delete = contentView.findViewById(R.id.tv_delete);
+        tv_copy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                window.dismiss();
+                if (copyListen!=null){
+                    copyListen.onClick(v);
+                }
+            }
+        });
+        tv_delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                window.dismiss();
+                if (deleteListener!=null){
+                    deleteListener.onClick(v);
+                }
+            }
+        });
+        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        window.setOutsideTouchable(true);
+        window.setTouchable(true);
+        window.showAsDropDown(view, 100, -view.getHeight()-200);
+//        window.showAtLocation(view,Gravity.NO_GRAVITY, 100, -10);
+    }
 }

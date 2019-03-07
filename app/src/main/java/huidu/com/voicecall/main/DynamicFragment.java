@@ -1,5 +1,7 @@
 package huidu.com.voicecall.main;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Build;
@@ -8,7 +10,11 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,8 +38,8 @@ import butterknife.OnClick;
 import butterknife.Unbinder;
 import de.hdodenhof.circleimageview.CircleImageView;
 import huidu.com.voicecall.R;
-import huidu.com.voicecall.VoiceApp;
 import huidu.com.voicecall.base.BaseFragment;
+import huidu.com.voicecall.bean.Comment;
 import huidu.com.voicecall.bean.DynamicData;
 import huidu.com.voicecall.dynamic.PhotoViewActivity;
 import huidu.com.voicecall.dynamic.PublishActivity;
@@ -41,13 +47,15 @@ import huidu.com.voicecall.dynamic.ReportActivity;
 import huidu.com.voicecall.http.BaseModel;
 import huidu.com.voicecall.http.OkHttpUtils;
 import huidu.com.voicecall.http.RequestFinish;
-import huidu.com.voicecall.mine.AnchorsSkillsActivity;
 import huidu.com.voicecall.utils.CustomLLManager;
 import huidu.com.voicecall.utils.DialogUtil;
 import huidu.com.voicecall.utils.EmptyViewUtil;
+import huidu.com.voicecall.utils.KeyBoardUtil;
 import huidu.com.voicecall.utils.SPUtils;
 import huidu.com.voicecall.utils.TimeCountUtil4;
 import huidu.com.voicecall.utils.ToastUtil;
+
+import static android.content.Context.CLIPBOARD_SERVICE;
 
 /**
  * Description:
@@ -69,15 +77,15 @@ public class DynamicFragment extends BaseFragment implements RequestFinish {
     @BindView(R.id.iv_pause)
     ImageView iv_pause;
     Unbinder unbinder;
-    BaseQuickAdapter mAdapter;
-    List<DynamicData.DynamicList> mList;
+    private BaseQuickAdapter mAdapter;
+    private List<DynamicData.DynamicList> mList;
 
     int mPage = 1;
 
 
     public static boolean isRefresh = false;
 
-    CustomLLManager llManager;
+    private CustomLLManager llManager;
 
     private MediaPlayer mediaPlayer;
     private TimeCountUtil4 mTimeCount;
@@ -85,8 +93,10 @@ public class DynamicFragment extends BaseFragment implements RequestFinish {
     private int ITEM_POSITION = -1;
     private int PLAY_POSITION = -1;
 
-    boolean isPause = false;
-    boolean isPlay = false;
+    private boolean isPause = false;
+    private boolean isPlay = false;
+
+    private int COMMENT_ITEM_NUM = 4;
 
     @Override
     protected int getLayoutId() {
@@ -142,17 +152,54 @@ public class DynamicFragment extends BaseFragment implements RequestFinish {
                 CircleImageView iv_head = helper.getView(R.id.iv_head);
                 final ImageView iv_zan = helper.getView(R.id.iv_zan);
                 final ImageView iv_dialog = helper.getView(R.id.iv_dialog);
+                final ImageView iv_pl = helper.getView(R.id.iv_pl);
                 final TextView tv_num = helper.getView(R.id.tv_num);
+                final TextView tv_close = helper.getView(R.id.tv_close);
                 final TextView tv_content = helper.getView(R.id.tv_content);
                 final TextView tv_more = helper.getView(R.id.tv_more);
                 final ImageView iv_image_gif = helper.getView(R.id.iv_image_gif);
                 final TextView tv_music_time = helper.getView(R.id.tv_music_time);
                 RecyclerView item_recycleView = helper.getView(R.id.item_recycleView);
+                final RecyclerView recycle_comment = helper.getView(R.id.recycle_comment);
                 final LinearLayout ll_voice = helper.getView(R.id.ll_voice);
+                final LinearLayout ll_comment = helper.getView(R.id.ll_comment);
                 ImageView iv_sex = helper.getView(R.id.iv_sex);
                 helper.setText(R.id.tv_nickName, item.getNickname());
                 helper.setText(R.id.tv_time, item.getCreated_at());
 //                final TimeCountUtil2 mTimeCount = new TimeCountUtil2(Integer.parseInt(item.getAudio().isEmpty()?"0":item.getAudio_time()) + 500, 1000, tv_music_time);
+
+                //点击评论
+                ll_comment.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        //评论
+                        DialogUtil.showComment(getActivity(), 1, item.getNickname(), new DialogUtil.OnCommentClick() {
+                            @Override
+                            public void onClick(String comment) {
+                                KeyBoardUtil.hindKeyBoard(getActivity());
+                                mLoading.show();
+                                OkHttpUtils.getInstance().dynamic_comment(SPUtils.getValue("token"), 1, comment, item.getDynamic_id(), "", new RequestFinish() {
+                                    @Override
+                                    public void onSuccess(BaseModel result, String params) {
+                                        finishLoad();
+                                        Comment comment1 = (Comment) result.getData();
+                                        item.getComment().add(comment1);
+                                        notifyDataSetChanged();
+                                    }
+
+                                    @Override
+                                    public void onError(String result) {
+                                        finishLoad();
+                                        ToastUtil.toastShow(result);
+                                    }
+                                });
+                            }
+                        });
+
+//                        KeyBoardUtil.KeyBoard(getActivity(),"open");
+//                        KeyBoardUtil.showKeyBoard(getActivity());
+                    }
+                });
 
                 if (item.getAudio() == null || item.getAudio().isEmpty()) {
                     ll_voice.setVisibility(View.GONE);
@@ -176,156 +223,169 @@ public class DynamicFragment extends BaseFragment implements RequestFinish {
                     if (helper.getAdapterPosition() == ITEM_POSITION) {
                         if (mediaPlayer != null && mediaPlayer.isPlaying()) {
                             Glide.with(getActivity()).load(R.mipmap.bofangdh).into(iv_image_gif);
-                            if (isPause){
+                            if (isPause) {
                                 isPause = false;
                                 mTimeCount = new TimeCountUtil4(Integer.parseInt(item.getAudio_time()), 1000, tv_music_time);
                                 mTimeCount.start();
                             }
                         } else {
                             Glide.with(getActivity()).load(R.mipmap.yystop).into(iv_image_gif);
-                            tv_music_time.setText((Integer.parseInt(item.getAudio_time()) ) / 1000 + "s");
+                            tv_music_time.setText((Integer.parseInt(item.getAudio_time())) / 1000 + "s");
                         }
                     } else {
                         Glide.with(getActivity()).load(R.mipmap.yystop).into(iv_image_gif);
-                        tv_music_time.setText((Integer.parseInt(item.getAudio_time()) ) / 1000 + "s");
+                        tv_music_time.setText((Integer.parseInt(item.getAudio_time())) / 1000 + "s");
                     }
 
-                    if (isPlay&&PLAY_POSITION == helper.getAdapterPosition()){
+                    if (isPlay && PLAY_POSITION == helper.getAdapterPosition()) {
                         isPlay = false;
                         Glide.with(getActivity()).load(R.mipmap.bofangdh).into(iv_image_gif);
                         mTimeCount = new TimeCountUtil4(Integer.parseInt(item.getAudio_time()), 1000, tv_music_time);
                         mTimeCount.start();
-                    }else if(PLAY_POSITION != helper.getAdapterPosition()){
+                    } else if (PLAY_POSITION != helper.getAdapterPosition()) {
                         Glide.with(getActivity()).load(R.mipmap.yystop).into(iv_image_gif);
                         tv_music_time.setText((Integer.parseInt(item.getAudio_time())) / 1000 + "s");
                     }
-                    if (isStop&&PLAY_POSITION == helper.getAdapterPosition()){
+                    if (isStop && PLAY_POSITION == helper.getAdapterPosition()) {
                         isStop = false;
                         Glide.with(getActivity()).load(R.mipmap.yystop).into(iv_image_gif);
                         tv_music_time.setText((Integer.parseInt(item.getAudio_time())) / 1000 + "s");
                     }
                 }
 
+                //向下箭头
                 iv_dialog.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if (SPUtils.getValue("user_id").equals(item.getUser_id())){
-                             DialogUtil.showMineDynamic(getActivity(), new View.OnClickListener() {
-                                 @Override
-                                 public void onClick(View v) {
-                                     mLoading.show();
-                                     OkHttpUtils.getInstance().dynamic_del(SPUtils.getValue("token"), item.getDynamic_id(), new RequestFinish() {
-                                         @Override
-                                         public void onSuccess(BaseModel result, String params) {
-                                             finishLoad();
-                                             ToastUtil.toastShow("刪除成功");
-                                             mList.remove(helper.getAdapterPosition());
-                                             notifyDataSetChanged();
-                                         }
-
-                                         @Override
-                                         public void onError(String result) {
-                                             finishLoad();
-                                             ToastUtil.toastShow(result);
-                                         }
-                                     });
-                                 }
-                             }).show();
-                        }else {
-                        //弹窗选择关注，屏蔽，举报
-                            DialogUtil.showDialogDynamic(getActivity(), new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                OkHttpUtils.getInstance().user_attention(SPUtils.getValue("token"), item.getUser_id(), "", new RequestFinish() {
-                                    @Override
-                                    public void onSuccess(BaseModel result, String params) {
-                                        ToastUtil.toastShow("关注成功");
-                                        item.setIs_attention("1");
-
-                                        for (int i = 0; i < mList.size(); i++) {//DynamicData.DynamicList list:mList){
-                                            if (mList.get(i).getUser_id().equals(item.getUser_id())) {
-                                                mList.get(i).setIs_attention("1");
-                                            }
+                        if (SPUtils.getValue("user_id").equals(item.getUser_id())) {
+                            DialogUtil.showMineDynamic(getActivity(), new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    mLoading.show();
+                                    OkHttpUtils.getInstance().dynamic_del(SPUtils.getValue("token"), item.getDynamic_id(), new RequestFinish() {
+                                        @Override
+                                        public void onSuccess(BaseModel result, String params) {
+                                            finishLoad();
+                                            ToastUtil.toastShow("刪除成功");
+                                            mList.remove(helper.getAdapterPosition());
+                                            notifyDataSetChanged();
                                         }
-                                        notifyDataSetChanged();
-                                    }
 
-                                    @Override
-                                    public void onError(String result) {
-                                        ToastUtil.toastShow(result);
-                                    }
-                                });
-                            }
-                        }, new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                DialogUtil.showDialogConfirm1(getActivity(), "屏蔽后，将会在24小时内，看不到Ta的相关信息，是否继续？", "取消", new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
+                                        @Override
+                                        public void onError(String result) {
+                                            finishLoad();
+                                            ToastUtil.toastShow(result);
+                                        }
+                                    });
+                                }
+                            }).show();
+                        } else {
+                            //弹窗选择关注，屏蔽，举报
+                            DialogUtil.showDialogDynamic(getActivity(), new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    OkHttpUtils.getInstance().user_attention(SPUtils.getValue("token"), item.getUser_id(), "", new RequestFinish() {
+                                        @Override
+                                        public void onSuccess(BaseModel result, String params) {
+                                            ToastUtil.toastShow("关注成功");
+                                            item.setIs_attention("1");
 
-                                    }
-                                }, "屏蔽", new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        mLoading.show();
-                                        OkHttpUtils.getInstance().user_black(SPUtils.getValue("token"), item.getUser_id(), "2", new RequestFinish() {
-                                            @Override
-                                            public void onSuccess(BaseModel result, String params) {
-                                                finishLoad();
-                                                mList.remove(helper.getAdapterPosition());
-                                                notifyDataSetChanged();
-                                                sendRefresh();
+                                            for (int i = 0; i < mList.size(); i++) {//DynamicData.DynamicList list:mList){
+                                                if (mList.get(i).getUser_id().equals(item.getUser_id())) {
+                                                    mList.get(i).setIs_attention("1");
+                                                }
                                             }
+                                            notifyDataSetChanged();
+                                        }
 
-                                            @Override
-                                            public void onError(String result) {
-                                                finishLoad();
-                                                ToastUtil.toastShow(result);
-                                            }
-                                        });
-                                    }
-                                }, View.VISIBLE).show();
-                            }
-                        }, new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                startActivity(new Intent(getActivity(), ReportActivity.class).putExtra("userId", item.getUser_id()));
-                            }
-                        }, new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                DialogUtil.showDialogConfirm1(getActivity(), "确定要将Ta拉入黑名单吗？", "取消", new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
+                                        @Override
+                                        public void onError(String result) {
+                                            ToastUtil.toastShow(result);
+                                        }
+                                    });
+                                }
+                            }, new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    DialogUtil.showDialogConfirm1(getActivity(), "屏蔽后，将会在24小时内，看不到Ta的相关信息，是否继续？", "取消", new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
 
-                                    }
-                                }, "拉黑", new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        mLoading.show();
-                                        OkHttpUtils.getInstance().user_black(SPUtils.getValue("token"), item.getUser_id(), "1", new RequestFinish() {
-                                            @Override
-                                            public void onSuccess(BaseModel result, String params) {
-                                                finishLoad();
-                                                mList.remove(helper.getAdapterPosition());
-                                                notifyDataSetChanged();
-                                                sendRefresh();
-                                            }
+                                        }
+                                    }, "屏蔽", new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            mLoading.show();
+                                            OkHttpUtils.getInstance().user_black(SPUtils.getValue("token"), item.getUser_id(), "2", new RequestFinish() {
+                                                @Override
+                                                public void onSuccess(BaseModel result, String params) {
+                                                    finishLoad();
+                                                    mList.remove(helper.getAdapterPosition());
+                                                    for (int i = 0; i < mList.size(); i++) {//DynamicData.DynamicList list:mList){
+                                                        if (mList.get(i).getUser_id().equals(item.getUser_id())) {
+                                                            mList.remove(i);
+                                                        }
+                                                    }
+                                                    notifyDataSetChanged();
+                                                    sendRefresh();
+                                                }
 
-                                            @Override
-                                            public void onError(String result) {
-                                                finishLoad();
-                                                ToastUtil.toastShow(result);
-                                            }
-                                        });
-                                    }
-                                }, View.VISIBLE).show();
-                            }
-                        }, item.getIs_attention() + "").show();
-                    }
+                                                @Override
+                                                public void onError(String result) {
+                                                    finishLoad();
+                                                    ToastUtil.toastShow(result);
+                                                }
+                                            });
+                                        }
+                                    }, View.VISIBLE).show();
+                                }
+                            }, new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    startActivity(new Intent(getActivity(), ReportActivity.class).putExtra("userId", item.getUser_id()));
+                                }
+                            }, new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    DialogUtil.showDialogConfirm1(getActivity(), "确定要将Ta拉入黑名单吗？", "取消", new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+
+                                        }
+                                    }, "拉黑", new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            mLoading.show();
+                                            OkHttpUtils.getInstance().user_black(SPUtils.getValue("token"), item.getUser_id(), "1", new RequestFinish() {
+                                                @Override
+                                                public void onSuccess(BaseModel result, String params) {
+                                                    finishLoad();
+                                                    mList.remove(helper.getAdapterPosition());
+                                                    for (int i = 0; i < mList.size(); i++) {//DynamicData.DynamicList list:mList){
+                                                        if (mList.get(i).getUser_id().equals(item.getUser_id())) {
+                                                            mList.remove(i);
+                                                        }
+                                                    }
+                                                    notifyDataSetChanged();
+                                                    sendRefresh();
+                                                }
+
+                                                @Override
+                                                public void onError(String result) {
+                                                    finishLoad();
+                                                    ToastUtil.toastShow(result);
+                                                }
+                                            });
+                                        }
+                                    }, View.VISIBLE).show();
+                                }
+                            }, item.getIs_attention() + "").show();
+                        }
                     }
                 });
 //                Glide.with(getActivity()).load(R.mipmap.yystop).into(iv_image_gif);
+
+                //语音
                 ll_voice.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -346,7 +406,6 @@ public class DynamicFragment extends BaseFragment implements RequestFinish {
                                     showHead(helper.getAdapterPosition());
                                     play(item.getAudio());
                                     mTimeCount = new TimeCountUtil4(Integer.parseInt(item.getAudio().isEmpty() ? "0" : item.getAudio_time()), 1000, tv_music_time);
-//                                    }
                                     iv_pause.setImageResource(R.mipmap.dt_bf);
                                     mediaPlayer.start();
                                     mTimeCount.start();
@@ -420,6 +479,7 @@ public class DynamicFragment extends BaseFragment implements RequestFinish {
                     }
                 });
 
+                //点赞
                 iv_zan.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -450,7 +510,7 @@ public class DynamicFragment extends BaseFragment implements RequestFinish {
                     }
                 });
 
-
+                //图片
                 item_recycleView.setLayoutManager(new GridLayoutManager(getActivity(), 3));
                 item_recycleView.setHasFixedSize(true);
                 final List<String> imageList = item.getImage();
@@ -478,6 +538,155 @@ public class DynamicFragment extends BaseFragment implements RequestFinish {
                 };
                 item_recycleView.setAdapter(adapter);
 
+                //评论
+                final List<Comment> commentList2 = item.getComment();
+                final List<Comment> commentList = new ArrayList<>();
+
+                if (commentList2.size() > COMMENT_ITEM_NUM) {
+                    tv_close.setVisibility(View.VISIBLE);
+                } else {
+                    tv_close.setVisibility(View.GONE);
+                }
+                if (!item.isClose() && commentList2.size() > COMMENT_ITEM_NUM) {
+                    for (int i = 0; i < COMMENT_ITEM_NUM; i++) {
+                        commentList.add(commentList2.get(i));
+                    }
+                } else {
+                    commentList.addAll(commentList2);
+                }
+                if (item.isClose())
+                    tv_close.setText("收起");
+                else
+                    tv_close.setText("全部");
+                tv_close.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        item.setClose(!item.isClose());
+                        notifyDataSetChanged();
+                    }
+                });
+
+                if (commentList.isEmpty()) {
+                    iv_pl.setVisibility(View.GONE);
+                    recycle_comment.setVisibility(View.GONE);
+                } else {
+                    iv_pl.setVisibility(View.VISIBLE);
+                    recycle_comment.setVisibility(View.VISIBLE);
+                }
+                recycle_comment.setLayoutManager(new LinearLayoutManager(getActivity()));
+                recycle_comment.setHasFixedSize(true);
+                BaseQuickAdapter commentAdapter = new BaseQuickAdapter<Comment, BaseViewHolder>(R.layout.item_dynamic_comment, commentList) {
+                    @Override
+                    protected void convert(final BaseViewHolder helper, final Comment item1) {
+                        final TextView tv_comment = helper.getView(R.id.tv_comment);
+                        if (item1.getType().equals("1")) {
+                            //评论
+                            SpannableString ss = new SpannableString(item1.getFrom_user().getNickname() + ": " + item1.getContent());
+                            ss.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.colorPurple)),
+                                    0, item1.getFrom_user().getNickname().length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                            tv_comment.setText(ss);
+                        } else {
+                            //回复
+                            SpannableString ss = new SpannableString(item1.getFrom_user().getNickname() + "回复" + item1.getTo_user().getNickname() + ": " + item1.getContent());
+                            ss.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.colorPurple)),
+                                    0, item1.getFrom_user().getNickname().length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                            ss.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.colorPurple)),
+                                    item1.getFrom_user().getNickname().length() + 2, item1.getFrom_user().getNickname().length() + 2 + item1.getTo_user().getNickname().length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                            tv_comment.setText(ss);
+                        }
+                        tv_comment.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Log.e(TAG, "onClick: item1.getCreate_id() = " + item1.getCreate_id() + "  my user_id = " + SPUtils.getValue("user_id"));
+                                if (item1.getCreate_id().equals(SPUtils.getValue("user_id"))) {
+                                    //弹出删除或复制
+                                    DialogUtil.showCopyAndDelete(getActivity(), recycle_comment.getChildAt(helper.getAdapterPosition()), new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            Log.e(TAG, "onClick: 复制");
+                                            ClipboardManager myClipboard = (ClipboardManager) getActivity().getSystemService(CLIPBOARD_SERVICE);
+                                            String text = item1.getContent();
+                                            ClipData myClip = ClipData.newPlainText("text", text);
+                                            myClipboard.setPrimaryClip(myClip);
+                                        }
+                                    }, new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            mLoading.show();
+                                            OkHttpUtils.getInstance().comment_del(SPUtils.getValue("token"), item1.getComment_id(), new RequestFinish() {
+                                                @Override
+                                                public void onSuccess(BaseModel result, String params) {
+                                                    finishLoad();
+                                                    commentList.remove(helper.getAdapterPosition());
+                                                    commentList2.remove(helper.getAdapterPosition());
+                                                    if (commentList2.size()>=COMMENT_ITEM_NUM){
+                                                        commentList.add(commentList2.get(COMMENT_ITEM_NUM-1));
+                                                    }
+                                                    if (commentList2.size()==COMMENT_ITEM_NUM){
+                                                        tv_close.setVisibility(View.GONE);
+                                                        item.setClose(false);
+                                                    }
+//                                                    item.getComment().remove(helper.getAdapterPosition())
+                                                    notifyDataSetChanged();
+                                                }
+
+                                                @Override
+                                                public void onError(String result) {
+                                                    finishLoad();
+                                                    ToastUtil.toastShow(result);
+                                                }
+                                            });
+                                        }
+                                    });
+                                } else {
+                                    //回复
+                                    DialogUtil.showComment(getActivity(), 2, item1.getFrom_user().getNickname(), new DialogUtil.OnCommentClick() {
+                                        @Override
+                                        public void onClick(String comment) {
+                                            KeyBoardUtil.hindKeyBoard(getActivity());
+                                            mLoading.show();
+                                            OkHttpUtils.getInstance().dynamic_comment(SPUtils.getValue("token"), 2, comment, item1.getDynamic_id(), item1.getComment_id(), new RequestFinish() {
+                                                @Override
+                                                public void onSuccess(BaseModel result, String params) {
+                                                    finishLoad();
+                                                    Comment comment1 = (Comment) result.getData();
+                                                    commentList2.add(comment1);
+//                                                    item.getComment().add(comment1);
+                                                    notifyDataSetChanged();
+                                                }
+
+                                                @Override
+                                                public void onError(String result) {
+                                                    finishLoad();
+                                                    ToastUtil.toastShow(result);
+                                                }
+                                            });
+                                        }
+                                    });
+
+//                                    KeyBoardUtil.KeyBoard(getActivity(),"open");
+//                                    KeyBoardUtil.showKeyBoard(getActivity());
+                                }
+                            }
+                        });
+                    }
+                };
+
+//                ViewGroup.LayoutParams lp = recycle_comment.getLayoutParams();
+//                if (commentList.size() > 8) {
+//                    int height = 0;
+//                    for (int i = 0; i < 8; i++) {
+////                        RelativeLayout relativeLayout =  (RelativeLayout)recycle_comment.findViewHolderForAdapterPosition(i);
+////                        height += relativeLayout.getHeight();
+//                    }
+//                    lp.height = height;
+//                } else {
+////                    lp.height = 400;
+//                }
+//
+//                Log.e(TAG, "convert: .lp.height = "+lp.height);
+//                recycle_comment.setLayoutParams(lp);
+                recycle_comment.setAdapter(commentAdapter);
             }
         };
         mAdapter.setEmptyView(EmptyViewUtil.getEmptyView(getActivity(), 5));
@@ -553,13 +762,13 @@ public class DynamicFragment extends BaseFragment implements RequestFinish {
         }
     }
 
-    private void showHead(int position){
+    private void showHead(int position) {
         ll_voice_show.setVisibility(View.VISIBLE);
         tv_name.setText(mList.get(position).getNickname());
         String sex = mList.get(position).getSex();
-        if (sex.equals("1")){
+        if (sex.equals("1")) {
             iv_sex.setImageResource(R.mipmap.dt_boy);
-        }else {
+        } else {
             iv_sex.setImageResource(R.mipmap.girl1);
         }
     }
@@ -615,6 +824,7 @@ public class DynamicFragment extends BaseFragment implements RequestFinish {
 
     /**
      * 判断是否有下一首
+     *
      * @param position
      * @return
      */
@@ -630,9 +840,9 @@ public class DynamicFragment extends BaseFragment implements RequestFinish {
     /**
      * 下一首
      */
-    private void nextPlay(){
+    private void nextPlay() {
         PLAY_POSITION = nextVoice(ITEM_POSITION);
-        if (PLAY_POSITION!=ITEM_POSITION){
+        if (PLAY_POSITION != ITEM_POSITION) {
             showHead(PLAY_POSITION);
             isPause = true;
             play(mList.get(PLAY_POSITION).getAudio());
@@ -644,10 +854,11 @@ public class DynamicFragment extends BaseFragment implements RequestFinish {
 
             mediaPlayer.start();
             mAdapter.notifyDataSetChanged();
-        }else {
+        } else {
             ToastUtil.toastShow("已经是最后一首了!");
         }
     }
+
     /**
      * 停止播放
      */
@@ -656,10 +867,10 @@ public class DynamicFragment extends BaseFragment implements RequestFinish {
             mTimeCount.cancel();
             mTimeCount = null;
         }
-        if(mediaPlayer!=null&&mediaPlayer.isPlaying()){
+        if (mediaPlayer != null && mediaPlayer.isPlaying()) {
             iv_pause.setImageResource(R.mipmap.dt_zt);
             mediaPlayer.stop();
-        }else {
+        } else {
             isPlay = true;
             iv_pause.setImageResource(R.mipmap.dt_bf);
             play(mList.get(ITEM_POSITION).getAudio());
@@ -673,7 +884,7 @@ public class DynamicFragment extends BaseFragment implements RequestFinish {
      */
     private void stopPlay() {
         ll_voice_show.setVisibility(View.GONE);
-        if(mediaPlayer!=null){
+        if (mediaPlayer != null) {
             mediaPlayer.reset();
         }
         if (mTimeCount != null) {
